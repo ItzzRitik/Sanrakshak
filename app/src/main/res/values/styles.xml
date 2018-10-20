@@ -8,8 +8,8 @@
         <item name="android:windowBackground">@drawable/splash</item>
         <item name="colorControlHighlight">@color/ripple</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
-
     <style name="ProfileTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
