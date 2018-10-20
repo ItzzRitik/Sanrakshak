@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Medisyst</string>
+    <string name="app_name">Sanrakshak</string>
     <string name="login_create">CREATE ACCOUNT</string>
     <string name="forgot_pass">Forgot Password ?</string>
     <string name="email">Enter your email</string>
