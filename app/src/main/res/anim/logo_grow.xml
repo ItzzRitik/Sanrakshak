@@ -1,0 +1,11 @@
+<set  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter ="true" android:fillEnabled="true"  android:duration="1000"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator">
+    <translate android:fromYDelta="-570" android:toYDelta="19"/>
+    <scale
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:interpolator="@android:anim/overshoot_interpolator"
+        android:fromXScale="1" android:toXScale="1.75"
+        android:fromYScale="1" android:toYScale="1.75"
+        android:pivotX="50%" android:pivotY="50%"/>
+</set>
