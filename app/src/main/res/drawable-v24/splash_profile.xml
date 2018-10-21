@@ -5,7 +5,7 @@
     </item>
     <item android:drawable="@color/colorPrimary" />
     <item
-        android:left="125dp" android:right="125dp">
+        android:left="125dp" android:right="125dp" android:top="25dp">
         <bitmap  android:gravity="center" android:src="@mipmap/icon" />
     </item>
 </layer-list>
