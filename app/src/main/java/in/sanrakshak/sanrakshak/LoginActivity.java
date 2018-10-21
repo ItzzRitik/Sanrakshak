@@ -289,18 +289,19 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
-                        if(response.code()==503)
+//                        if(response.code()==503)
+//                        {
+//                            if(iteration==0){
+//                                new Handler().postDelayed(new Runnable() {@Override public void run() {
+//                                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+//                                }},1000);
+//                            }
+//                            new Handler().postDelayed(new Runnable() {@Override public void run() {
+//                                splash(iteration+1);
+//                            }},(iteration>20)?10000:iteration*500);
+//                        }
+//                        else
                         {
-                            if(iteration==0){
-                                new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-                                }},1000);
-                            }
-                            new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                splash(iteration+1);
-                            }},(iteration>20)?10000:iteration*500);
-                        }
-                        else {
                             appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
                             appNameSplash.setText(getString(R.string.app_name));
                             appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);

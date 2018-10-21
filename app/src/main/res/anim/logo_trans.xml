@@ -1,12 +1,12 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:shareInterpolator="false"
     android:fillAfter ="true" android:fillEnabled="true" >
-    <translate android:fromYDelta="0" android:toYDelta="-560"
+    <translate android:fromYDelta="0" android:toYDelta="-630"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"/>
     <scale
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:interpolator="@android:anim/overshoot_interpolator"
-        android:fromXScale="1.75" android:toXScale="1"
-        android:fromYScale="1.75" android:toYScale="1"
+        android:fromXScale="1.75" android:toXScale="0.9"
+        android:fromYScale="1.75" android:toYScale="0.9"
         android:pivotX="50%" android:pivotY="50%"/>
 </set>
