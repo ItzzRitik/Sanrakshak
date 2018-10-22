@@ -20,7 +20,8 @@
 
         </activity>
 
-        <activity android:name=".ProfileActivity">
+        <activity android:name=".ProfileActivity"
+            android:theme="@style/ProfileTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
