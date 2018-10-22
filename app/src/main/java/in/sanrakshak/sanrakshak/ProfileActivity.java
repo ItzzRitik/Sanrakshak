@@ -359,7 +359,7 @@ public class ProfileActivity extends AppCompatActivity {
                 startAnim.setDuration(800);
                 startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
                 startAnim.start();
-                ico_splash.animate().scaleX(0.27f).scaleY(0.27f).setDuration(1000).start();
+                ico_splash.animate().scaleX(0.22f).scaleY(0.22f).setDuration(1000).start();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
