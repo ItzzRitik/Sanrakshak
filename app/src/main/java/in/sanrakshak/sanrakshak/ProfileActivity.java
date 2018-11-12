@@ -102,6 +102,10 @@ public class ProfileActivity extends AppCompatActivity {
     double diagonal;
     OkHttpClient client;
     @Override
+    public void onBackPressed() {
+        if(camOn){closeCam();}
+    }
+    @Override
     protected void onPause() {
         super.onPause();
         if(camera_pane.getVisibility()== View.VISIBLE)
@@ -208,7 +212,6 @@ public class ProfileActivity extends AppCompatActivity {
 //                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 //                startActivity(intent);
                 root_view.setPadding(0,0,0,0);
-
                 setLightTheme(false,false);
                 if(profile_lp) {profile_lp=false;}
                 else
@@ -529,9 +532,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
     public void closeCam()
     {
-        int cy=(int)(profile.getY()+profile.getHeight()/2);
         Animation anim = AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.click_shrink);click.startAnimation(anim);
-        animator = ViewAnimationUtils.createCircularReveal(camera_pane,ico_splash.getRight()/2,cy, ico_splash.getHeight()*141/100,0);
+        animator = ViewAnimationUtils.createCircularReveal(camera_pane,dptopx(98),dptopx(260), (float) diagonal,0);
         animator.setInterpolator(new DecelerateInterpolator());animator.setDuration(500);
         animator.addListener(new Animator.AnimatorListener() {
             @Override
