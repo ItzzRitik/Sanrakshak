@@ -19,44 +19,49 @@
         app:flash="off"/>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="165dp"
         android:layout_alignParentBottom="true"
         android:background="#59000000"
         android:id="@+id/click_pane">
         <RelativeLayout
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:id="@+id/centerButtons"
-            android:layout_centerInParent="true">
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_alignParentTop="true">
+            <RelativeLayout
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:id="@+id/centerButtons"
+                android:layout_centerInParent="true">
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/shutter"
+                android:layout_centerInParent="true"
+                android:padding="10dp"
+                android:contentDescription="@string/click"
+                android:visibility="gone"
+                android:id="@+id/click"/>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/flash_off"
+                android:layout_alignStart="@+id/centerButtons"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="-120dp"
+                android:contentDescription="@string/flash"
+                android:id="@+id/flash"/>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/camera_flip"
+                android:layout_alignEnd="@+id/centerButtons"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:layout_marginEnd="-112dp"
+                android:contentDescription="@string/camera_flip"
+                android:id="@+id/camera_flip"/>
         </RelativeLayout>
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/shutter"
-            android:layout_centerInParent="true"
-            android:padding="10dp"
-            android:contentDescription="@string/click"
-            android:visibility="gone"
-            android:id="@+id/click"/>
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/flash_off"
-            android:layout_alignStart="@+id/centerButtons"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="-120dp"
-            android:contentDescription="@string/flash"
-            android:id="@+id/flash"/>
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/camera_flip"
-            android:layout_alignEnd="@+id/centerButtons"
-            android:layout_centerVertical="true"
-            android:padding="10dp"
-            android:layout_marginEnd="-112dp"
-            android:contentDescription="@string/camera_flip"
-            android:id="@+id/camera_flip"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
