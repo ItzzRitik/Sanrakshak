@@ -103,7 +103,12 @@ public class ProfileActivity extends AppCompatActivity {
     OkHttpClient client;
     @Override
     public void onBackPressed() {
-        if(camOn){closeCam();}
+        if(camOn)
+        {
+            closeCam();
+            return;
+        }
+        super.onBackPressed();
     }
     @Override
     protected void onPause() {
@@ -539,7 +544,11 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onAnimationStart(Animator animation) {camOn=false;click.setVisibility(View.GONE);}
             @Override
-            public void onAnimationEnd(Animator animation) {camera_pane.setVisibility(View.GONE);click.setVisibility(View.GONE);}
+            public void onAnimationEnd(Animator animation) {
+                camera_pane.setVisibility(View.GONE);
+                click.setVisibility(View.GONE);
+                setLightTheme(true,true);
+            }
             @Override
             public void onAnimationCancel(Animator animation) {}
             @Override
