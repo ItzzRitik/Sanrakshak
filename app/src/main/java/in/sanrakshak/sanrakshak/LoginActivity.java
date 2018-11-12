@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -49,6 +51,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
+    ConstraintLayout root_view;
     Animation anim;
     RelativeLayout login_div,social_div,logo_div,splash_cover,forget_pass,email_reset;
     ImageView ico_splash;
@@ -68,9 +71,16 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        root_view=findViewById(R.id.root_view);
 
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        //getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            root_view.setPadding(0,getHeightStatusNav(0),0,0);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        }
 
         splash_cover=findViewById(R.id.splash_cover);
         ico_splash=findViewById(R.id.ico_splash);
@@ -606,5 +616,12 @@ public class LoginActivity extends AppCompatActivity {
             assert imm != null;
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+    public int getHeightStatusNav(int viewid) {
+        int result = 0;
+        String view=(viewid==0)?"status_bar_height":"navigation_bar_height";
+        int resourceId = getResources().getIdentifier(view, "dimen", "android");
+        if (resourceId > 0) { result = getResources().getDimensionPixelSize(resourceId); }
+        return result;
     }
 }
