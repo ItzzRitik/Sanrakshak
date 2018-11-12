@@ -24,6 +24,7 @@ import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -79,6 +80,7 @@ import static android.R.attr.maxWidth;
 
 public class ProfileActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,camera_pane,permission_camera,galary,click_pane,profile_menu_cov;
+    ConstraintLayout root_view;
     CardView data_div;
     ImageView dp_cover,ico_splash,done,camera_flip,click,flash,dob_chooser;
     Button allow_camera;
@@ -125,8 +127,10 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        root_view=findViewById(R.id.root_view);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            root_view.setPadding(0,getHeightStatusNav(0),0,0);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
@@ -585,5 +589,14 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean checkPerm(){
         return (ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+    public int getHeightStatusNav(int viewid) {
+        int result = 0;
+        String view=(viewid==0)?"status_bar_height":"navigation_bar_height";
+        int resourceId = getResources().getIdentifier(view, "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }
