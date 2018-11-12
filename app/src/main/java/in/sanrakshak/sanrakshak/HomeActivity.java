@@ -107,8 +107,10 @@ public class HomeActivity extends AppCompatActivity {
 
         page_tag=findViewById(R.id.page_tag);
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        setMargins(appNameSplash,0,0,0,dptopx(30) + getHeightStatusNav(1));
 
         ico_splash=findViewById(R.id.ico_splash);
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
@@ -309,6 +311,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         add = findViewById(R.id.add);
+        setMargins(add,0,0,0,dptopx(30) + getHeightStatusNav(1));
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -541,6 +544,13 @@ public class HomeActivity extends AppCompatActivity {
         }
         if(viewid==1){result = result* 5/8;}
         return result;
+    }
+    public void setMargins (View view, int left, int top, int right, int bottom) {
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            p.setMargins(left, top, right, bottom);
+            view.requestLayout();
+        }
     }
     public void setLightTheme(boolean status,boolean nav){
         int flags = getWindow().getDecorView().getSystemUiVisibility();
