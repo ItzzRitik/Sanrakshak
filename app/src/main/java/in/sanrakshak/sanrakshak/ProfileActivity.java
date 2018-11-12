@@ -180,9 +180,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) appNameSplash.getLayoutParams();
-        params.bottomMargin = dptopx(30) + getHeightStatusNav(1);
+        setMargins(appNameSplash,0,0,0,dptopx(30) + getHeightStatusNav(1));
 
         ico_splash=findViewById(R.id.ico_splash);
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
@@ -603,8 +601,15 @@ public class ProfileActivity extends AppCompatActivity {
         if (resourceId > 0) {
             result = getResources().getDimensionPixelSize(resourceId);
         }
-        if(viewid==1){result *= 5/8;}
+        if(viewid==1){result = result* 5/8;}
         return result;
+    }
+    public void setMargins (View view, int left, int top, int right, int bottom) {
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            p.setMargins(left, top, right, bottom);
+            view.requestLayout();
+        }
     }
     public void setLightTheme(boolean status,boolean nav){
         int flags = getWindow().getDecorView().getSystemUiVisibility();
