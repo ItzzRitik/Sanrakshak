@@ -185,6 +185,8 @@ public class ProfileActivity extends AppCompatActivity {
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
 
         click_pane=findViewById(R.id.click_pane);
+        click_pane.getLayoutParams().height = click_pane.getHeight()+getHeightStatusNav(1);
+
         galary= findViewById(R.id.galary);
 
         camera_pane=findViewById(R.id.camera_pane);
@@ -205,6 +207,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 //                startActivity(intent);
                 root_view.setPadding(0,0,0,0);
+
                 setLightTheme(false,false);
                 if(profile_lp) {profile_lp=false;}
                 else
