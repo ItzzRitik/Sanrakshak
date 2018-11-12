@@ -67,7 +67,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    ConstraintLayout root_view;
     RelativeLayout logo_div,splash_cover,diagnosis;
     ImageView ico_splash,menu,done,dob_chooser;
     EditText dob;
@@ -92,8 +91,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        root_view=findViewById(R.id.root_view);
-        root_view.setPadding(0,getHeightStatusNav(0),0,0);
+
+        findViewById(R.id.root_view).setPadding(0,getHeightStatusNav(0),0,0);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setLightTheme(true,true);
 
