@@ -132,7 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             root_view.setPadding(0,getHeightStatusNav(0),0,0);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            setLightTheme(true,true);
         }
 
         screenSize = new Point();
@@ -205,7 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 //                startActivity(intent);
                 root_view.setPadding(0,0,0,0);
-                getWindow().getDecorView().setSystemUiVisibility(~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+                setLightTheme(false,false);
                 if(profile_lp) {profile_lp=false;}
                 else
                 {
@@ -598,5 +598,24 @@ public class ProfileActivity extends AppCompatActivity {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+    public void setLightTheme(boolean status,boolean nav){
+        int flags = getWindow().getDecorView().getSystemUiVisibility();
+        if(status && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            flags &= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+        if(nav && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            flags &= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+        if(!status && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+        if(!nav && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
     }
 }
