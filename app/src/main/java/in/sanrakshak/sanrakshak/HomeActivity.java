@@ -11,10 +11,12 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +32,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Interpolator;
@@ -64,6 +67,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
+    ConstraintLayout root_view;
     RelativeLayout logo_div,splash_cover,diagnosis;
     ImageView ico_splash,menu,done,dob_chooser;
     EditText dob;
@@ -88,8 +92,11 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        root_view=findViewById(R.id.root_view);
+        root_view.setPadding(0,getHeightStatusNav(0),0,0);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        setLightTheme(true,true);
+
         screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
         diagonal=Math.sqrt((screenSize.x*screenSize.x) + (screenSize.y*screenSize.y));
@@ -525,6 +532,35 @@ public class HomeActivity extends AppCompatActivity {
                     outRect.top = spacing;
                 }
             }
+        }
+    }
+    public int getHeightStatusNav(int viewid) {
+        int result = 0;
+        String view=(viewid==0)?"status_bar_height":"navigation_bar_height";
+        int resourceId = getResources().getIdentifier(view, "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        if(viewid==1){result = result* 5/8;}
+        return result;
+    }
+    public void setLightTheme(boolean status,boolean nav){
+        int flags = getWindow().getDecorView().getSystemUiVisibility();
+        if(status && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+        if(nav && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+        if(!status && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+        if(!nav && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
         }
     }
 }

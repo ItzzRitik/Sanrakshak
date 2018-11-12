@@ -138,11 +138,9 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         root_view=findViewById(R.id.root_view);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            root_view.setPadding(0,getHeightStatusNav(0),0,0);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            setLightTheme(true,true);
-        }
+        root_view.setPadding(0,getHeightStatusNav(0),0,0);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        setLightTheme(true,true);
 
         screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);

@@ -18,21 +18,25 @@
         android:supportsRtl="true"
         android:theme="@style/MainTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".LoginActivity">
+
+        </activity>
         <activity
             android:name=".ProfileActivity"
             android:theme="@style/ProfileTheme">
+
+        </activity>
+        <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".HomeActivity"></activity>
     </application>
 
 </manifest>
