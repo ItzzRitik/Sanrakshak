@@ -260,7 +260,7 @@ public class ProfileActivity extends AppCompatActivity {
         options.setCropGridRowCount(0);
         options.setToolbarColor(ContextCompat.getColor(this, R.color.colorAccentDark));
         options.setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccentDark));
-        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.colorAccent));
 
         profile_url=new File(new ContextWrapper(getApplicationContext()).getDir("imageDir", Context.MODE_PRIVATE),"profile.jpg").getAbsolutePath();
 
