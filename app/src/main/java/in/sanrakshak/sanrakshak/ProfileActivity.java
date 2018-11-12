@@ -185,7 +185,7 @@ public class ProfileActivity extends AppCompatActivity {
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
 
         click_pane=findViewById(R.id.click_pane);
-        click_pane.getLayoutParams().height = click_pane.getHeight()+getHeightStatusNav(1);
+        click_pane.getLayoutParams().height = dptopx(140)+getHeightStatusNav(1);
 
         galary= findViewById(R.id.galary);
 
