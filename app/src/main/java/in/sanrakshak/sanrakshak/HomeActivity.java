@@ -389,7 +389,6 @@ public class HomeActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    // SignUp Animation
 
                     splash_cover.setVisibility(View.GONE);
                     logo_div.setVisibility(View.VISIBLE);
@@ -435,6 +434,7 @@ public class HomeActivity extends AppCompatActivity {
                             page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
                             menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
                             done.setVisibility(View.VISIBLE);done.startAnimation(anims);
+                            setLightTheme(false,true);
                         }},400);
                     new Handler().postDelayed(new Runnable() {
                         @Override
