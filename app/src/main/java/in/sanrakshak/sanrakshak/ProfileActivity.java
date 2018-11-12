@@ -180,12 +180,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(0, 0, 0, dptopx(30) + getHeightStatusNav(1));
-        appNameSplash.setLayoutParams(params);
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) appNameSplash.getLayoutParams();
+        params.bottomMargin = dptopx(30) + getHeightStatusNav(1);
 
         ico_splash=findViewById(R.id.ico_splash);
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
