@@ -180,12 +180,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 0, 0, dptopx(30) + getHeightStatusNav(1));
+        appNameSplash.setLayoutParams(params);
 
         ico_splash=findViewById(R.id.ico_splash);
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
 
         click_pane=findViewById(R.id.click_pane);
-        click_pane.getLayoutParams().height = dptopx(140) + getHeightStatusNav(1)*5/8;
+        click_pane.getLayoutParams().height = dptopx(140) + getHeightStatusNav(1);
 
         galary= findViewById(R.id.galary);
 
@@ -600,6 +606,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (resourceId > 0) {
             result = getResources().getDimensionPixelSize(resourceId);
         }
+        if(viewid==1){result *= 5/8;}
         return result;
     }
     public void setLightTheme(boolean status,boolean nav){
