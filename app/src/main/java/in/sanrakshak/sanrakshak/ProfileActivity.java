@@ -225,7 +225,7 @@ public class ProfileActivity extends AppCompatActivity {
                     camera_pane.setVisibility(View.VISIBLE);
                     permission_camera.setVisibility(View.VISIBLE);
                     camOn=true;
-                    final Animator animator = ViewAnimationUtils.createCircularReveal(camera_pane,dptopx(98),dptopx(260),0, (float)diagonal);
+                    final Animator animator = ViewAnimationUtils.createCircularReveal(camera_pane,dptopx(92),dptopx(248),profile.getWidth(), (float)diagonal);
                     animator.setInterpolator(new AccelerateDecelerateInterpolator());animator.setDuration(500);animator.start();
                     if (checkPerm()) {
                         permission_camera.setVisibility(View.GONE);if(!cameraView.isCameraOpened()){cameraView.start();
@@ -530,7 +530,6 @@ public class ProfileActivity extends AppCompatActivity {
                 catch (Exception ignored){}
             }
             else if (resultcode == UCrop.RESULT_ERROR) {
-                final Throwable cropError = UCrop.getError(intent);
                 new File(getRealPathFromURI(ProfileActivity.this,Uri.parse(profile_path))).delete();
             }
         }
@@ -538,16 +537,19 @@ public class ProfileActivity extends AppCompatActivity {
     public void closeCam()
     {
         Animation anim = AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.click_shrink);click.startAnimation(anim);
-        animator = ViewAnimationUtils.createCircularReveal(camera_pane,dptopx(98),dptopx(260), (float) diagonal,0);
+        animator = ViewAnimationUtils.createCircularReveal(camera_pane,dptopx(92),dptopx(248), (float) diagonal,profile.getWidth());
         animator.setInterpolator(new DecelerateInterpolator());animator.setDuration(500);
         animator.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {camOn=false;click.setVisibility(View.GONE);}
+            public void onAnimationStart(Animator animation) {
+                camOn=false;
+                click.setVisibility(View.GONE);
+                setLightTheme(true,true);
+            }
             @Override
             public void onAnimationEnd(Animator animation) {
                 camera_pane.setVisibility(View.GONE);
                 click.setVisibility(View.GONE);
-                setLightTheme(true,true);
             }
             @Override
             public void onAnimationCancel(Animator animation) {}
