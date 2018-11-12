@@ -602,11 +602,11 @@ public class ProfileActivity extends AppCompatActivity {
     public void setLightTheme(boolean status,boolean nav){
         int flags = getWindow().getDecorView().getSystemUiVisibility();
         if(status && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            flags &= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             getWindow().getDecorView().setSystemUiVisibility(flags);
         }
         if(nav && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            flags &= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
             getWindow().getDecorView().setSystemUiVisibility(flags);
         }
         if(!status && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
