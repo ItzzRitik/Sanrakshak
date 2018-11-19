@@ -295,6 +295,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Connection Failed - "+e);
                 call.cancel();
+                if(iteration==0){
+                    new Handler().postDelayed(new Runnable() {@Override public void run() {
+                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                    }},1000);
+                }
+                new Handler().postDelayed(new Runnable() {@Override public void run() {
+                    splash(iteration+1);
+                }},(iteration>20)?10000:iteration*500);
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
