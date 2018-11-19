@@ -17,6 +17,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -564,7 +565,11 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void scaleY(final View view,int y,int t, Interpolator interpolator)
     {
-        if(view==login_div){y=y+getHeightStatusNav(1);}
+        if(view==social_div)
+        {
+            y=y+(int)pxtodp(getHeightStatusNav(1));
+            view.setPadding(0,0,0,getHeightStatusNav(1)*8/5);
+        }
         ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredHeight(),(int)dptopx(y));anim.setInterpolator(interpolator);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -579,6 +584,10 @@ public class LoginActivity extends AppCompatActivity {
     public float dptopx(float num)
     {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, num, getResources().getDisplayMetrics());
+    }
+    public float pxtodp(float px)
+    {
+        return px / ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
     public void vibrate(int ms)
     {
