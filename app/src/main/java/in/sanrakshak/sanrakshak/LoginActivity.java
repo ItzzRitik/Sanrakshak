@@ -378,7 +378,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     assert response.body() != null;
-                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful())
+                    Log.e("sign", response.body().string());
+                    if((response.body()).toString().equals("1") && response.isSuccessful())
                     {
                         //If Exists then ask password
                         Log.e("sign", "SignIN");
@@ -437,11 +438,9 @@ public class LoginActivity extends AppCompatActivity {
         else if(log==1)
         {
             nextLoading(true);
-            crypt.encryptPlainTextWithRandomIV(pass.getText().toString(), "");
-
             HttpUrl.Builder urlBuilder = HttpUrl.parse("https://medisyst-adityabhardwaj.c9users.io/login").newBuilder();
-            urlBuilder.addQueryParameter("email", email.getText().toString());
-            urlBuilder.addQueryParameter("password", pass.getText().toString());
+            urlBuilder.addQueryParameter("email",crypt.encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"));
+            urlBuilder.addQueryParameter("pass",crypt.encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak"));
             Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
                     .addHeader("Content-Type", "application/json").build();
             client.newCall(request).enqueue(new Callback() {
