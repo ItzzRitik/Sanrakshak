@@ -568,7 +568,7 @@ public class LoginActivity extends AppCompatActivity {
         if(view==social_div)
         {
             y=y+(int)pxtodp(getHeightStatusNav(1));
-            view.setPadding(0,0,0,getHeightStatusNav(1)*8/5);
+            view.setPadding((int)dptopx(10),(int)dptopx(10),(int)dptopx(10),getHeightStatusNav(1)+(int)dptopx(10));
         }
         ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredHeight(),(int)dptopx(y));anim.setInterpolator(interpolator);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
