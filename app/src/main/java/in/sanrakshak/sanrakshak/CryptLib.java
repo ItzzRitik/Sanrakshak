@@ -132,7 +132,7 @@ public class CryptLib {
     }
 
 
-    public String encryptPlainTextWithRandomIV(String plainText, String key) {
+    String encryptPlainTextWithRandomIV(String plainText, String key) {
         byte[] bytes=null;
         try{
             bytes = encryptDecrypt(generateRandomIV16() + plainText, CryptLib.SHA256(key, 32), EncryptMode.ENCRYPT, generateRandomIV16());
