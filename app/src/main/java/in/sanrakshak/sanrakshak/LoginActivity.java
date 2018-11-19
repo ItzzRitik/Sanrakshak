@@ -295,14 +295,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Connection Failed - "+e);
                 call.cancel();
-                if(iteration==0){
-                    new Handler().postDelayed(new Runnable() {@Override public void run() {
-                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-                    }},1000);
-                }
-                new Handler().postDelayed(new Runnable() {@Override public void run() {
-                    splash(iteration+1);
-                }},(iteration>20)?10000:iteration*500);
+                serverOffline(iteration);
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
@@ -312,14 +305,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
                         if(response.code()==503)
                         {
-                            if(iteration==0){
-                                new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-                                }},1000);
-                            }
-                            new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                splash(iteration+1);
-                            }},(iteration>20)?10000:iteration*500);
+                            serverOffline(iteration);
                         }
                         else
                         {
@@ -352,6 +338,21 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+    }
+    public void serverOffline(final int iteration){
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                if(iteration==0){
+                    new Handler().postDelayed(new Runnable() {@Override public void run() {
+                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                    }},1000);
+                }
+                new Handler().postDelayed(new Runnable() {@Override public void run() {
+                    splash(iteration+1);
+                }},(iteration>20)?10000:iteration*500);
             }
         });
     }
