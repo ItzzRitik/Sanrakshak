@@ -609,9 +609,7 @@ public class ProfileActivity extends AppCompatActivity {
         int result = 0;
         String view=(viewid==0)?"status_bar_height":"navigation_bar_height";
         int resourceId = getResources().getIdentifier(view, "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
+        if (resourceId > 0) { result = getResources().getDimensionPixelSize(resourceId); }
         if(viewid==1){result = result* 5/8;}
         return result;
     }
