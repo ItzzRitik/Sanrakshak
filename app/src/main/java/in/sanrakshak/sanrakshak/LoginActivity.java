@@ -42,11 +42,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -540,18 +545,23 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     public String encrypt(String value,String key) {
-        Log.i("sign",value+" - "+key);
-        try {
-            IvParameterSpec iv = new IvParameterSpec(value.getBytes("UTF-8"));
-            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
-
-            byte[] encrypted = cipher.doFinal(value.getBytes());
-            return Base64.encodeToString(encrypted,Base64.NO_WRAP);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        MessageDigest sha;
+        byte[] keybyte;
+        SecretKeySpec secretKey;
+        try
+        {
+            keybyte = key.getBytes("UTF-8");
+            sha = MessageDigest.getInstance("SHA-1");
+            keybyte = sha.digest(keybyte);
+            keybyte = Arrays.copyOf(keybyte, 16);
+            secretKey = new SecretKeySpec(keybyte, "AES");
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            return Base64.encodeToString(cipher.doFinal(value.getBytes("UTF-8")),Base64.NO_WRAP);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error while encrypting: " + e.toString());
         }
         return null;
     }
