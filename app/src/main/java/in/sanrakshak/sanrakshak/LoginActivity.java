@@ -449,9 +449,14 @@ public class LoginActivity extends AppCompatActivity {
         else if(log==1)
         {
             nextLoading(true);
-            HttpUrl.Builder urlBuilder = HttpUrl.parse("http://3.16.4.70:8080/login").newBuilder();
-            urlBuilder.addQueryParameter("email",encrypt(email.getText().toString(),"crack"));
-            urlBuilder.addQueryParameter("pass",encrypt(pass.getText().toString(),"crack"));
+            HttpUrl.Builder urlBuilder=null;
+            try{
+                urlBuilder = HttpUrl.parse("http://3.16.4.70:8080/login").newBuilder();
+                urlBuilder.addQueryParameter("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"));
+                urlBuilder.addQueryParameter("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak"));
+            }
+            catch (Exception e){Log.e("encrypt","Error while encryption");}
+
             Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
                     .addHeader("Content-Type", "application/json").build();
             client.newCall(request).enqueue(new Callback() {
@@ -543,18 +548,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-    public String encrypt(String value,String key) {
-        try
-        {
-            SecretKeySpec skeyspec=new SecretKeySpec(key.getBytes(),"Blowfish");
-            Cipher cipher=Cipher.getInstance("Blowfish");
-            cipher.init(Cipher.ENCRYPT_MODE, skeyspec);
-            byte[] encrypted=cipher.doFinal(value.getBytes());
-            return new String(encrypted);
-        }
-        catch (Exception e) { Log.e("encrypt","Error while encryption");}
-        return null;
     }
     public void nextLoading(Boolean loading)
     {
