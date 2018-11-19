@@ -545,24 +545,15 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     public String encrypt(String value,String key) {
-        MessageDigest sha;
-        byte[] keybyte;
-        SecretKeySpec secretKey;
         try
         {
-            keybyte = key.getBytes("UTF-8");
-            sha = MessageDigest.getInstance("SHA-1");
-            keybyte = sha.digest(keybyte);
-            keybyte = Arrays.copyOf(keybyte, 16);
-            secretKey = new SecretKeySpec(keybyte, "AES");
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            return Base64.encodeToString(cipher.doFinal(value.getBytes("UTF-8")),Base64.NO_WRAP);
+            SecretKeySpec skeyspec=new SecretKeySpec(key.getBytes(),"Blowfish");
+            Cipher cipher=Cipher.getInstance("Blowfish");
+            cipher.init(Cipher.ENCRYPT_MODE, skeyspec);
+            byte[] encrypted=cipher.doFinal(value.getBytes());
+            return new String(encrypted);
         }
-        catch (Exception e)
-        {
-            System.out.println("Error while encrypting: " + e.toString());
-        }
+        catch (Exception e) { Log.e("encrypt","Error while encryption");}
         return null;
     }
     public void nextLoading(Boolean loading)
