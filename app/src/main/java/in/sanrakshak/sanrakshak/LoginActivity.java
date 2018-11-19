@@ -302,7 +302,14 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void splash(final int iteration){
         Log.i("backend_call", "Connecting - "+iteration);
-        Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").get()
+        HttpUrl.Builder urlBuilder=null;
+        try{
+            urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://3.16.4.70:8080/connect")).newBuilder();
+            urlBuilder.addQueryParameter("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak"));
+        }
+        catch (Exception e){Log.e("encrypt","Error while encryption");}
+        assert urlBuilder != null;
+        Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
                 .addHeader("Content-Type", "application/json").build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -451,12 +458,13 @@ public class LoginActivity extends AppCompatActivity {
             nextLoading(true);
             HttpUrl.Builder urlBuilder=null;
             try{
-                urlBuilder = HttpUrl.parse("http://3.16.4.70:8080/login").newBuilder();
+                urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://3.16.4.70:8080/login")).newBuilder();
                 urlBuilder.addQueryParameter("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"));
                 urlBuilder.addQueryParameter("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak"));
             }
             catch (Exception e){Log.e("encrypt","Error while encryption");}
 
+            assert urlBuilder != null;
             Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
                     .addHeader("Content-Type", "application/json").build();
             client.newCall(request).enqueue(new Callback() {
@@ -505,9 +513,14 @@ public class LoginActivity extends AppCompatActivity {
             //SignUp Initiate
             Log.i("sign", "SignUp Initiate");
             nextLoading(true);
-            HttpUrl.Builder urlBuilder = HttpUrl.parse("https://medisyst-adityabhardwaj.c9users.io/tempsignup").newBuilder();
-            urlBuilder.addQueryParameter("email", email.getText().toString());
-            urlBuilder.addQueryParameter("password", pass.getText().toString());
+            HttpUrl.Builder urlBuilder=null;
+            try{
+                urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://3.16.4.70:8080/signup")).newBuilder();
+                urlBuilder.addQueryParameter("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"));
+                urlBuilder.addQueryParameter("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak"));
+            }
+            catch (Exception e){Log.e("encrypt","Error while encryption");}
+            assert urlBuilder != null;
             Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
                     .addHeader("Content-Type", "application/json").build();
             client.newCall(request).enqueue(new Callback() {
