@@ -13,6 +13,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 import android.util.Base64;
+import android.util.Log;
 
 public class CryptLib {
 
@@ -27,11 +28,14 @@ public class CryptLib {
     // encryption key and initialization vector
     private byte[] _key, _iv;
 
-    public CryptLib() throws NoSuchAlgorithmException, NoSuchPaddingException {
+    public CryptLib()  {
         // initialize the cipher with transformation AES/CBC/PKCS5Padding
-        _cx = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        _key = new byte[32]; //256 bit key space
-        _iv = new byte[16]; //128 bit IV
+        try {
+            _cx = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            _key = new byte[32]; //256 bit key space
+            _iv = new byte[16]; //128 bit IV
+        }
+        catch (Exception e){Log.i("encryption", e.getMessage());}
     }
 
 

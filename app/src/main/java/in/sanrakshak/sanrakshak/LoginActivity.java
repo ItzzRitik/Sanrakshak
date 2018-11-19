@@ -63,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     OkHttpClient client;
     ProgressBar nextLoad,proSplash;
     TextView appNameSplash;
+    CryptLib crypt;
     @Override
     public void onBackPressed() {
         showKeyboard(email,false);
@@ -85,7 +86,9 @@ public class LoginActivity extends AppCompatActivity {
         logo_div=findViewById(R.id.logo_div);
         login_div=findViewById(R.id.login_div);
         social_div=findViewById(R.id.social_div);
+
         client = new OkHttpClient();
+        crypt = new CryptLib();
 
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -434,6 +437,12 @@ public class LoginActivity extends AppCompatActivity {
         else if(log==1)
         {
             nextLoading(true);
+            try{
+
+                crypt.encryptPlainTextWithRandomIV(pass.getText().toString(), "");
+            }
+            catch (Exception e){}
+
             HttpUrl.Builder urlBuilder = HttpUrl.parse("https://medisyst-adityabhardwaj.c9users.io/login").newBuilder();
             urlBuilder.addQueryParameter("email", email.getText().toString());
             urlBuilder.addQueryParameter("password", pass.getText().toString());
