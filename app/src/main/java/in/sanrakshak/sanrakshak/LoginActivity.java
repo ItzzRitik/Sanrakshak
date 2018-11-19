@@ -445,8 +445,8 @@ public class LoginActivity extends AppCompatActivity {
         {
             nextLoading(true);
             HttpUrl.Builder urlBuilder = HttpUrl.parse("http://3.16.4.70:8080/login").newBuilder();
-            urlBuilder.addQueryParameter("email",encrypt(email.getText().toString(),"sanrakshak"));
-            urlBuilder.addQueryParameter("pass",encrypt(pass.getText().toString(),"sanrakshak"));
+            urlBuilder.addQueryParameter("email",encrypt(email.getText().toString(),"crack"));
+            urlBuilder.addQueryParameter("pass",encrypt(pass.getText().toString(),"crack"));
             Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
                     .addHeader("Content-Type", "application/json").build();
             client.newCall(request).enqueue(new Callback() {
@@ -540,14 +540,19 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     public String encrypt(String value,String key) {
+        Log.i("sign",value+" - "+key);
         try {
-            SecretKey secretKey = new SecretKeySpec(Base64.decode(key.getBytes(), Base64.NO_WRAP), "AES");
-            AlgorithmParameterSpec iv = new IvParameterSpec(Base64.decode(key.getBytes(), Base64.NO_WRAP));
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
-            return new String(Base64.encode(cipher.doFinal(value.getBytes("UTF-8")), Base64.NO_WRAP));
+            IvParameterSpec iv = new IvParameterSpec(value.getBytes("UTF-8"));
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(value.getBytes());
+            return Base64.encodeToString(encrypted,Base64.NO_WRAP);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        catch (Exception e) { e.printStackTrace(); }
         return null;
     }
     public void nextLoading(Boolean loading)
