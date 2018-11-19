@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
+        setLightTheme(true,true);
 
         splash_cover=findViewById(R.id.splash_cover);
         ico_splash=findViewById(R.id.ico_splash);
@@ -287,12 +288,12 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void splash(final int iteration){
         Log.i("backend_call", "Connecting - "+iteration);
-        Request request = new Request.Builder().url("https://medisyst-adityabhardwaj.c9users.io/connect").get()
+        Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").get()
                 .addHeader("Content-Type", "application/json").build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.i("backend_call", "Connection Failed - "+iteration);
+                Log.i("backend_call", "Connection Failed - "+e);
                 call.cancel();
             }
             @Override
