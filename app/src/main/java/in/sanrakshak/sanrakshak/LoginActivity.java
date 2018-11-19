@@ -50,6 +50,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class LoginActivity extends AppCompatActivity {
     ConstraintLayout root_view;
@@ -377,9 +378,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    assert response.body() != null;
-                    Log.e("sign", response.body().string());
-                    if((response.body()).toString().equals("1") && response.isSuccessful())
+                    ResponseBody res = response.body();
+                    assert res != null;
+                    if(Integer.parseInt(res.string())==1 && response.isSuccessful())
                     {
                         //If Exists then ask password
                         Log.e("sign", "SignIN");
@@ -452,7 +453,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     assert response.body() != null;
-                    if (Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                    if (Integer.parseInt(response.body().string())==1 && response.isSuccessful())
+                    {
                         Log.i("sign", "Login Done");
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
