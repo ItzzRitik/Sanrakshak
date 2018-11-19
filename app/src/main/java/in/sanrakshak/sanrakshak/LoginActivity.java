@@ -564,6 +564,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void scaleY(final View view,int y,int t, Interpolator interpolator)
     {
+        if(view==login_div){y=y+getHeightStatusNav(1);}
         ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredHeight(),(int)dptopx(y));anim.setInterpolator(interpolator);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
