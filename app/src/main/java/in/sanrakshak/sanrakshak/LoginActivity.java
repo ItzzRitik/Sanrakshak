@@ -17,6 +17,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -41,8 +42,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.Objects;
 import java.util.regex.Pattern;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -64,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
     OkHttpClient client;
     ProgressBar nextLoad,proSplash;
     TextView appNameSplash;
-    CryptLib crypt;
     @Override
     public void onBackPressed() {
         showKeyboard(email,false);
@@ -89,7 +95,6 @@ public class LoginActivity extends AppCompatActivity {
         social_div=findViewById(R.id.social_div);
 
         client = new OkHttpClient();
-        crypt = new CryptLib();
 
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -440,8 +445,8 @@ public class LoginActivity extends AppCompatActivity {
         {
             nextLoading(true);
             HttpUrl.Builder urlBuilder = HttpUrl.parse("http://3.16.4.70:8080/login").newBuilder();
-            urlBuilder.addQueryParameter("email",crypt.encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"));
-            urlBuilder.addQueryParameter("pass",crypt.encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak"));
+            urlBuilder.addQueryParameter("email",encrypt(email.getText().toString(),"sanrakshak"));
+            urlBuilder.addQueryParameter("pass",encrypt(pass.getText().toString(),"sanrakshak"));
             Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
                     .addHeader("Content-Type", "application/json").build();
             client.newCall(request).enqueue(new Callback() {
@@ -533,6 +538,17 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+    public String encrypt(String value,String key) {
+        try {
+            SecretKey secretKey = new SecretKeySpec(Base64.decode(key.getBytes(), Base64.NO_WRAP), "AES");
+            AlgorithmParameterSpec iv = new IvParameterSpec(Base64.decode(key.getBytes(), Base64.NO_WRAP));
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
+            return new String(Base64.encode(cipher.doFinal(value.getBytes("UTF-8")), Base64.NO_WRAP));
+        }
+        catch (Exception e) { e.printStackTrace(); }
+        return null;
     }
     public void nextLoading(Boolean loading)
     {
