@@ -14,17 +14,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/parentPanel">
-            <android.support.v7.widget.CardView
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:cardElevation="0dp"
-                app:cardCornerRadius="10dp">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:background="@mipmap/back"/>
-            </android.support.v7.widget.CardView>
+                android:scaleType="centerCrop"
+                android:background="@mipmap/back"/>
             <RelativeLayout
                 android:layout_width="160dp"
                 android:layout_height="160dp"

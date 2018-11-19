@@ -73,14 +73,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         root_view=findViewById(R.id.root_view);
-
-        //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        //getWindow().setStatusBarColor(Color.TRANSPARENT);
-
+        setLightTheme(true,true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            root_view.setPadding(0,getHeightStatusNav(0),0,0);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
         splash_cover=findViewById(R.id.splash_cover);
@@ -93,6 +89,8 @@ public class LoginActivity extends AppCompatActivity {
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
         proSplash=findViewById(R.id.proSplash);
+        setMargins(appNameSplash,0,0,0,(int)(dptopx(30) + getHeightStatusNav(1)));
+        setMargins(proSplash,0,0,0,(int)(dptopx(10) + getHeightStatusNav(1)));
 
         forget_create=findViewById(R.id.forget_create);
         forget_create.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -324,6 +322,10 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     // Splash Animation
+                                    new Handler().postDelayed(new Runnable() {@Override public void run() {
+                                        setLightTheme(true,false);
+                                    }},300);
+                                    appNameSplash.setVisibility(View.GONE);
                                     splash_cover.setVisibility(View.GONE);logo_div.setVisibility(View.VISIBLE);
                                     logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_reveal));
 
@@ -332,8 +334,10 @@ public class LoginActivity extends AppCompatActivity {
 
                                     new Handler().postDelayed(new Runnable() {@Override public void run() {
                                         new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                            scaleY(login_div,48,400,new OvershootInterpolator());}},200);
+                                            scaleY(login_div,48,400,new OvershootInterpolator());
+                                        }},200);
                                         scaleY(social_div,80,280,new AccelerateInterpolator());
+                                        setLightTheme(false,true);
                                     }},800);
                                 }},2000);
                         }
@@ -568,7 +572,7 @@ public class LoginActivity extends AppCompatActivity {
         if(view==social_div)
         {
             y=y+(int)pxtodp(getHeightStatusNav(1));
-            view.setPadding((int)dptopx(10),(int)dptopx(10),(int)dptopx(10),getHeightStatusNav(1)+(int)dptopx(10));
+            view.setPadding((int)dptopx(10),(int)dptopx(10),(int)dptopx(10),getHeightStatusNav(1)*3/2);
         }
         ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredHeight(),(int)dptopx(y));anim.setInterpolator(interpolator);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -627,6 +631,13 @@ public class LoginActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+    public void setMargins (View view, int left, int top, int right, int bottom) {
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            p.setMargins(left, top, right, bottom);
+            view.requestLayout();
+        }
+    }
     public int getHeightStatusNav(int viewid) {
         int result = 0;
         String view=(viewid==0)?"status_bar_height":"navigation_bar_height";
@@ -634,5 +645,24 @@ public class LoginActivity extends AppCompatActivity {
         if (resourceId > 0) { result = getResources().getDimensionPixelSize(resourceId); }
         if(viewid==1){result = result* 5/8;}
         return result;
+    }
+    public void setLightTheme(boolean status,boolean nav){
+        int flags = getWindow().getDecorView().getSystemUiVisibility();
+        if(status && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+        if(nav && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+        if(!status && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+        if(!nav && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
     }
 }
