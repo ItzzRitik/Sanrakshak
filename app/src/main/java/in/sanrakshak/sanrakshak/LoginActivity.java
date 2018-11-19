@@ -362,7 +362,7 @@ public class LoginActivity extends AppCompatActivity {
         if(log==0)
         {
             nextLoading(true);
-            HttpUrl.Builder urlBuilder = HttpUrl.parse("https://medisyst-adityabhardwaj.c9users.io/check").newBuilder();
+            HttpUrl.Builder urlBuilder = HttpUrl.parse("http://3.16.4.70:8080/check").newBuilder();
             urlBuilder.addQueryParameter("email", email.getText().toString());
             Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
                     .addHeader("Content-Type", "text/html").build();
