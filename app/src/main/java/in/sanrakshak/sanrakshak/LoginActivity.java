@@ -437,11 +437,7 @@ public class LoginActivity extends AppCompatActivity {
         else if(log==1)
         {
             nextLoading(true);
-            try{
-
-                crypt.encryptPlainTextWithRandomIV(pass.getText().toString(), "");
-            }
-            catch (Exception e){}
+            crypt.encryptPlainTextWithRandomIV(pass.getText().toString(), "");
 
             HttpUrl.Builder urlBuilder = HttpUrl.parse("https://medisyst-adityabhardwaj.c9users.io/login").newBuilder();
             urlBuilder.addQueryParameter("email", email.getText().toString());

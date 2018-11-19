@@ -132,8 +132,12 @@ public class CryptLib {
     }
 
 
-    public String encryptPlainTextWithRandomIV(String plainText, String key) throws Exception {
-        byte[] bytes = encryptDecrypt(generateRandomIV16() + plainText, CryptLib.SHA256(key, 32), EncryptMode.ENCRYPT, generateRandomIV16());
+    public String encryptPlainTextWithRandomIV(String plainText, String key) {
+        byte[] bytes=null;
+        try{
+            bytes = encryptDecrypt(generateRandomIV16() + plainText, CryptLib.SHA256(key, 32), EncryptMode.ENCRYPT, generateRandomIV16());
+        }
+        catch (Exception e){Log.i("encryption", e.getMessage());}
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
