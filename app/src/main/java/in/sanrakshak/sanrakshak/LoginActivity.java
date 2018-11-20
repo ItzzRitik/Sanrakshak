@@ -3,6 +3,7 @@ package in.sanrakshak.sanrakshak;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -487,10 +488,10 @@ public class LoginActivity extends AppCompatActivity {
                                 newPageAnim();
                                 nextLoading(false);
                                 new Handler().postDelayed(new Runnable() {@Override public void run() {
-//                                    Intent home=new Intent(LoginActivity.this, HomeActivity.class);
-//                                    home.putExtra("email",email.getText().toString());
-//                                    LoginActivity.this.startActivity(home);
-//                                    finish();
+                                    Intent home=new Intent(LoginActivity.this, HomeActivity.class);
+                                    home.putExtra("email",email.getText().toString());
+                                    LoginActivity.this.startActivity(home);
+                                    finish();
                                     LoginActivity.this.overridePendingTransition(0, 0);}},1500);
                             }
                         });
@@ -541,9 +542,9 @@ public class LoginActivity extends AppCompatActivity {
                                 newPageAnim();
                                 nextLoading(false);
                                 new Handler().postDelayed(new Runnable() {@Override public void run() {
-//                                    Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
-//                                    profile.putExtra("email",email.getText().toString());
-//                                    LoginActivity.this.startActivity(profile);
+                                    Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
+                                    profile.putExtra("email",email.getText().toString());
+                                    LoginActivity.this.startActivity(profile);
                                     finish();
                                     LoginActivity.this.overridePendingTransition(0, 0);}},1500);
                             }
