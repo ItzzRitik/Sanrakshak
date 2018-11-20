@@ -660,6 +660,7 @@ public class LoginActivity extends AppCompatActivity {
         logo_div.setVisibility(View.VISIBLE);
         logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_hide));
         ico_splash.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_grow));
+        setLightTheme(true,true);
     }
     public void showKeyboard(View view,boolean what)
     {
