@@ -369,8 +369,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                 float CurrentX = ico_splash.getX();
                 float CurrentY = ico_splash.getY();
-                float FinalX = -100;
-                float FinalY = -108;
+                float FinalX = -80;
+                float FinalY = -80;
                 Path path = new Path();
                 path.moveTo(CurrentX, CurrentY);
                 path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
