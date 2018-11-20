@@ -94,7 +94,6 @@ public class LoginActivity extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
         setLightTheme(true,true);
-
         splash_cover=findViewById(R.id.splash_cover);
         ico_splash=findViewById(R.id.ico_splash);
         logo_div=findViewById(R.id.logo_div);
