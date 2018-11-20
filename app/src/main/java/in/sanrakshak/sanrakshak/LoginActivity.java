@@ -107,8 +107,8 @@ public class LoginActivity extends AppCompatActivity {
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
         proSplash=findViewById(R.id.proSplash);
-        setMargins(appNameSplash,0,0,0,(int)(dptopx(30) + getHeightStatusNav(1)));
-        setMargins(proSplash,0,0,0,(int)(dptopx(10) + getHeightStatusNav(1)));
+        setMargins(appNameSplash,0,0,0,(int)(dptopx(20) + getHeightStatusNav(1)));
+        setMargins(proSplash,0,0,0,(int)(dptopx(50) + getHeightStatusNav(1)));
 
         forget_create=findViewById(R.id.forget_create);
         forget_create.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -483,7 +483,7 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 //SignIn Initiate
-                                newPageAnim();
+                                newPageAnim(2);
                                 nextLoading(false);
                                 new Handler().postDelayed(new Runnable() {@Override public void run() {
                                     Intent home=new Intent(LoginActivity.this, HomeActivity.class);
@@ -534,14 +534,14 @@ public class LoginActivity extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run(){
-                                newPageAnim();
+                                newPageAnim(1);
                                 nextLoading(false);
-                                new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                    Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
-                                    profile.putExtra("email",email.getText().toString());
-                                    LoginActivity.this.startActivity(profile);
-                                    finish();
-                                    LoginActivity.this.overridePendingTransition(0, 0);}},1500);
+//                                new Handler().postDelayed(new Runnable() {@Override public void run() {
+//                                    Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
+//                                    profile.putExtra("email",email.getText().toString());
+//                                    LoginActivity.this.startActivity(profile);
+//                                    finish();
+//                                    LoginActivity.this.overridePendingTransition(0, 0);}},1500);
                             }
                         });
                     }
@@ -559,8 +559,18 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
     }
-    public void newPageAnim()
+    public void newPageAnim(int type)
     {
+        //type=0 --->> Connection lost
+        //type=1 --->> Verify Account
+        //type=2 --->> Open New Page
+        if(type==1){
+            appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+            appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+            appNameSplash.setText("Waiting for Verification");
+            appNameSplash.setVisibility(View.VISIBLE);
+            proSplash.setVisibility(View.VISIBLE);
+        }
         scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
         scaleY(login_div,0,300,new AccelerateDecelerateInterpolator());
         scaleY(forget_pass,0,300,new AccelerateDecelerateInterpolator());
