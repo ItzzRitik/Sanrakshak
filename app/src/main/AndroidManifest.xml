@@ -28,8 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ProfileActivity"
-            android:theme="@style/ProfileTheme">
+            android:name=".ProfileActivity">
 
         </activity>
         <activity android:name=".HomeActivity">
