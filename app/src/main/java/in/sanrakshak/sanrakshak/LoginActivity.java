@@ -107,8 +107,8 @@ public class LoginActivity extends AppCompatActivity {
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
         proSplash=findViewById(R.id.proSplash);
-        setMargins(appNameSplash,0,0,0,(int)(dptopx(20) + getHeightStatusNav(1)));
-        setMargins(proSplash,0,0,0,(int)(dptopx(50) + getHeightStatusNav(1)));
+        setMargins(appNameSplash,0,0,0,(int)(dptopx(30) + getHeightStatusNav(1)));
+        setMargins(proSplash,0,0,0,(int)(dptopx(60) + getHeightStatusNav(1)));
 
         forget_create=findViewById(R.id.forget_create);
         forget_create.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));

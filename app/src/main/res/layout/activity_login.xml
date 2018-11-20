@@ -57,7 +57,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:id="@+id/proSplash"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="60dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
             <RelativeLayout
