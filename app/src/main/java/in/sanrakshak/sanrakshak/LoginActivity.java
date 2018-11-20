@@ -559,6 +559,16 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
     }
+    public void newPageAnim()
+    {
+        scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
+        scaleY(login_div,0,300,new AccelerateDecelerateInterpolator());
+        scaleY(forget_pass,0,300,new AccelerateDecelerateInterpolator());
+        logo_div.setVisibility(View.VISIBLE);
+        logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_hide));
+        ico_splash.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_grow));
+        setLightTheme(true,true);
+    }
     public void nextLoading(Boolean loading)
     {
         if(loading)
@@ -647,16 +657,6 @@ public class LoginActivity extends AppCompatActivity {
         lp = (RelativeLayout.LayoutParams) nextLoad.getLayoutParams();
         lp.setMargins(0, 0, (int)(-4.5 * getResources().getDisplayMetrics().density), loader);
         nextLoad.setLayoutParams(lp);
-    }
-    public void newPageAnim()
-    {
-        scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
-        scaleY(login_div,0,300,new AccelerateDecelerateInterpolator());
-        scaleY(forget_pass,0,300,new AccelerateDecelerateInterpolator());
-        logo_div.setVisibility(View.VISIBLE);
-        logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_hide));
-        ico_splash.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_grow));
-        setLightTheme(true,true);
     }
     public void showKeyboard(View view,boolean what)
     {
