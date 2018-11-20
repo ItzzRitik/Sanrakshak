@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
     OkHttpClient client;
     ProgressBar nextLoad,proSplash;
     TextView appNameSplash;
+    HttpUrl.Builder connect=null;
     @Override
     public void onBackPressed() {
         showKeyboard(email,false);
@@ -298,18 +299,18 @@ public class LoginActivity extends AppCompatActivity {
 
         setButtonEnabled(false);logo_div.setVisibility(View.VISIBLE);
         ico_splash.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_initialgrow));
+
+        try{
+            connect = Objects.requireNonNull(HttpUrl.parse("http://3.16.4.70:8080/connect")).newBuilder();
+            connect.addQueryParameter("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak"));
+        }
+        catch (Exception e){Log.e("encrypt","Error while encryption");}
         splash(0);
     }
     public void splash(final int iteration){
         Log.i("backend_call", "Connecting - "+iteration);
-        HttpUrl.Builder urlBuilder=null;
-        try{
-            urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://3.16.4.70:8080/connect")).newBuilder();
-            urlBuilder.addQueryParameter("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak"));
-        }
-        catch (Exception e){Log.e("encrypt","Error while encryption");}
-        assert urlBuilder != null;
-        Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
+        assert connect != null;
+        Request request = new Request.Builder().url(connect.build().toString()).get()
                 .addHeader("Content-Type", "application/json").build();
         client.newCall(request).enqueue(new Callback() {
             @Override
