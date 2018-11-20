@@ -559,25 +559,39 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
     }
-    public void newPageAnim(int type)
+    public void newPageAnim(final int type)
     {
         //type=0 --->> Connection lost
         //type=1 --->> Verify Account
         //type=2 --->> Open New Page
-        if(type==1){
-            appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
-            appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-            appNameSplash.setText("Waiting for Verification");
-            appNameSplash.setVisibility(View.VISIBLE);
-            proSplash.setVisibility(View.VISIBLE);
-        }
-        scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
-        scaleY(login_div,0,300,new AccelerateDecelerateInterpolator());
-        scaleY(forget_pass,0,300,new AccelerateDecelerateInterpolator());
+
+
         logo_div.setVisibility(View.VISIBLE);
-        logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_hide));
-        ico_splash.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_grow));
-        setLightTheme(true,true);
+        anim=AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_hide);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
+                scaleY(login_div,0,300,new AccelerateDecelerateInterpolator());
+                scaleY(forget_pass,0,300,new AccelerateDecelerateInterpolator());
+                ico_splash.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_grow));
+                setLightTheme(true,true);
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if(type==1){
+                    appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                    appNameSplash.setText("Waiting for Email Verification");
+                    appNameSplash.setVisibility(View.VISIBLE);
+                    proSplash.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) { }
+        });
+        logo_div.startAnimation(anim);
+
     }
     public void nextLoading(Boolean loading)
     {
