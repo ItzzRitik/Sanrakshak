@@ -137,8 +137,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         root_view=findViewById(R.id.root_view);
-
-        root_view.setPadding(0,getHeightStatusNav(0),0,0);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setLightTheme(true,true);
 
@@ -214,7 +212,6 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 //                startActivity(intent);
-                root_view.setPadding(0,0,0,0);
                 setLightTheme(false,false);
                 if(profile_lp) {profile_lp=false;}
                 else
@@ -369,8 +366,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                 float CurrentX = ico_splash.getX();
                 float CurrentY = ico_splash.getY();
-                float FinalX = -80;
-                float FinalY = -80;
+                float FinalX = -dptopx(25);
+                float FinalY = getHeightStatusNav(0)-dptopx(30);
                 Path path = new Path();
                 path.moveTo(CurrentX, CurrentY);
                 path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
@@ -379,11 +376,11 @@ public class ProfileActivity extends AppCompatActivity {
                 startAnim.setDuration(800);
                 startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
                 startAnim.start();
-                ico_splash.animate().scaleX(0.22f).scaleY(0.22f).setDuration(1000).start();
+                ico_splash.animate().scaleX(0.25f).scaleY(0.25f).setDuration(1000).start();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        scaleY(data_div,pxtodp(splash_cover.getHeight())-65,800,new AccelerateDecelerateInterpolator());
+                        scaleY(data_div,pxtodp(splash_cover.getHeight()-getHeightStatusNav(0))-65,800,new AccelerateDecelerateInterpolator());
                     }},10);
 
                 new Handler().postDelayed(new Runnable() {
