@@ -59,9 +59,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -77,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
     OkHttpClient client;
     ProgressBar nextLoad,proSplash;
     TextView appNameSplash;
-    HttpUrl.Builder connect=null;
+    RequestBody postBody=null;
     @Override
     public void onBackPressed() {
         showKeyboard(email,false);
@@ -301,17 +303,16 @@ public class LoginActivity extends AppCompatActivity {
         ico_splash.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_initialgrow));
 
         try{
-            connect = Objects.requireNonNull(HttpUrl.parse("http://3.16.4.70:8080/connect")).newBuilder();
-            connect.addQueryParameter("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak"));
+            postBody = new FormBody.Builder()
+                    .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak")).build();
+
         }
         catch (Exception e){Log.e("encrypt","Error while encryption");}
         splash(0);
     }
     public void splash(final int iteration){
         Log.i("backend_call", "Connecting - "+iteration);
-        assert connect != null;
-        Request request = new Request.Builder().url(connect.build().toString()).get()
-                .addHeader("Content-Type", "application/json").build();
+        Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").post(postBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -384,10 +385,12 @@ public class LoginActivity extends AppCompatActivity {
         if(log==0)
         {
             nextLoading(true);
-            HttpUrl.Builder urlBuilder = HttpUrl.parse("http://3.16.4.70:8080/check").newBuilder();
-            urlBuilder.addQueryParameter("email", email.getText().toString());
-            Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
-                    .addHeader("Content-Type", "text/html").build();
+            try{
+                postBody = new FormBody.Builder()
+                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
+            }
+            catch (Exception e){Log.e("encrypt","Error while encryption");}
+            Request request = new Request.Builder().url("http://3.16.4.70:8080/check").post(postBody).build();
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -457,17 +460,13 @@ public class LoginActivity extends AppCompatActivity {
         else if(log==1)
         {
             nextLoading(true);
-            HttpUrl.Builder urlBuilder=null;
             try{
-                urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://3.16.4.70:8080/login")).newBuilder();
-                urlBuilder.addQueryParameter("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"));
-                urlBuilder.addQueryParameter("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak"));
+                postBody = new FormBody.Builder()
+                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"))
+                        .add("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak")).build();
             }
             catch (Exception e){Log.e("encrypt","Error while encryption");}
-
-            assert urlBuilder != null;
-            Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
-                    .addHeader("Content-Type", "application/json").build();
+            Request request = new Request.Builder().url("http://3.16.4.70:8080/login").post(postBody).build();
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -514,16 +513,13 @@ public class LoginActivity extends AppCompatActivity {
             //SignUp Initiate
             Log.i("sign", "SignUp Initiate");
             nextLoading(true);
-            HttpUrl.Builder urlBuilder=null;
             try{
-                urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://3.16.4.70:8080/signup")).newBuilder();
-                urlBuilder.addQueryParameter("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"));
-                urlBuilder.addQueryParameter("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak"));
+                postBody = new FormBody.Builder()
+                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"))
+                        .add("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak")).build();
             }
             catch (Exception e){Log.e("encrypt","Error while encryption");}
-            assert urlBuilder != null;
-            Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
-                    .addHeader("Content-Type", "application/json").build();
+            Request request = new Request.Builder().url("http://3.16.4.70:8080/signup").post(postBody).build();
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
