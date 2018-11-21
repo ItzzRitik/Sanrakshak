@@ -534,6 +534,12 @@ public class LoginActivity extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run(){
+                                try{
+                                    postBody = new FormBody.Builder()
+                                            .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
+
+                                }
+                                catch (Exception e){Log.e("encrypt","Error while encryption");return;}
                                 newPageAnim(1);
                                 nextLoading(false);
                             }
@@ -566,16 +572,12 @@ public class LoginActivity extends AppCompatActivity {
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
-                        if(response.code()==503)
-                        {
-                            verifyFailed(iteration);
-                        }
-                        else
-                        {
+                assert response.body() != null;
+                if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                    Log.i("sign","Account Verified Successful");
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run(){
                             new Handler().postDelayed(new Runnable() {@Override public void run() {
                                 Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
                                 profile.putExtra("email",email.getText().toString());
@@ -583,8 +585,11 @@ public class LoginActivity extends AppCompatActivity {
                                 finish();
                                 LoginActivity.this.overridePendingTransition(0, 0);}},1500);
                         }
-                    }
-                });
+                    });
+                }
+                else{
+                    verifyFailed(iteration);
+                }
             }
         });
     }
@@ -624,12 +629,6 @@ public class LoginActivity extends AppCompatActivity {
                     appNameSplash.setText("Waiting for Email Verification");
                     appNameSplash.setVisibility(View.VISIBLE);
                     proSplash.setVisibility(View.VISIBLE);
-                    try{
-                        postBody = new FormBody.Builder()
-                                .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
-
-                    }
-                    catch (Exception e){Log.e("encrypt","Error while encryption");return;}
                     verify(0);
                 }
             }
