@@ -536,12 +536,6 @@ public class LoginActivity extends AppCompatActivity {
                             public void run(){
                                 newPageAnim(1);
                                 nextLoading(false);
-//                                new Handler().postDelayed(new Runnable() {@Override public void run() {
-//                                    Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
-//                                    profile.putExtra("email",email.getText().toString());
-//                                    LoginActivity.this.startActivity(profile);
-//                                    finish();
-//                                    LoginActivity.this.overridePendingTransition(0, 0);}},1500);
                             }
                         });
                     }
@@ -552,12 +546,57 @@ public class LoginActivity extends AppCompatActivity {
                                 nextLoading(false);
                                 Log.i("sign","Account Creation Failed");
                                 Toast.makeText(LoginActivity.this, "Account Creation Failed", Toast.LENGTH_SHORT).show();
+                                setButtonEnabled(true);
                             }
                         });
                     }
                 }
             });
         }
+    }
+    public void verify(final int iteration){
+        Log.i("backend_call", "Verification - "+iteration);
+        Request request = new Request.Builder().url("http://3.16.4.70:8080/checkverification").post(postBody).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.i("backend_call", "Verification Failed - "+e);
+                call.cancel();
+                verifyFailed(iteration);
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
+                        if(response.code()==503)
+                        {
+                            verifyFailed(iteration);
+                        }
+                        else
+                        {
+                            new Handler().postDelayed(new Runnable() {@Override public void run() {
+                                Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
+                                profile.putExtra("email",email.getText().toString());
+                                LoginActivity.this.startActivity(profile);
+                                finish();
+                                LoginActivity.this.overridePendingTransition(0, 0);}},1500);
+                        }
+                    }
+                });
+            }
+        });
+    }
+    public void verifyFailed(final int iteration){
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                new Handler().postDelayed(new Runnable() {@Override public void run() {
+                    verify(iteration+1);
+                }},(iteration>20)?10000:iteration*500);
+            }
+        });
     }
     public void newPageAnim(final int type)
     {
@@ -585,6 +624,13 @@ public class LoginActivity extends AppCompatActivity {
                     appNameSplash.setText("Waiting for Email Verification");
                     appNameSplash.setVisibility(View.VISIBLE);
                     proSplash.setVisibility(View.VISIBLE);
+                    try{
+                        postBody = new FormBody.Builder()
+                                .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
+
+                    }
+                    catch (Exception e){Log.e("encrypt","Error while encryption");return;}
+                    verify(0);
                 }
             }
             @Override
