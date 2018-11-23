@@ -635,5 +635,9 @@ public class ProfileActivity extends AppCompatActivity {
             flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
             getWindow().getDecorView().setSystemUiVisibility(flags);
         }
+
+
+
+
     }
 }

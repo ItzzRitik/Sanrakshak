@@ -399,9 +399,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    ResponseBody res = response.body();
-                    assert res != null;
-                    if(Integer.parseInt(res.string())==1 && response.isSuccessful())
+                    assert response.body() != null;
+                    if(response.body().string().equals("1") && response.isSuccessful())
                     {
                         //If Exists then ask password
                         Log.e("sign", "SignIN");
@@ -476,7 +475,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     assert response.body() != null;
-                    if (Integer.parseInt(response.body().string())==1 && response.isSuccessful())
+                    if (response.body().string().equals("1") && response.isSuccessful())
                     {
                         Log.i("sign", "Login Done");
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -493,6 +492,17 @@ public class LoginActivity extends AppCompatActivity {
                                     LoginActivity.this.overridePendingTransition(0, 0);}},1500);
                             }
                         });
+                    }
+                    else if(response.body().string().equals("2") && response.isSuccessful())
+                    {
+                        try{
+                            postBody = new FormBody.Builder()
+                                    .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
+
+                        }
+                        catch (Exception e){Log.e("encrypt","Error while encryption");return;}
+                        newPageAnim(1);
+                        nextLoading(false);
                     }
                     else{
                         Log.i("sign", "Login Failed");
@@ -529,7 +539,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     assert response.body() != null;
-                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                    if(response.body().string().equals("1") && response.isSuccessful()){
                         Log.i("sign","Account Creation Successful");
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
@@ -573,7 +583,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                 assert response.body() != null;
-                if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                if(response.body().string().equals("1") && response.isSuccessful()){
                     Log.i("sign","Account Verified Successful");
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
