@@ -475,8 +475,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     assert response.body() != null;
-                    String rs=response.body().string();
-                    if (rs.equals("1") && response.isSuccessful())
+                    if (response.body().string().equals("1") && response.isSuccessful())
                     {
                         Log.i("sign", "Login Done");
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -494,7 +493,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    else if(rs.equals("2") && response.isSuccessful())
+                    else if(response.body().string().equals("2") && response.isSuccessful())
                     {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
@@ -507,6 +506,22 @@ public class LoginActivity extends AppCompatActivity {
                                 catch (Exception e){Log.e("encrypt","Error while encryption");return;}
                                 newPageAnim(1);
                                 nextLoading(false);
+                            }
+                        });
+                    }
+                    else if(response.body().string().equals("3") && response.isSuccessful())
+                    {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run(){
+                                newPageAnim(2);
+                                nextLoading(false);
+                                new Handler().postDelayed(new Runnable() {@Override public void run() {
+                                    Intent home=new Intent(LoginActivity.this, ProfileActivity.class);
+                                    home.putExtra("email",email.getText().toString());
+                                    LoginActivity.this.startActivity(home);
+                                    finish();
+                                    LoginActivity.this.overridePendingTransition(0, 0);}},1500);
                             }
                         });
                     }
