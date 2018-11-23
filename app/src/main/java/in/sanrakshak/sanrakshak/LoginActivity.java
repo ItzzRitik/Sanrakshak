@@ -475,7 +475,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     assert response.body() != null;
-                    if (response.body().string().equals("1") && response.isSuccessful())
+                    String rs=response.body().string();
+                    if (rs.equals("1") && response.isSuccessful())
                     {
                         Log.i("sign", "Login Done");
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -493,16 +494,21 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    else if(response.body().string().equals("2") && response.isSuccessful())
+                    else if(rs.equals("2") && response.isSuccessful())
                     {
-                        try{
-                            postBody = new FormBody.Builder()
-                                    .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run(){
+                                try{
+                                    postBody = new FormBody.Builder()
+                                            .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
 
-                        }
-                        catch (Exception e){Log.e("encrypt","Error while encryption");return;}
-                        newPageAnim(1);
-                        nextLoading(false);
+                                }
+                                catch (Exception e){Log.e("encrypt","Error while encryption");return;}
+                                newPageAnim(1);
+                                nextLoading(false);
+                            }
+                        });
                     }
                     else{
                         Log.i("sign", "Login Failed");
