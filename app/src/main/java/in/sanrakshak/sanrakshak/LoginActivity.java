@@ -475,7 +475,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     assert response.body() != null;
-                    if (response.body().string().equals("1") && response.isSuccessful())
+                    String rs=response.body().string();
+                    if (rs.equals("1") && response.isSuccessful())
                     {
                         Log.i("sign", "Login Done");
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -493,7 +494,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    else if(response.body().string().equals("2") && response.isSuccessful())
+                    else if(rs.equals("2") && response.isSuccessful())
                     {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
@@ -509,7 +510,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    else if(response.body().string().equals("3") && response.isSuccessful())
+                    else if(rs.equals("3") && response.isSuccessful())
                     {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
