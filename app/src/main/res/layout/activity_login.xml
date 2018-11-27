@@ -43,8 +43,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/offline"
-                android:textSize="0sp"
+                android:text="@string/connect"
+                android:textSize="12sp"
                 android:id="@+id/appNameSplash"
                 android:textStyle="bold"
                 android:textColor="@color/profile"

@@ -370,6 +370,7 @@ public class LoginActivity extends AppCompatActivity {
             public void run() {
                 if(iteration==0){
                     new Handler().postDelayed(new Runnable() {@Override public void run() {
+                        appNameSplash.setText(getString(R.string.offline));
                         appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                     }},1000);
                 }
