@@ -196,7 +196,8 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                         {performSignIn();}
                         if(log==2)
                         {
-                            setMargins(root_view,0,0,0,keyHeight+(int)(dptopx(7)));
+                            setMargins(social_div,0,0,0,keyHeight+(int)(dptopx(7)));
+                            Toast.makeText(LoginActivity.this, ""+keyHeight+(int)(dptopx(7)), Toast.LENGTH_SHORT).show();
                             con_pass.requestFocus();
                         }
                         return true;
@@ -224,75 +225,60 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 }
             }
         });
-        con_pass.setOnKeyListener(new View.OnKeyListener()
-        {
-            public boolean onKey(View v, int keyCode, KeyEvent event)
+        con_pass.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
             {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                switch (keyCode)
                 {
-                    switch (keyCode)
-                    {
-                        case KeyEvent.KEYCODE_DPAD_CENTER:
-                        case KeyEvent.KEYCODE_ENTER:
-                            if(log==2) {performSignIn();}
-                            return true;
-                        default:break;
-                    }
+                    case KeyEvent.KEYCODE_DPAD_CENTER:
+                    case KeyEvent.KEYCODE_ENTER:
+                        if(log==2) {performSignIn();}
+                        return true;
+                    default:break;
                 }
-                return false;
             }
+            return false;
         });
 
         forget_pass = findViewById(R.id.forget_pass);
-        forget_pass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                vibrate(20);
-            }
-        });
+        forget_pass.setOnClickListener(v -> vibrate(20));
         email_reset=findViewById(R.id.email_reset);
-        email_reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scaleY(social_div,80,300,new AccelerateDecelerateInterpolator());
-                scaleY(login_div,48,300,new AccelerateDecelerateInterpolator());
-                scaleY(forget_pass,0,300,new AccelerateDecelerateInterpolator());
+        email_reset.setOnClickListener(v -> {
+            scaleY(social_div,80,300,new AccelerateDecelerateInterpolator());
+            scaleY(login_div,48,300,new AccelerateDecelerateInterpolator());
+            scaleY(forget_pass,0,300,new AccelerateDecelerateInterpolator());
 
-                nextPad( 5,2);
-                login_div.setPadding(0,(int)(10 * getResources().getDisplayMetrics().density),0,0);
+            nextPad( 5,2);
+            login_div.setPadding(0,(int)(10 * getResources().getDisplayMetrics().density),0,0);
 
-                email_reset.setVisibility(View.GONE);email.setEnabled(true);
-                pass.setText("");con_pass.setText("");
-                signin.setText(getString(R.string.next));
-                setButtonEnabled(true);vibrate(20);
-                email.setVisibility(View.VISIBLE);
-                pass.setVisibility(View.GONE);
-                con_pass.setVisibility(View.GONE);
-                log=0;
+            email_reset.setVisibility(View.GONE);email.setEnabled(true);
+            pass.setText("");con_pass.setText("");
+            signin.setText(getString(R.string.next));
+            setButtonEnabled(true);vibrate(20);
+            email.setVisibility(View.VISIBLE);
+            pass.setVisibility(View.GONE);
+            con_pass.setVisibility(View.GONE);
+            log=0;
 
-            }
         });
 
 
         signin=findViewById(R.id.signin);
         nextLoad=findViewById(R.id.nextLoad);
         signin.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-        signin.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        signin.setBackgroundResource(R.drawable.signin_pressed);signin.setTextColor(Color.parseColor("#ffffff"));
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        signin.setBackgroundResource(R.drawable.signin);signin.setTextColor(Color.parseColor("#ff611c"));
-                        vibrate(20);
-                        email.setEnabled(false);
-                        performSignIn();
-                        break;
-                }
-                return true;
+        signin.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    signin.setBackgroundResource(R.drawable.signin_pressed);signin.setTextColor(Color.parseColor("#ffffff"));
+                    break;
+                case MotionEvent.ACTION_UP:
+                    signin.setBackgroundResource(R.drawable.signin);signin.setTextColor(Color.parseColor("#ff611c"));
+                    vibrate(20);
+                    email.setEnabled(false);
+                    performSignIn();
+                    break;
             }
+            return true;
         });
 
         setButtonEnabled(false);logo_div.setVisibility(View.VISIBLE);
@@ -318,62 +304,48 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
-                        if(response.code()==503)
-                        {
-                            serverOffline(iteration);
-                        }
-                        else
-                        {
-                            appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-                            appNameSplash.setText(getString(R.string.app_name));
-                            appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-                            proSplash.setVisibility(View.GONE);
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // Splash Animation
-                                    new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                        setLightTheme(true,false);
-                                    }},300);
-                                    appNameSplash.setVisibility(View.GONE);
-                                    splash_cover.setVisibility(View.GONE);logo_div.setVisibility(View.VISIBLE);
-                                    logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_reveal));
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
+                    if(response.code()==503)
+                    {
+                        serverOffline(iteration);
+                    }
+                    else
+                    {
+                        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+                        appNameSplash.setText(getString(R.string.app_name));
+                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+                        proSplash.setVisibility(View.GONE);
+                        new Handler().postDelayed(() -> {
+                            // Splash Animation
+                            new Handler().postDelayed(() -> setLightTheme(true,false),300);
+                            appNameSplash.setVisibility(View.GONE);
+                            splash_cover.setVisibility(View.GONE);logo_div.setVisibility(View.VISIBLE);
+                            logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_reveal));
 
-                                    anim=AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_trans);
-                                    anim.setDuration(550);ico_splash.startAnimation(anim);
+                            anim=AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_trans);
+                            anim.setDuration(550);ico_splash.startAnimation(anim);
 
-                                    new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                        new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                            scaleY(login_div,48,400,new OvershootInterpolator());
-                                        }},200);
-                                        scaleY(social_div,80,280,new AccelerateInterpolator());
-                                        setLightTheme(false,true);
-                                    }},800);
-                                }},2000);
-                        }
+                            new Handler().postDelayed(() -> {
+                                new Handler().postDelayed(() -> scaleY(login_div,48,400,new OvershootInterpolator()),200);
+                                scaleY(social_div,80,280,new AccelerateInterpolator());
+                                setLightTheme(false,true);
+                            },800);
+                        },2000);
                     }
                 });
             }
         });
     }
     public void serverOffline(final int iteration){
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                if(iteration==0){
-                    new Handler().postDelayed(new Runnable() {@Override public void run() {
-                        appNameSplash.setText(getString(R.string.offline));
-                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-                    }},1000);
-                }
-                new Handler().postDelayed(new Runnable() {@Override public void run() {
-                    splash(iteration+1);
-                }},(iteration>20)?10000:iteration*500);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if(iteration==0){
+                new Handler().postDelayed(() -> {
+                    appNameSplash.setText(getString(R.string.offline));
+                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                },1000);
             }
+            new Handler().postDelayed(() -> splash(iteration+1),(iteration>20)?10000:iteration*500);
         });
     }
     public void performSignIn()
