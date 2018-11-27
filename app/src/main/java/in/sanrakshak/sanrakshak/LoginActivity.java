@@ -32,6 +32,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -185,24 +186,14 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             }
             return false;
         });
-        pass.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN)
-            {
-                switch (keyCode)
-                {
-                    case KeyEvent.KEYCODE_DPAD_CENTER:
-                    case KeyEvent.KEYCODE_ENTER:
-                        if(log==1)
-                        {performSignIn();}
-                        if(log==2)
-                        {
-                            setMargins(social_div,0,0,0,keyHeight+(int)(dptopx(7)));
-                            Toast.makeText(LoginActivity.this, ""+keyHeight+(int)(dptopx(7)), Toast.LENGTH_SHORT).show();
-                            con_pass.requestFocus();
-                        }
-                        return true;
-                    default:break;
-                }
+        pass.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_NEXT) {
+                if(con_pass.isEnabled()){setMargins(social_div,0,0,0,keyHeight+(int)(dptopx(7)));}
+                con_pass.requestFocus();
+                return true;
+            }
+            else if(i == EditorInfo.IME_ACTION_DONE){
+                performSignIn();
             }
             return false;
         });
@@ -232,7 +223,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 {
                     case KeyEvent.KEYCODE_DPAD_CENTER:
                     case KeyEvent.KEYCODE_ENTER:
-                        if(log==2) {performSignIn();}
+                        if(log==2 && signin.isEnabled()) {performSignIn();}
                         return true;
                     default:break;
                 }
@@ -386,6 +377,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                 email_reset.setVisibility(View.VISIBLE);
                                 pass.requestFocus();
                                 pass.setEnabled(true);
+                                pass.setImeOptions(EditorInfo.IME_ACTION_DONE);
                                 setButtonEnabled(false);
                                 forget_create.setTextSize(13);
                                 forget_create.setText(getResources().getString(R.string.forgot_pass));
@@ -413,6 +405,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                 email_reset.setVisibility(View.VISIBLE);
                                 pass.requestFocus();
                                 pass.setEnabled(true);
+                                pass.setImeOptions(EditorInfo.IME_ACTION_NEXT);
                                 setButtonEnabled(false);
                                 forget_create.setTextSize(14);
                                 forget_create.setText(getResources().getString(R.string.login_create));
