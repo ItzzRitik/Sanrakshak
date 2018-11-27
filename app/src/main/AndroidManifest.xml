@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/MainTheme"
         android:usesCleartextTraffic="true"
-        android:configChanges="keyboardHidden|orientation|screenSize"
+        android:windowSoftInputMode="adjustPan"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
         <activity android:name=".LoginActivity">
