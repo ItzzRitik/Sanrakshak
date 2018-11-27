@@ -212,7 +212,8 @@
                 android:textColorHint="#c7c7c7"
                 android:maxLines="1"
                 android:paddingEnd="100dp"
-                android:paddingStart="10dp"/>
+                android:paddingStart="10dp"
+                android:imeOptions="actionNext"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"

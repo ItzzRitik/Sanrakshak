@@ -53,36 +53,48 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity  implements KeyboardHeightObserver  {
     FrameLayout root_view;
     Animation anim;
     RelativeLayout login_div,social_div,logo_div,splash_cover,forget_pass,email_reset;
     ImageView ico_splash;
     TextView signin,forget_create;
     EditText email,pass,con_pass;
-    int log=0;
+    int log=0,keyHeight=0;
     String buttonText="NEXT";
     OkHttpClient client;
     ProgressBar nextLoad,proSplash;
     TextView appNameSplash;
     RequestBody postBody=null;
+    private KeyboardHeightProvider keyProvider;
     @Override
-    public void onBackPressed() {
-        showKeyboard(email,false);
+    public void onPause() {
+        super.onPause();
+        keyProvider.setKeyboardHeightObserver(null);
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        keyProvider.setKeyboardHeightObserver(this);
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        keyProvider.close();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //root_view=findViewById(R.id.root_view);
+        root_view=findViewById(R.id.root_view);
+        keyProvider = new KeyboardHeightProvider(this);
+        root_view.post(() -> keyProvider.start());
         setLightTheme(true,true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
         setLightTheme(true,true);
-        SoftInputAssist.assistActivity(this);
         splash_cover=findViewById(R.id.splash_cover);
         ico_splash=findViewById(R.id.ico_splash);
         logo_div=findViewById(R.id.logo_div);
@@ -158,42 +170,40 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-        pass.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        pass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                        con_pass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                        pass.setSelection(pass.getText().length());
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                        con_pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                        pass.setSelection(pass.getText().length());
-                        break;
-                }
-                return false;
+        pass.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    pass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    con_pass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    pass.setSelection(pass.getText().length());
+                    break;
+                case MotionEvent.ACTION_UP:
+                    pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    con_pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    pass.setSelection(pass.getText().length());
+                    break;
             }
+            return false;
         });
-        pass.setOnKeyListener(new View.OnKeyListener()
-        {
-            public boolean onKey(View v, int keyCode, KeyEvent event)
+        pass.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
             {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                switch (keyCode)
                 {
-                    switch (keyCode)
-                    {
-                        case KeyEvent.KEYCODE_DPAD_CENTER:
-                        case KeyEvent.KEYCODE_ENTER:
-                            if(log==1)
-                            {performSignIn();}
-                            return true;
-                        default:break;
-                    }
+                    case KeyEvent.KEYCODE_DPAD_CENTER:
+                    case KeyEvent.KEYCODE_ENTER:
+                        if(log==1)
+                        {performSignIn();}
+                        if(log==2)
+                        {
+                            setMargins(root_view,0,0,0,keyHeight+(int)(dptopx(7)));
+                            con_pass.requestFocus();
+                        }
+                        return true;
+                    default:break;
                 }
-                return false;
             }
+            return false;
         });
 
         con_pass=findViewById(R.id.con_pass);
@@ -794,5 +804,30 @@ public class LoginActivity extends AppCompatActivity {
             flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
             getWindow().getDecorView().setSystemUiVisibility(flags);
         }
+    }
+    @Override
+    public void onKeyboardHeightChanged(int height, int orientation) {
+        //String or = orientation == Configuration.ORIENTATION_PORTRAIT ? "portrait" : "landscape";
+        int margin=0;
+        if(height>=keyHeight && height>0)
+        {
+            if(email.isFocused())
+            {
+                margin=height-(int)(social_div.getHeight()-login_div.getHeight()-dptopx(5));
+            }
+            else if(pass.isFocused())
+            {
+                margin=height-(int)(con_pass.getHeight()-dptopx(5));
+            }
+            else if(con_pass.isFocused())
+            {
+                margin=height+(int)(dptopx(7));
+            }
+        }
+        final int fmargin=margin;
+        keyHeight=height;
+        new Handler().postDelayed(new Runnable() {@Override public void run() {
+            setMargins(social_div,0,0,0,fmargin);
+        }},50);
     }
 }
