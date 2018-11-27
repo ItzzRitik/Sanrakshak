@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/MainTheme"
         android:usesCleartextTraffic="true"
-        android:windowSoftInputMode="adjustPan"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
         <activity android:name=".LoginActivity">
