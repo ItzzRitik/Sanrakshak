@@ -66,13 +66,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static android.R.attr.maxHeight;
@@ -101,6 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
     Bitmap profile_dp=null;
     double diagonal;
     OkHttpClient client;
+    RequestBody postBody;
     @Override
     public void onBackPressed() {
         if(camOn)
@@ -125,11 +129,10 @@ public class ProfileActivity extends AppCompatActivity {
         if(camera_pane.getVisibility()== View.VISIBLE)
         {
             if(checkPerm() && !cameraView.isCameraOpened()){cameraView.start();cameraListener();}
-            new Handler().postDelayed(new Runnable() {@Override public void run()
-            {
+            new Handler().postDelayed(() -> {
                 click.setVisibility(View.VISIBLE);
                 Animation anim = AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.click_grow);click.startAnimation(anim);
-            }},500);
+            },500);
         }
     }
     @Override
@@ -155,18 +158,14 @@ public class ProfileActivity extends AppCompatActivity {
         gender_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/above.ttf"));
 
         gender=findViewById(R.id.gender);
-        gender.addSwitchObserver(new RMSwitch.RMSwitchObserver() {
-            @Override
-            public void onCheckStateChange(RMSwitch switchView, boolean isChecked) {
-                if(isChecked){
-                    gender_tag.setText(R.string.male);
-                }
-                else{
-                    gender_tag.setText(R.string.female);
-                }
+        gender.addSwitchObserver((switchView, isChecked) -> {
+            if(isChecked){
+                gender_tag.setText(R.string.male);
+            }
+            else{
+                gender_tag.setText(R.string.female);
             }
         });
-
 
         f_name=findViewById(R.id.f_name);
         f_name.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -200,60 +199,45 @@ public class ProfileActivity extends AppCompatActivity {
         loading_profile.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.progress), PorterDuff.Mode.MULTIPLY);
 
         done=findViewById(R.id.done);
-        done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createProfile();
-            }
-        });
+        done.setOnClickListener(v -> createProfile());
         profile=findViewById(R.id.profile);
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-//                startActivity(intent);
-                setLightTheme(false,false);
-                if(profile_lp) {profile_lp=false;}
-                else
+        profile.setOnClickListener(v -> {
+            setLightTheme(false,false);
+            if(profile_lp) {profile_lp=false;}
+            else
+            {
+                vibrate(20);
+                camera_pane.setVisibility(View.VISIBLE);
+                permission_camera.setVisibility(View.VISIBLE);
+                camOn=true;
+                final Animator animator = ViewAnimationUtils.createCircularReveal(camera_pane,dptopx(92),dptopx(248),profile.getWidth()/2, (float)diagonal);
+                animator.setInterpolator(new AccelerateDecelerateInterpolator());animator.setDuration(500);animator.start();
+                if (checkPerm()) {
+                    permission_camera.setVisibility(View.GONE);if(!cameraView.isCameraOpened()){cameraView.start();
+                        cameraListener();
+                    }
+                }
+                new Handler().postDelayed(() -> {
+                    click.setVisibility(View.VISIBLE);
+                    click.startAnimation(AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.click_grow));
+                },500);
+                if(checkPerm())
                 {
-                    vibrate(20);
-                    camera_pane.setVisibility(View.VISIBLE);
-                    permission_camera.setVisibility(View.VISIBLE);
-                    camOn=true;
-                    final Animator animator = ViewAnimationUtils.createCircularReveal(camera_pane,dptopx(92),dptopx(248),profile.getWidth()/2, (float)diagonal);
-                    animator.setInterpolator(new AccelerateDecelerateInterpolator());animator.setDuration(500);animator.start();
-                    if (checkPerm()) {
-                        permission_camera.setVisibility(View.GONE);if(!cameraView.isCameraOpened()){cameraView.start();
-                            cameraListener();
-                        }
-                    }
-                    new Handler().postDelayed(new Runnable() {@Override public void run()
-                    {
-                        click.setVisibility(View.VISIBLE);
-                        click.startAnimation(AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.click_grow));
-                    }},500);
-                    if(checkPerm())
-                    {
-                        new Handler().postDelayed(new Runnable() {@Override public void run()
-                        {
-                            ToolTip.Builder builder = new ToolTip.Builder(ProfileActivity.this, click,camera_pane, getString(R.string.open_galary), ToolTip.POSITION_ABOVE);
-                            builder.setBackgroundColor(getResources().getColor(R.color.profile));
-                            builder.setTextColor(getResources().getColor(R.color.profile_text));
-                            builder.setGravity(ToolTip.GRAVITY_CENTER);
-                            builder.setTextSize(15);
-                            toolTip.show(builder.build());
-                        }},1300);
-                        new Handler().postDelayed(new Runnable() {@Override public void run() {toolTip.findAndDismiss(click);}},4000);
-                    }
+                    new Handler().postDelayed(() -> {
+                        ToolTip.Builder builder = new ToolTip.Builder(ProfileActivity.this, click,camera_pane, getString(R.string.open_galary), ToolTip.POSITION_ABOVE);
+                        builder.setBackgroundColor(getResources().getColor(R.color.profile));
+                        builder.setTextColor(getResources().getColor(R.color.profile_text));
+                        builder.setGravity(ToolTip.GRAVITY_CENTER);
+                        builder.setTextSize(15);
+                        toolTip.show(builder.build());
+                    },1300);
+                    new Handler().postDelayed(() -> toolTip.findAndDismiss(click),4000);
                 }
             }
         });
-        profile.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                vibrate(35);
-                return false;
-            }
+        profile.setOnLongClickListener(view -> {
+            vibrate(35);
+            return false;
         });
 
         options=new UCrop.Options();
@@ -269,191 +253,147 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         flash=findViewById(R.id.flash);
-        flash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                vibrate(20);
-                if(cameraView.getFlash()!=CameraView.FLASH_ON) {
-                    cameraView.setFlash(CameraView.FLASH_ON);
-                    flash.setImageResource(R.drawable.flash_on);
-                }
-                else {
-                    cameraView.setFlash(CameraView.FLASH_OFF);
-                    flash.setImageResource(R.drawable.flash_off);
-                }
-                Toast.makeText(ProfileActivity.this, cameraView.getFlash()+"", Toast.LENGTH_SHORT).show();
+        flash.setOnClickListener(view -> {
+            vibrate(20);
+            if(cameraView.getFlash()!=CameraView.FLASH_ON) {
+                cameraView.setFlash(CameraView.FLASH_ON);
+                flash.setImageResource(R.drawable.flash_on);
             }
+            else {
+                cameraView.setFlash(CameraView.FLASH_OFF);
+                flash.setImageResource(R.drawable.flash_off);
+            }
+            Toast.makeText(ProfileActivity.this, cameraView.getFlash()+"", Toast.LENGTH_SHORT).show();
         });
         camera_flip=findViewById(R.id.camera_flip);
-        camera_flip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                vibrate(20);
-                cameraView.switchCamera();
-            }
+        camera_flip.setOnClickListener(view -> {
+            vibrate(20);
+            cameraView.switchCamera();
         });
         click=findViewById(R.id.click);
-        click.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(cameraView.isCameraOpened()){
-                    cameraView.takePicture();
-                }
+        click.setOnClickListener(view -> {
+            if(cameraView.isCameraOpened()){
+                cameraView.takePicture();
             }
         });
-        click.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                int cx=screenSize.x/2;
-                int cy=screenSize.y-((int)(click.getY()));
-                galaryOn=true;vibrate(35);
-                animator = ViewAnimationUtils.createCircularReveal(galary,cx,cy,0,(float) diagonal);
-                animator.setInterpolator(new AccelerateInterpolator());animator.setDuration(300);galary.setVisibility(View.VISIBLE);
-                galary.startAnimation(AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.fade_out));
-                animator.start();
-                Intent intent = new Intent();
-                intent.setType("image/*");intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                overridePendingTransition(R.anim.fade_in,0);
-                cameraView.stop();
-                return false;
-            }
+        click.setOnLongClickListener(v -> {
+            int cx=screenSize.x/2;
+            int cy=screenSize.y-((int)(click.getY()));
+            galaryOn=true;vibrate(35);
+            animator = ViewAnimationUtils.createCircularReveal(galary,cx,cy,0,(float) diagonal);
+            animator.setInterpolator(new AccelerateInterpolator());animator.setDuration(300);galary.setVisibility(View.VISIBLE);
+            galary.startAnimation(AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.fade_out));
+            animator.start();
+            Intent intent = new Intent();
+            intent.setType("image/*");intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            overridePendingTransition(R.anim.fade_in,0);
+            cameraView.stop();
+            return false;
         });
 
         permission_camera=findViewById(R.id.permission_camera) ;
         allow_camera =findViewById(R.id.allow_camera);
-        allow_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                vibrate(20);
-                ActivityCompat.requestPermissions(ProfileActivity.this,
-                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            }
+        allow_camera.setOnClickListener(view -> {
+            vibrate(20);
+            ActivityCompat.requestPermissions(ProfileActivity.this,
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         });
 
         dob_chooser=findViewById(R.id.dob_chooser);
-        dob_chooser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                vibrate(20);
-                DatePickerDialog dd = new DatePickerDialog(ProfileActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                try {
-                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                                    String dateInString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                                    Date date = formatter.parse(dateInString);
-                                    formatter = new SimpleDateFormat("dd/MM/yyyy");
-                                    dob.setText(formatter.format(date));
-                                } catch (Exception ex) {}
-                            }
-                        }, 2000,  Calendar.getInstance().get(Calendar.MONTH),  Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-                dd.show();
-            }
+        dob_chooser.setOnClickListener(v -> {
+            vibrate(20);
+            DatePickerDialog dd = new DatePickerDialog(ProfileActivity.this,
+                    (view, year, monthOfYear, dayOfMonth) -> {
+                        try {
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
+                            String dateInString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                            Date date = formatter.parse(dateInString);
+                            formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
+                            dob.setText(formatter.format(date));
+                        } catch (Exception ignored) {}
+                    }, 2000,  Calendar.getInstance().get(Calendar.MONTH),  Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+            dd.show();
         });
 
         cameraView=findViewById(R.id.cam);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // SignUp Animation
+        new Handler().postDelayed(() -> {
+            // SignUp Animation
 
-                splash_cover.setVisibility(View.GONE);
-                logo_div.setVisibility(View.VISIBLE);
+            splash_cover.setVisibility(View.GONE);
+            logo_div.setVisibility(View.VISIBLE);
 
-                float CurrentX = ico_splash.getX();
-                float CurrentY = ico_splash.getY();
-                float FinalX = -dptopx(25);
-                float FinalY = getHeightStatusNav(0)-dptopx(30);
-                Path path = new Path();
-                path.moveTo(CurrentX, CurrentY);
-                path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
+            float CurrentX = ico_splash.getX();
+            float CurrentY = ico_splash.getY();
+            float FinalX = -dptopx(25);
+            float FinalY = getHeightStatusNav(0)-dptopx(30);
+            Path path = new Path();
+            path.moveTo(CurrentX, CurrentY);
+            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
 
-                startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-                startAnim.setDuration(800);
-                startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-                startAnim.start();
-                ico_splash.animate().scaleX(0.25f).scaleY(0.25f).setDuration(1000).start();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        scaleY(data_div,pxtodp(splash_cover.getHeight()-getHeightStatusNav(0))-65,800,new AccelerateDecelerateInterpolator());
-                    }},10);
+            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
+            startAnim.setDuration(800);
+            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            startAnim.start();
+            ico_splash.animate().scaleX(0.25f).scaleY(0.25f).setDuration(1000).start();
+            new Handler().postDelayed(() ->
+                    scaleY(data_div,pxtodp(splash_cover.getHeight()-getHeightStatusNav(0))-65,800,new AccelerateDecelerateInterpolator()),10);
+            new Handler().postDelayed(() -> {
+                AlphaAnimation anims = new AlphaAnimation(0,1);
+                anims.setDuration(600);
+                page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
+                done.setVisibility(View.VISIBLE);done.startAnimation(anims);
+            },500);
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        AlphaAnimation anims = new AlphaAnimation(0,1);
-                        anims.setDuration(600);
-                        page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
-                        done.setVisibility(View.VISIBLE);done.startAnimation(anims);
-                    }},500);
-
-            }},1500);
+        },1500);
     }
     public void cameraListener(){
-        cameraView.setOnFocusLockedListener(new CameraViewImpl.OnFocusLockedListener() {
-            @Override
-            public void onFocusLocked() {
-            }
+        cameraView.setOnFocusLockedListener(() -> {
         });
-        cameraView.setOnPictureTakenListener(new CameraViewImpl.OnPictureTakenListener() {
-            @Override
-            public void onPictureTaken(Bitmap result, int rotationDegrees) {
-                Log.e("Camera", "onPictureTaken: " );
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-                result= Bitmap.createBitmap(result, 0, 0, result.getWidth(), result.getHeight(), matrix, true);
-                vibrate(20);
-                profile_path = MediaStore.Images.Media.insertImage(ProfileActivity.this.getContentResolver(), result, "Title", null);
-                UCrop.of(Uri.parse(profile_path),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
-                        .withMaxResultSize(maxWidth, maxHeight).start(ProfileActivity.this);
-            }
+        cameraView.setOnPictureTakenListener((result, rotationDegrees) -> {
+            Log.e("Camera", "onPictureTaken: " );
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            result= Bitmap.createBitmap(result, 0, 0, result.getWidth(), result.getHeight(), matrix, true);
+            vibrate(20);
+            profile_path = MediaStore.Images.Media.insertImage(ProfileActivity.this.getContentResolver(), result, "Title", null);
+            UCrop.of(Uri.parse(profile_path),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
+                    .withMaxResultSize(maxWidth, maxHeight).start(ProfileActivity.this);
         });
-        cameraView.setOnTurnCameraFailListener(new CameraViewImpl.OnTurnCameraFailListener() {
-            @Override
-            public void onTurnCameraFail(Exception e) {
+        cameraView.setOnTurnCameraFailListener(e ->
                 Toast.makeText(ProfileActivity.this, "Switch Camera Failed. Does you device has a front camera?",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-        cameraView.setOnCameraErrorListener(new CameraViewImpl.OnCameraErrorListener() {
-            @Override
-            public void onCameraError(Exception e) {
-                Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                Toast.LENGTH_SHORT).show());
+        cameraView.setOnCameraErrorListener(e -> Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
     public void createProfile(){
-        HttpUrl.Builder urlBuilder = HttpUrl.parse("https://medisyst-adityabhardwaj.c9users.io/update").newBuilder();
-        urlBuilder.addQueryParameter("email",getIntent().getStringExtra("email"));
-        urlBuilder.addQueryParameter("fname",f_name.getText().toString());
-        urlBuilder.addQueryParameter("lname",l_name.getText().toString());
-        urlBuilder.addQueryParameter("gender",gender_tag.getText().toString());
-        urlBuilder.addQueryParameter("dob",dob.getText().toString());
-        urlBuilder.addQueryParameter("aadhaar",aadhaar.getText().toString());
-        Log.i("sign",urlBuilder.toString());
-        Request request = new Request.Builder().url(urlBuilder.build().toString()).get()
-                .addHeader("Content-Type", "application/json").build();
+        try {
+            postBody = new FormBody.Builder()
+                    .add("email",new CryptLib().encryptPlainTextWithRandomIV(getIntent().getStringExtra("email"),"sanrakshak"))
+                    .add("fname",new CryptLib().encryptPlainTextWithRandomIV(f_name.getText().toString(),"sanrakshak"))
+                    .add("lname",new CryptLib().encryptPlainTextWithRandomIV(l_name.getText().toString(),"sanrakshak"))
+                    .add("gender",new CryptLib().encryptPlainTextWithRandomIV(gender_tag.getText().toString(),"sanrakshak"))
+                    .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob.getText().toString(),"sanrakshak"))
+                    .add("aadhaar",new CryptLib().encryptPlainTextWithRandomIV(aadhaar.getText().toString(),"sanrakshak")).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Request request = new Request.Builder().url("http://3.16.4.70:8080/profile").post(postBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.i("sign", e.getMessage());
+                Log.i("backend_call", "Verification Failed - "+e);
                 call.cancel();
             }
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                assert response.body() != null;
+            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                 if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
-//                    Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
-//                    home.putExtra("isProfile",true);
-//                    home.putExtra("divHeight",pxtodp(data_div.getHeight()));
-//                    home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
-//                    ProfileActivity.this.startActivity(home);
-//                    ProfileActivity.this.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                    Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
+                    home.putExtra("isProfile",true);
+                    home.putExtra("divHeight",pxtodp(data_div.getHeight()));
+                    home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
+                    ProfileActivity.this.startActivity(home);
+                    ProfileActivity.this.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
                     finish();
                 }
                 else{
@@ -464,27 +404,21 @@ public class ProfileActivity extends AppCompatActivity {
     }
     public void scaleX(final View view,int x,int t, Interpolator interpolator)
     {
-        ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredWidth(),(int)dptopx(x));anim.setInterpolator(interpolator);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                layoutParams.width = (Integer) valueAnimator.getAnimatedValue();
-                view.setLayoutParams(layoutParams);
-            }
+        ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredWidth(),dptopx(x));anim.setInterpolator(interpolator);
+        anim.addUpdateListener(valueAnimator -> {
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            layoutParams.width = (Integer) valueAnimator.getAnimatedValue();
+            view.setLayoutParams(layoutParams);
         });
         anim.setDuration(t);anim.start();
     }
     public void scaleY(final View view,int y,int t, Interpolator interpolator)
     {
-        ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredHeight(),(int)dptopx(y));anim.setInterpolator(interpolator);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                layoutParams.height = (Integer) valueAnimator.getAnimatedValue();
-                view.setLayoutParams(layoutParams);view.invalidate();
-            }
+        ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredHeight(),dptopx(y));anim.setInterpolator(interpolator);
+        anim.addUpdateListener(valueAnimator -> {
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            layoutParams.height = (Integer) valueAnimator.getAnimatedValue();
+            view.setLayoutParams(layoutParams);view.invalidate();
         });
         anim.setDuration(t);anim.start();
     }
@@ -517,7 +451,9 @@ public class ProfileActivity extends AppCompatActivity {
                     final Uri resultUri = UCrop.getOutput(intent);
                     Bitmap bitmap= MediaStore.Images.Media.getBitmap(ProfileActivity.this.getContentResolver(), resultUri);
                     profile.setImageBitmap(bitmap);dp_cover.setImageBitmap(bitmap);profile_dp=bitmap;isDP_added=true;
-                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    }
                     getWindow().setStatusBarColor(Color.WHITE);
                     closeCam();
                     new File(getRealPathFromURI(ProfileActivity.this,Uri.parse(profile_path))).delete();
@@ -551,22 +487,16 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onAnimationRepeat(Animator animation) {}
         });
-        new Handler().postDelayed(new Runnable() {@Override public void run() {animator.start();}},300);
+        new Handler().postDelayed(() -> animator.start(),300);
 
     }
     public String getRealPathFromURI(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+        String[] proj = { MediaStore.Images.Media.DATA };
+        try (Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null)) {
             assert cursor != null;
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
         }
     }
     @Override
@@ -578,8 +508,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if(checkPerm())
                     {
                         permission_camera.setVisibility(View.GONE);
-                        new Handler().postDelayed(new Runnable() {@Override public void run()
-                        {
+                        new Handler().postDelayed(() -> {
                             ToolTip.Builder builder = new ToolTip.Builder(ProfileActivity.this, click,camera_pane, getString(R.string.open_galary), ToolTip.POSITION_ABOVE);
                             builder.setBackgroundColor(getResources().getColor(R.color.profile));
                             builder.setTextColor(getResources().getColor(R.color.profile_text));
@@ -591,8 +520,8 @@ public class ProfileActivity extends AppCompatActivity {
                             if(!cameraView.isCameraOpened()){
                                 cameraView.start();cameraListener();
                             }
-                        }},1300);
-                        new Handler().postDelayed(new Runnable() {@Override public void run() {toolTip.findAndDismiss(click);}},4000);
+                        },1300);
+                        new Handler().postDelayed(() -> toolTip.findAndDismiss(click),4000);
                     }
                 }
             }
