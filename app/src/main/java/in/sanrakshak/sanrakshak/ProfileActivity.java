@@ -379,9 +379,9 @@ public class ProfileActivity extends AppCompatActivity {
         cameraView.setOnCameraErrorListener(e -> Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
     public void createProfile(String dp){
+        loading_profile.setVisibility(View.VISIBLE);
         if(isDP_added && dp.equals(""))
         {
-            loading_profile.setVisibility(View.VISIBLE);
             storageRef = FirebaseStorage.getInstance().getReference();
             storageRef = storageRef.child(getIntent().getStringExtra("email")+"/profile.jpg");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
