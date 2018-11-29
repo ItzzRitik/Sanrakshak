@@ -2,6 +2,7 @@ package in.sanrakshak.sanrakshak;
 
 
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -83,6 +84,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         super.onDestroy();
         keyProvider.close();
     }
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,23 +129,19 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 else{setButtonEnabled(false);}
             }
         });
-        email.setOnKeyListener(new View.OnKeyListener()
-        {
-            public boolean onKey(View v, int keyCode, KeyEvent event)
+        email.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
             {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                switch (keyCode)
                 {
-                    switch (keyCode)
-                    {
-                        case KeyEvent.KEYCODE_DPAD_CENTER:
-                        case KeyEvent.KEYCODE_ENTER:
-                            if(log==0 &&isEmailValid(email.getText().toString())){performSignIn();}
-                            return true;
-                        default:break;
-                    }
+                    case KeyEvent.KEYCODE_DPAD_CENTER:
+                    case KeyEvent.KEYCODE_ENTER:
+                        if(log==0 &&isEmailValid(email.getText().toString())){performSignIn();}
+                        return true;
+                    default:break;
                 }
-                return false;
             }
+            return false;
         });
 
         pass=findViewById(R.id.pass);
@@ -294,7 +292,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 serverOffline(iteration);
             }
             @Override
-            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull final Response response) {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
                     if(response.code()==503)
@@ -364,55 +362,49 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     {
                         //If Exists then ask password
                         Log.e("sign", "SignIN");
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
-                                login_div.setPadding(0,0,0,0);
-                                nextPad(8,4);
-                                nextLoading(false);
-                                //Ask Password
-                                pass.setVisibility(View.VISIBLE);
-                                con_pass.setVisibility(View.GONE);
-                                email_reset.setVisibility(View.VISIBLE);
-                                pass.requestFocus();
-                                pass.setEnabled(true);
-                                pass.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                                setButtonEnabled(false);
-                                forget_create.setTextSize(13);
-                                forget_create.setText(getResources().getString(R.string.forgot_pass));
-                                scaleY(forget_pass,27,300,new OvershootInterpolator());
-                                scaleY(login_div,98,300,new AccelerateDecelerateInterpolator());
-                                log=1;
-                            }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
+                            login_div.setPadding(0,0,0,0);
+                            nextPad(8,4);
+                            nextLoading(false);
+                            //Ask Password
+                            pass.setVisibility(View.VISIBLE);
+                            con_pass.setVisibility(View.GONE);
+                            email_reset.setVisibility(View.VISIBLE);
+                            pass.requestFocus();
+                            pass.setEnabled(true);
+                            pass.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                            setButtonEnabled(false);
+                            forget_create.setTextSize(13);
+                            forget_create.setText(getResources().getString(R.string.forgot_pass));
+                            scaleY(forget_pass,27,300,new OvershootInterpolator());
+                            scaleY(login_div,98,300,new AccelerateDecelerateInterpolator());
+                            log=1;
                         });
                     }
                     else
                     {
                         //If Doesn't exist then ask signup
                         Log.e("sign", "SignUP");
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
-                                login_div.setPadding(0,0,0,0);
-                                nextPad(8,4);
-                                nextLoading(false);
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
+                            login_div.setPadding(0,0,0,0);
+                            nextPad(8,4);
+                            nextLoading(false);
 
-                                //Ask SignUp Details
-                                pass.setVisibility(View.VISIBLE);
-                                con_pass.setVisibility(View.VISIBLE);
-                                email_reset.setVisibility(View.VISIBLE);
-                                pass.requestFocus();
-                                pass.setEnabled(true);
-                                pass.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-                                setButtonEnabled(false);
-                                forget_create.setTextSize(14);
-                                forget_create.setText(getResources().getString(R.string.login_create));
-                                scaleY(forget_pass,30,300,new OvershootInterpolator());
-                                scaleY(login_div,148,300,new AccelerateDecelerateInterpolator());
-                                log=2;
-                            }
+                            //Ask SignUp Details
+                            pass.setVisibility(View.VISIBLE);
+                            con_pass.setVisibility(View.VISIBLE);
+                            email_reset.setVisibility(View.VISIBLE);
+                            pass.requestFocus();
+                            pass.setEnabled(true);
+                            pass.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                            setButtonEnabled(false);
+                            forget_create.setTextSize(14);
+                            forget_create.setText(getResources().getString(R.string.login_create));
+                            scaleY(forget_pass,30,300,new OvershootInterpolator());
+                            scaleY(login_div,148,300,new AccelerateDecelerateInterpolator());
+                            log=2;
                         });
                     }
                 }
@@ -441,62 +433,50 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     if (rs.equals("1") && response.isSuccessful())
                     {
                         Log.i("sign", "Login Done");
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                //SignIn Initiate
-                                newPageAnim(2);
-                                nextLoading(false);
-                                new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                    Intent home=new Intent(LoginActivity.this, HomeActivity.class);
-                                    home.putExtra("email",email.getText().toString());
-                                    LoginActivity.this.startActivity(home);
-                                    finish();
-                                    LoginActivity.this.overridePendingTransition(0, 0);}},1500);
-                            }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            //SignIn Initiate
+                            newPageAnim(2);
+                            nextLoading(false);
+                            new Handler().postDelayed(() -> {
+                                Intent home=new Intent(LoginActivity.this, HomeActivity.class);
+                                home.putExtra("email",email.getText().toString());
+                                LoginActivity.this.startActivity(home);
+                                finish();
+                                LoginActivity.this.overridePendingTransition(0, 0);},1500);
                         });
                     }
                     else if(rs.equals("2") && response.isSuccessful())
                     {
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run(){
-                                try{
-                                    postBody = new FormBody.Builder()
-                                            .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            try{
+                                postBody = new FormBody.Builder()
+                                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
 
-                                }
-                                catch (Exception e){Log.e("encrypt","Error while encryption");return;}
-                                newPageAnim(1);
-                                nextLoading(false);
                             }
+                            catch (Exception e){Log.e("encrypt","Error while encryption");return;}
+                            newPageAnim(1);
+                            nextLoading(false);
                         });
                     }
                     else if(rs.equals("3") && response.isSuccessful())
                     {
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run(){
-                                newPageAnim(2);
-                                nextLoading(false);
-                                new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                    Intent home=new Intent(LoginActivity.this, ProfileActivity.class);
-                                    home.putExtra("email",email.getText().toString());
-                                    LoginActivity.this.startActivity(home);
-                                    finish();
-                                    LoginActivity.this.overridePendingTransition(0, 0);}},1500);
-                            }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            newPageAnim(2);
+                            nextLoading(false);
+                            new Handler().postDelayed(() -> {
+                                Intent home=new Intent(LoginActivity.this, ProfileActivity.class);
+                                home.putExtra("email",email.getText().toString());
+                                LoginActivity.this.startActivity(home);
+                                finish();
+                                LoginActivity.this.overridePendingTransition(0, 0);},1500);
                         });
                     }
                     else{
                         Log.i("sign", "Login Failed");
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                nextLoading(false);
-                                pass.setText("");
-                                Toast.makeText(LoginActivity.this, "Invalid Password", Toast.LENGTH_SHORT).show();
-                            }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            nextLoading(false);
+                            pass.setText("");
+                            Toast.makeText(LoginActivity.this, "Invalid Password", Toast.LENGTH_SHORT).show();
                         });
                     }
                 }
@@ -525,29 +505,23 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     assert response.body() != null;
                     if(response.body().string().equals("1") && response.isSuccessful()){
                         Log.i("sign","Account Creation Successful");
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run(){
-                                try{
-                                    postBody = new FormBody.Builder()
-                                            .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            try{
+                                postBody = new FormBody.Builder()
+                                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
 
-                                }
-                                catch (Exception e){Log.e("encrypt","Error while encryption");return;}
-                                newPageAnim(1);
-                                nextLoading(false);
                             }
+                            catch (Exception e){Log.e("encrypt","Error while encryption");return;}
+                            newPageAnim(1);
+                            nextLoading(false);
                         });
                     }
                     else{
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                nextLoading(false);
-                                Log.i("sign","Account Creation Failed");
-                                Toast.makeText(LoginActivity.this, "Account Creation Failed", Toast.LENGTH_SHORT).show();
-                                setButtonEnabled(true);
-                            }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            nextLoading(false);
+                            Log.i("sign","Account Creation Failed");
+                            Toast.makeText(LoginActivity.this, "Account Creation Failed", Toast.LENGTH_SHORT).show();
+                            setButtonEnabled(true);
                         });
                     }
                 }
@@ -569,17 +543,12 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 assert response.body() != null;
                 if(response.body().string().equals("1") && response.isSuccessful()){
                     Log.i("sign","Account Verified Successful");
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run(){
-                            new Handler().postDelayed(new Runnable() {@Override public void run() {
-                                Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
-                                profile.putExtra("email",email.getText().toString());
-                                LoginActivity.this.startActivity(profile);
-                                finish();
-                                LoginActivity.this.overridePendingTransition(0, 0);}},1500);
-                        }
-                    });
+                    new Handler(Looper.getMainLooper()).post(() -> new Handler().postDelayed(() -> {
+                        Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
+                        profile.putExtra("email",email.getText().toString());
+                        LoginActivity.this.startActivity(profile);
+                        finish();
+                        LoginActivity.this.overridePendingTransition(0, 0);},1500));
                 }
                 else{
                     verifyFailed(iteration);
@@ -588,14 +557,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         });
     }
     public void verifyFailed(final int iteration){
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                new Handler().postDelayed(new Runnable() {@Override public void run() {
-                    verify(iteration+1);
-                }},(iteration>20)?10000:iteration*500);
-            }
-        });
+        new Handler(Looper.getMainLooper()).post(() -> new Handler().postDelayed(() -> verify(iteration+1),(iteration>20)?10000:iteration*500));
     }
     public void newPageAnim(final int type)
     {
@@ -620,7 +582,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 if(type==1){
                     appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
                     appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-                    appNameSplash.setText("Waiting for Email Verification");
+                    appNameSplash.setText(R.string.email_wait);
                     appNameSplash.setVisibility(View.VISIBLE);
                     proSplash.setVisibility(View.VISIBLE);
                     verify(0);
@@ -640,16 +602,15 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             scaleX(signin,30,150,new AnticipateInterpolator());
             signin.setBackgroundResource(R.drawable.signin_disabled);
             signin.setTextColor(Color.parseColor("#616161"));
-            new Handler().postDelayed(new Runnable() {@Override public void run() {
+            new Handler().postDelayed(() -> {
                 nextLoad.setVisibility(View.VISIBLE);signin.setText("╳");
-            }},150);
+            },150);
         }
         else
         {
             nextLoad.setVisibility(View.GONE);signin.setText("");
             scaleX(signin,85,300,new OvershootInterpolator());
-            new Handler().postDelayed(new Runnable()
-            {@Override public void run() {signin.setText(buttonText);}},300);
+            new Handler().postDelayed(() -> signin.setText(buttonText),300);
         }
     }
     public void setButtonEnabled(Boolean what)
@@ -671,13 +632,10 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     public void scaleX(final View view,int x,int t, Interpolator interpolator)
     {
         ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredWidth(),(int)dptopx(x));anim.setInterpolator(interpolator);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                layoutParams.width = (Integer) valueAnimator.getAnimatedValue();
-                view.setLayoutParams(layoutParams);
-            }
+        anim.addUpdateListener(valueAnimator -> {
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            layoutParams.width = (Integer) valueAnimator.getAnimatedValue();
+            view.setLayoutParams(layoutParams);
         });
         anim.setDuration(t);anim.start();
     }
@@ -689,13 +647,10 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             view.setPadding((int)dptopx(10),(int)dptopx(10),(int)dptopx(10),getHeightStatusNav(1)*3/2);
         }
         ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredHeight(),(int)dptopx(y));anim.setInterpolator(interpolator);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                layoutParams.height = (Integer) valueAnimator.getAnimatedValue();
-                view.setLayoutParams(layoutParams);view.invalidate();
-            }
+        anim.addUpdateListener(valueAnimator -> {
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            layoutParams.height = (Integer) valueAnimator.getAnimatedValue();
+            view.setLayoutParams(layoutParams);view.invalidate();
         });
         anim.setDuration(t);anim.start();
     }
@@ -791,8 +746,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         }
         final int fmargin=margin;
         keyHeight=height;
-        new Handler().postDelayed(new Runnable() {@Override public void run() {
-            setMargins(social_div,0,0,0,fmargin);
-        }},50);
+        new Handler().postDelayed(() -> setMargins(social_div,0,0,0,fmargin),50);
     }
 }

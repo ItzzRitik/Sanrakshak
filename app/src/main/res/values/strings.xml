@@ -71,6 +71,7 @@
     <string name="request">Key Request</string>
     <string name="offline">SERVER OFFLINE, RECONNECTING</string>
     <string name="connect">CONNECTING TO SERVER</string>
+    <string name="email_wait">Waiting for Email Verification</string>
 </resources>
 
 
