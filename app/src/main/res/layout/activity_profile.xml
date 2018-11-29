@@ -95,7 +95,7 @@
                                 android:layout_width="150dp"
                                 android:layout_height="150dp"
                                 android:id="@+id/loading_profile"
-                                android:visibility="invisible"
+                                android:visibility="visible"
                                 android:layout_centerInParent="true"/>
                             <com.mikhaellopez.circularimageview.CircularImageView
                                 android:layout_width="120dp"
