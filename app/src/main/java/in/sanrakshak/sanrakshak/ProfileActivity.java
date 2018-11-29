@@ -388,7 +388,10 @@ public class ProfileActivity extends AppCompatActivity {
             storageRef.putBytes(baos.toByteArray())
                     .addOnSuccessListener(taskSnapshot -> {
                         @SuppressWarnings("VisibleForTests")
-                        Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+                        String uri = taskSnapshot.getStorage().getDownloadUrl().toString();
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(uri));
+                        startActivity(i);
 
                     })
                     .addOnFailureListener(exception -> {
