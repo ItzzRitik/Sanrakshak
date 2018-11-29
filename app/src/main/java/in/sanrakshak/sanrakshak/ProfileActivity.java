@@ -381,6 +381,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void createProfile(String dp){
         if(isDP_added && dp.equals(""))
         {
+            loading_profile.setVisibility(View.VISIBLE);
             storageRef = FirebaseStorage.getInstance().getReference();
             storageRef = storageRef.child(getIntent().getStringExtra("email")+"/profile.jpg");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -400,6 +401,7 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                         else {
                             Log.i("upload", "Upload Failed - "+task);
+                            loading_profile.setVisibility(View.INVISIBLE);
                         }
                     });
         }
@@ -421,11 +423,13 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     Log.i("backend_call", "Verification Failed - "+e);
+                    loading_profile.setVisibility(View.INVISIBLE);
                     call.cancel();
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                        loading_profile.setVisibility(View.INVISIBLE);
                         Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
                         home.putExtra("isProfile",true);
                         home.putExtra("divHeight",pxtodp(data_div.getHeight()));
@@ -436,6 +440,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     else{
                         Toast.makeText(ProfileActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                        loading_profile.setVisibility(View.INVISIBLE);
                     }
                 }
             });
