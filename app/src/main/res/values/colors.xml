@@ -15,5 +15,5 @@
     <color name="gender_back">#d1d1d1</color>
     <color name="gender_male">#555555</color>
     <color name="gender_female">#ff697f</color>
-    <color name="progress">#ffffff</color>
+    <color name="progress">#555555</color>
 </resources>
