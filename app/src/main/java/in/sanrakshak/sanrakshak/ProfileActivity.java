@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -55,12 +56,21 @@ import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
 import com.google.android.cameraview.CameraViewImpl;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.rm.rmswitch.RMSwitch;
 import com.tomergoldst.tooltips.ToolTip;
 import com.tomergoldst.tooltips.ToolTipsManager;
 import com.yalantis.ucrop.UCrop;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -105,6 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
     double diagonal;
     OkHttpClient client;
     RequestBody postBody;
+    private StorageReference storageRef;
     @Override
     public void onBackPressed() {
         if(camOn)
@@ -143,6 +154,7 @@ public class ProfileActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setLightTheme(true,true);
 
+        storageRef = FirebaseStorage.getInstance().getReference();
         screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
         diagonal=Math.sqrt((screenSize.x*screenSize.x) + (screenSize.y*screenSize.y));
@@ -199,7 +211,7 @@ public class ProfileActivity extends AppCompatActivity {
         loading_profile.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.progress), PorterDuff.Mode.MULTIPLY);
 
         done=findViewById(R.id.done);
-        done.setOnClickListener(v -> createProfile());
+        done.setOnClickListener(v -> createProfile(true));
         profile=findViewById(R.id.profile);
         profile.setOnClickListener(v -> {
             setLightTheme(false,false);
@@ -366,41 +378,59 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show());
         cameraView.setOnCameraErrorListener(e -> Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
-    public void createProfile(){
-        try {
-            postBody = new FormBody.Builder()
-                    .add("email",new CryptLib().encryptPlainTextWithRandomIV(getIntent().getStringExtra("email"),"sanrakshak"))
-                    .add("fname",new CryptLib().encryptPlainTextWithRandomIV(f_name.getText().toString(),"sanrakshak"))
-                    .add("lname",new CryptLib().encryptPlainTextWithRandomIV(l_name.getText().toString(),"sanrakshak"))
-                    .add("gender",new CryptLib().encryptPlainTextWithRandomIV(gender_tag.getText().toString(),"sanrakshak"))
-                    .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob.getText().toString(),"sanrakshak"))
-                    .add("aadhaar",new CryptLib().encryptPlainTextWithRandomIV(aadhaar.getText().toString(),"sanrakshak")).build();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void createProfile(boolean upload){
+        if(isDP_added && upload)
+        {
+            storageRef = storageRef.child(getIntent().getStringExtra("email")+"/profile.jpg");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            profile_dp=Bitmap.createScaledBitmap(profile_dp, screenSize.x, screenSize.x, false);
+            profile_dp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            storageRef.putBytes(baos.toByteArray())
+                    .addOnSuccessListener(taskSnapshot -> {
+                        @SuppressWarnings("VisibleForTests")
+                        Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+
+                    })
+                    .addOnFailureListener(exception -> {
+
+                    });
         }
-        Request request = new Request.Builder().url("http://3.16.4.70:8080/profile").post(postBody).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.i("backend_call", "Verification Failed - "+e);
-                call.cancel();
+        else if(!upload){
+            try {
+                postBody = new FormBody.Builder()
+                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(getIntent().getStringExtra("email"),"sanrakshak"))
+                        .add("fname",new CryptLib().encryptPlainTextWithRandomIV(f_name.getText().toString(),"sanrakshak"))
+                        .add("lname",new CryptLib().encryptPlainTextWithRandomIV(l_name.getText().toString(),"sanrakshak"))
+                        .add("gender",new CryptLib().encryptPlainTextWithRandomIV(gender_tag.getText().toString(),"sanrakshak"))
+                        .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob.getText().toString(),"sanrakshak"))
+                        .add("aadhaar",new CryptLib().encryptPlainTextWithRandomIV(aadhaar.getText().toString(),"sanrakshak")).build();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
-                    Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
-                    home.putExtra("isProfile",true);
-                    home.putExtra("divHeight",pxtodp(data_div.getHeight()));
-                    home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
-                    ProfileActivity.this.startActivity(home);
-                    ProfileActivity.this.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
-                    finish();
+            Request request = new Request.Builder().url("http://3.16.4.70:8080/profile").post(postBody).build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("backend_call", "Verification Failed - "+e);
+                    call.cancel();
                 }
-                else{
-                    Toast.makeText(ProfileActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                        Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
+                        home.putExtra("isProfile",true);
+                        home.putExtra("divHeight",pxtodp(data_div.getHeight()));
+                        home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
+                        ProfileActivity.this.startActivity(home);
+                        ProfileActivity.this.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                        finish();
+                    }
+                    else{
+                        Toast.makeText(ProfileActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
     public void scaleX(final View view,int x,int t, Interpolator interpolator)
     {
