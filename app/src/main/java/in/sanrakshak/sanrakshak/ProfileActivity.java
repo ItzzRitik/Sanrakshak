@@ -117,6 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
     OkHttpClient client;
     RequestBody postBody;
     private StorageReference storageRef;
+    float CurrentX,CurrentY;
     @Override
     public void onBackPressed() {
         if(camOn)
@@ -336,8 +337,8 @@ public class ProfileActivity extends AppCompatActivity {
             splash_cover.setVisibility(View.GONE);
             logo_div.setVisibility(View.VISIBLE);
 
-            float CurrentX = ico_splash.getX();
-            float CurrentY = ico_splash.getY();
+            CurrentX = ico_splash.getX();
+            CurrentY = ico_splash.getY();
             float FinalX = -dptopx(25);
             float FinalY = getHeightStatusNav(0)-dptopx(30);
             Path path = new Path();
@@ -359,24 +360,6 @@ public class ProfileActivity extends AppCompatActivity {
             },500);
 
         },1500);
-    }
-    public void cameraListener(){
-        cameraView.setOnFocusLockedListener(() -> {
-        });
-        cameraView.setOnPictureTakenListener((result, rotationDegrees) -> {
-            Log.e("Camera", "onPictureTaken: " );
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-            result= Bitmap.createBitmap(result, 0, 0, result.getWidth(), result.getHeight(), matrix, true);
-            vibrate(20);
-            profile_path = MediaStore.Images.Media.insertImage(ProfileActivity.this.getContentResolver(), result, "Title", null);
-            UCrop.of(Uri.parse(profile_path),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
-                    .withMaxResultSize(maxWidth, maxHeight).start(ProfileActivity.this);
-        });
-        cameraView.setOnTurnCameraFailListener(e ->
-                Toast.makeText(ProfileActivity.this, "Switch Camera Failed. Does you device has a front camera?",
-                Toast.LENGTH_SHORT).show());
-        cameraView.setOnCameraErrorListener(e -> Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
     public void createProfile(String dp){
         loading_profile.setVisibility(View.VISIBLE);
@@ -408,7 +391,7 @@ public class ProfileActivity extends AppCompatActivity {
         else {
             try {
                 postBody = new FormBody.Builder()
-                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(getIntent().getStringExtra("email"),"sanrakshak"))
+                        .add("email",new CryptLib().encryptPlainTextWithRandomIV("ritik.space@gmail.com","sanrakshak"))
                         .add("fname",new CryptLib().encryptPlainTextWithRandomIV(f_name.getText().toString(),"sanrakshak"))
                         .add("lname",new CryptLib().encryptPlainTextWithRandomIV(l_name.getText().toString(),"sanrakshak"))
                         .add("gender",new CryptLib().encryptPlainTextWithRandomIV(gender_tag.getText().toString(),"sanrakshak"))
@@ -430,10 +413,10 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
                         new Handler(Looper.getMainLooper()).post(() -> {loading_profile.setVisibility(View.INVISIBLE);
-                            float CurrentX = ico_splash.getX();
-                            float CurrentY = ico_splash.getY();
-                            float FinalX = root_view.getWidth()/2;
-                            float FinalY = root_view.getWidth()/2;
+                            float FinalX = CurrentX;
+                            float FinalY = CurrentY;
+                            CurrentX = ico_splash.getX();
+                            CurrentY = ico_splash.getY();
                             Path path = new Path();
                             path.moveTo(CurrentX, CurrentY);
                             path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
@@ -442,12 +425,15 @@ public class ProfileActivity extends AppCompatActivity {
                             startAnim.setDuration(800);
                             startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
                             startAnim.start();
+                            ico_splash.animate().scaleX(1f).scaleY(1f).setDuration(900).start();
+                            scaleY(data_div,0,500,new AccelerateDecelerateInterpolator());
+                            new Handler().postDelayed(() -> {
+                                Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
+                                home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
+                                ProfileActivity.this.startActivity(home);
+                                ProfileActivity.this.overridePendingTransition(0,0);
+                                finish();},1000);
 
-                            Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
-                            home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
-                            ProfileActivity.this.startActivity(home);
-                            ProfileActivity.this.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
-                            finish();
                         });
                     }
                     else{
@@ -457,6 +443,24 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+    public void cameraListener(){
+        cameraView.setOnFocusLockedListener(() -> {
+        });
+        cameraView.setOnPictureTakenListener((result, rotationDegrees) -> {
+            Log.e("Camera", "onPictureTaken: " );
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            result= Bitmap.createBitmap(result, 0, 0, result.getWidth(), result.getHeight(), matrix, true);
+            vibrate(20);
+            profile_path = MediaStore.Images.Media.insertImage(ProfileActivity.this.getContentResolver(), result, "Title", null);
+            UCrop.of(Uri.parse(profile_path),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
+                    .withMaxResultSize(maxWidth, maxHeight).start(ProfileActivity.this);
+        });
+        cameraView.setOnTurnCameraFailListener(e ->
+                Toast.makeText(ProfileActivity.this, "Switch Camera Failed. Does you device has a front camera?",
+                        Toast.LENGTH_SHORT).show());
+        cameraView.setOnCameraErrorListener(e -> Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
     public void scaleX(final View view,int x,int t, Interpolator interpolator)
     {
