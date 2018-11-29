@@ -429,14 +429,26 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
-                        loading_profile.setVisibility(View.INVISIBLE);
-                        Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
-                        home.putExtra("isProfile",true);
-                        home.putExtra("divHeight",pxtodp(data_div.getHeight()));
-                        home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
-                        ProfileActivity.this.startActivity(home);
-                        ProfileActivity.this.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
-                        finish();
+                        new Handler(Looper.getMainLooper()).post(() -> {loading_profile.setVisibility(View.INVISIBLE);
+                            float CurrentX = ico_splash.getX();
+                            float CurrentY = ico_splash.getY();
+                            float FinalX = root_view.getWidth()/2;
+                            float FinalY = root_view.getWidth()/2;
+                            Path path = new Path();
+                            path.moveTo(CurrentX, CurrentY);
+                            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
+
+                            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
+                            startAnim.setDuration(800);
+                            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+                            startAnim.start();
+
+                            Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
+                            home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
+                            ProfileActivity.this.startActivity(home);
+                            ProfileActivity.this.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                            finish();
+                        });
                     }
                     else{
                         Toast.makeText(ProfileActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
