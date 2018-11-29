@@ -389,13 +389,10 @@ public class ProfileActivity extends AppCompatActivity {
                     .addOnSuccessListener(taskSnapshot -> {
                         @SuppressWarnings("VisibleForTests")
                         String uri = taskSnapshot.getStorage().getDownloadUrl().toString();
-                        Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse(uri));
-                        startActivity(i);
-
+                        Log.i("upload", "Upload Success - "+uri);
                     })
-                    .addOnFailureListener(exception -> {
-
+                    .addOnFailureListener(e -> {
+                        Log.i("upload", "Upload Failed - "+e);
                     });
         }
         else if(!upload){
