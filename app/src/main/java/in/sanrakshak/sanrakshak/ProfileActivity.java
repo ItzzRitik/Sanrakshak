@@ -56,6 +56,7 @@ import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
 import com.google.android.cameraview.CameraViewImpl;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -386,13 +387,16 @@ public class ProfileActivity extends AppCompatActivity {
             profile_dp=Bitmap.createScaledBitmap(profile_dp, screenSize.x, screenSize.x, false);
             profile_dp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             storageRef.putBytes(baos.toByteArray())
-                    .addOnSuccessListener(taskSnapshot -> {
-                        @SuppressWarnings("VisibleForTests")
-                        String uri = taskSnapshot.getStorage().getDownloadUrl().toString();
-                        Log.i("upload", "Upload Success - "+uri);
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.i("upload", "Upload Failed - "+e);
+                    .continueWithTask((Continuation<UploadTask.TaskSnapshot, Task<Uri>>) task -> {
+                        if (!task.isSuccessful()){
+                            throw Objects.requireNonNull(task.getException());
+                        }
+                        return null;
+                    }).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()){
+                            Uri uri = task.getResult();
+                            Log.i("upload", "Upload Success - "+uri);
+                        }
                     });
         }
         else if(!upload){
