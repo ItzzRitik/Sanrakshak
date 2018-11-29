@@ -387,17 +387,26 @@ public class ProfileActivity extends AppCompatActivity {
             profile_dp=Bitmap.createScaledBitmap(profile_dp, screenSize.x, screenSize.x, false);
             profile_dp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             storageRef.putBytes(baos.toByteArray())
-                    .continueWithTask((Continuation<UploadTask.TaskSnapshot, Task<Uri>>) task -> {
-                        if (!task.isSuccessful()){
-                            throw Objects.requireNonNull(task.getException());
+                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw Objects.requireNonNull(task.getException());
+                            }
+                            return storageRef.getDownloadUrl();
                         }
-                        return null;
-                    }).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()){
-                            Uri uri = task.getResult();
-                            Log.i("upload", "Upload Success - "+uri);
-                        }
-                    });
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri uri = task.getResult();
+                        Log.i("upload", "Upload Success - "+uri);
+                    }
+                    else {
+                        Log.i("upload", "Upload Failed - "+task);
+                    }
+                }
+            });
         }
         else if(!upload){
             try {
