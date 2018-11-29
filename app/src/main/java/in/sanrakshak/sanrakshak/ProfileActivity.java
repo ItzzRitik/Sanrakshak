@@ -155,7 +155,6 @@ public class ProfileActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setLightTheme(true,true);
 
-        storageRef = FirebaseStorage.getInstance().getReference();
         screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
         diagonal=Math.sqrt((screenSize.x*screenSize.x) + (screenSize.y*screenSize.y));
@@ -212,7 +211,7 @@ public class ProfileActivity extends AppCompatActivity {
         loading_profile.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.progress), PorterDuff.Mode.MULTIPLY);
 
         done=findViewById(R.id.done);
-        done.setOnClickListener(v -> createProfile(true));
+        done.setOnClickListener(v -> createProfile(""));
         profile=findViewById(R.id.profile);
         profile.setOnClickListener(v -> {
             setLightTheme(false,false);
@@ -379,36 +378,32 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show());
         cameraView.setOnCameraErrorListener(e -> Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
-    public void createProfile(boolean upload){
-        if(isDP_added && upload)
+    public void createProfile(String dp){
+        if(isDP_added && dp.equals(""))
         {
+            storageRef = FirebaseStorage.getInstance().getReference();
             storageRef = storageRef.child(getIntent().getStringExtra("email")+"/profile.jpg");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             profile_dp=Bitmap.createScaledBitmap(profile_dp, screenSize.x, screenSize.x, false);
             profile_dp.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             storageRef.putBytes(baos.toByteArray())
-                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw Objects.requireNonNull(task.getException());
-                            }
-                            return storageRef.getDownloadUrl();
+                    .continueWithTask(task -> {
+                        if (!task.isSuccessful()) {
+                            throw Objects.requireNonNull(task.getException());
                         }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri uri = task.getResult();
-                        Log.i("upload", "Upload Success - "+uri);
-                    }
-                    else {
-                        Log.i("upload", "Upload Failed - "+task);
-                    }
-                }
-            });
+                        return storageRef.getDownloadUrl();
+                    }).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Uri uri = task.getResult();
+                            createProfile(Objects.requireNonNull(uri).toString());
+                            Log.i("upload", "Upload Success - "+uri);
+                        }
+                        else {
+                            Log.i("upload", "Upload Failed - "+task);
+                        }
+                    });
         }
-        else if(!upload){
+        else {
             try {
                 postBody = new FormBody.Builder()
                         .add("email",new CryptLib().encryptPlainTextWithRandomIV(getIntent().getStringExtra("email"),"sanrakshak"))
