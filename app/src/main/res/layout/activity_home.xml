@@ -26,7 +26,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/logo_div"
                 android:visibility="gone"
-                android:background="@drawable/back_tictac"
+                android:background="@drawable/homeback"
                 android:layout_centerInParent="true">
             </RelativeLayout>
             <RelativeLayout
@@ -103,7 +103,7 @@
                 android:layout_marginStart="85dp"
                 android:visibility="invisible"
                 android:textSize="28sp"
-                android:textColor="#fff"/>
+                android:textColor="@color/profile"/>
             <ImageView
                 android:layout_width="26dp"
                 android:layout_height="26dp"

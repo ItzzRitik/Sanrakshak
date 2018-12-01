@@ -118,7 +118,7 @@ public class HomeActivity extends AppCompatActivity {
                 page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
                 menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
                 done.setVisibility(View.VISIBLE);done.startAnimation(anims);
-                setLightTheme(false,true);
+                setLightTheme(true,true);
             },400);
             new Handler().postDelayed(() -> {
                 AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
