@@ -407,7 +407,7 @@ public class ProfileActivity extends AppCompatActivity {
         else {
             try {
                 postBody = new FormBody.Builder()
-                        .add("email",new CryptLib().encryptPlainTextWithRandomIV("ritik.space@gmail.com","sanrakshak"))
+                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(getIntent().getStringExtra("email"),"sanrakshak"))
                         .add("fname",new CryptLib().encryptPlainTextWithRandomIV(f_name.getText().toString(),"sanrakshak"))
                         .add("lname",new CryptLib().encryptPlainTextWithRandomIV(l_name.getText().toString(),"sanrakshak"))
                         .add("gender",new CryptLib().encryptPlainTextWithRandomIV(gender_tag.getText().toString(),"sanrakshak"))

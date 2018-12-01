@@ -105,6 +105,7 @@ public class HomeActivity extends AppCompatActivity {
             startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
             startAnim.setDuration(800);
             startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            startAnim.start();
 
             ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
             new Handler().postDelayed(() -> {
