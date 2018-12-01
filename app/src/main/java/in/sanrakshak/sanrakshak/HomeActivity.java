@@ -221,37 +221,31 @@ public class HomeActivity extends AppCompatActivity {
 
         refresh = findViewById(R.id.refresh);
         refresh.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
+                () -> {
 
-                    }
                 }
         );
 
         dob=findViewById(R.id.dob);
         dob.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
         dob_chooser=findViewById(R.id.dob_chooser);
-        dob_chooser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                vibrate(20);
-                DatePickerDialog dd = new DatePickerDialog(HomeActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                try {
-                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                                    String dateInString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                                    Date date = formatter.parse(dateInString);
-                                    formatter = new SimpleDateFormat("dd/MM/yyyy");
-                                    dob.setText(formatter.format(date));
-                                } catch (Exception ex) {}
-                            }
-                        }, 2000,  Calendar.getInstance().get(Calendar.MONTH),  Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-                dd.show();
-            }
+        dob_chooser.setOnClickListener(view -> {
+            vibrate(20);
+            DatePickerDialog dd = new DatePickerDialog(HomeActivity.this,
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+                            try {
+                                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                                String dateInString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                Date date = formatter.parse(dateInString);
+                                formatter = new SimpleDateFormat("dd/MM/yyyy");
+                                dob.setText(formatter.format(date));
+                            } catch (Exception ex) {}
+                        }
+                    }, 2000,  Calendar.getInstance().get(Calendar.MONTH),  Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+            dd.show();
         });
         symptoms_tag=findViewById(R.id.symptoms_tag);
         symptoms_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -259,15 +253,12 @@ public class HomeActivity extends AppCompatActivity {
         gender_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
 
         gender=findViewById(R.id.gender);
-        gender.addSwitchObserver(new RMSwitch.RMSwitchObserver() {
-            @Override
-            public void onCheckStateChange(RMSwitch switchView, boolean isChecked) {
-                if(isChecked){
-                    gender_tag.setText(R.string.male);
-                }
-                else{
-                    gender_tag.setText(R.string.female);
-                }
+        gender.addSwitchObserver((switchView, isChecked) -> {
+            if(isChecked){
+                gender_tag.setText(R.string.male);
+            }
+            else{
+                gender_tag.setText(R.string.female);
             }
         });
 
@@ -347,81 +338,51 @@ public class HomeActivity extends AppCompatActivity {
         display.addItemDecoration(new GridSpacingItemDecoration(1,dptopx(10),true));
         display.setItemAnimator(new DefaultItemAnimator());
 
-        if(getIntent().getBooleanExtra("isProfile",false))
-        {
+        new Handler().postDelayed(() -> {
+
             splash_cover.setVisibility(View.GONE);
             logo_div.setVisibility(View.VISIBLE);
-            done.setVisibility(View.VISIBLE);
-            page_tag.setVisibility(View.VISIBLE);
-            menu.setVisibility(View.VISIBLE);
-            scaleY(data_div,getIntent().getIntExtra("divHeight",0),0,new AccelerateDecelerateInterpolator());
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
-                    display.setVisibility(View.VISIBLE);display.startAnimation(anims);
-                }},800);
-        }
-        else{
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
 
-                    splash_cover.setVisibility(View.GONE);
-                    logo_div.setVisibility(View.VISIBLE);
+            float CurrentX = ico_splash.getX();
+            float CurrentY = ico_splash.getY();
+            float FinalX = 0;
+            float FinalY = 35;
+            Path path = new Path();
+            path.moveTo(CurrentX, CurrentY);
+            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
 
-                    float CurrentX = ico_splash.getX();
-                    float CurrentY = ico_splash.getY();
-                    float FinalX = 0;
-                    float FinalY = 35;
-                    Path path = new Path();
-                    path.moveTo(CurrentX, CurrentY);
-                    path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
+            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
+            startAnim.setDuration(800);
+            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
 
-                    startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-                    startAnim.setDuration(800);
-                    startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            int colorFrom = getResources().getColor(R.color.colorPrimary);
+            int colorTo = getResources().getColor(R.color.colorAccentLight);
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+            colorAnimation.setDuration(1000);
+            colorAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+            colorAnimation.addUpdateListener(animator -> logo_div.setBackgroundColor((int) animator.getAnimatedValue()));
+            colorAnimation.start();
+            startAnim.start();
+            ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
+            new Handler().postDelayed(() -> {
+                scaleY(data_div,pxtodp(splash_cover.getHeight())-85,800,new AccelerateDecelerateInterpolator());
+                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
+                ico_splash.startAnimation(anims);
+            },10);
 
-                    int colorFrom = getResources().getColor(R.color.colorPrimary);
-                    int colorTo = getResources().getColor(R.color.colorAccentLight);
-                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                    colorAnimation.setDuration(1000);
-                    colorAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animator) {
-                            logo_div.setBackgroundColor((int) animator.getAnimatedValue());
-                        }
-                    });
-                    colorAnimation.start();
-                    startAnim.start();
-                    ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            scaleY(data_div,pxtodp(splash_cover.getHeight())-85,800,new AccelerateDecelerateInterpolator());
-                            AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
-                            ico_splash.startAnimation(anims);
-                        }},10);
+            new Handler().postDelayed(() -> {
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
+                page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
+                menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
+                done.setVisibility(View.VISIBLE);done.startAnimation(anims);
+                setLightTheme(false,true);
+            },400);
+            new Handler().postDelayed(() -> {
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
+                display.setVisibility(View.VISIBLE);display.startAnimation(anims);
+            },800);
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
-                            page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
-                            menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
-                            done.setVisibility(View.VISIBLE);done.startAnimation(anims);
-                            setLightTheme(false,true);
-                        }},400);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
-                            display.setVisibility(View.VISIBLE);display.startAnimation(anims);
-                        }},800);
-
-                }},1500);
-        }
+        },1500);
     }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){

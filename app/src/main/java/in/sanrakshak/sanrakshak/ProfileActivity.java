@@ -363,6 +363,18 @@ public class ProfileActivity extends AppCompatActivity {
     }
     public void createProfile(String dp){
         loading_profile.setVisibility(View.VISIBLE);
+        float FinalX = CurrentX-dptopx(20);
+        float FinalY = CurrentY-dptopx(70)-getHeightStatusNav(0);
+        CurrentX = profile_menu_cov.getX();
+        CurrentY = profile_menu_cov.getY();
+        Path path = new Path();
+        path.moveTo(CurrentX, CurrentY);
+        path.quadTo(FinalX, (CurrentY+FinalY)/2, FinalX, FinalY);
+        startAnim = ObjectAnimator.ofFloat(profile_menu_cov, View.X, View.Y, path);
+        startAnim.setDuration(600);
+        startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        startAnim.start();
+
         if(isDP_added && dp.equals(""))
         {
             storageRef = FirebaseStorage.getInstance().getReference();
@@ -411,7 +423,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful() && false){
                         new Handler(Looper.getMainLooper()).post(() -> {loading_profile.setVisibility(View.INVISIBLE);
                             float FinalX = CurrentX;
                             float FinalY = CurrentY;
@@ -425,8 +437,16 @@ public class ProfileActivity extends AppCompatActivity {
                             startAnim.setDuration(800);
                             startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
                             startAnim.start();
+
                             ico_splash.animate().scaleX(1f).scaleY(1f).setDuration(900).start();
                             scaleY(data_div,0,500,new AccelerateDecelerateInterpolator());
+                            AlphaAnimation anims = new AlphaAnimation(1,0);
+                            anims.setDuration(500);
+                            page_tag.startAnimation(anims);done.startAnimation(anims);
+                            new Handler().postDelayed(() -> {
+                                page_tag.setVisibility(View.GONE);done.setVisibility(View.GONE);
+                            },500);
+
                             new Handler().postDelayed(() -> {
                                 Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
                                 home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
@@ -437,8 +457,10 @@ public class ProfileActivity extends AppCompatActivity {
                         });
                     }
                     else{
-                        Toast.makeText(ProfileActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                        loading_profile.setVisibility(View.INVISIBLE);
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Toast.makeText(ProfileActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                            //loading_profile.setVisibility(View.INVISIBLE);
+                        });
                     }
                 }
             });
