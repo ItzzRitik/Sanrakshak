@@ -56,6 +56,7 @@ import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
 import com.google.android.cameraview.CameraViewImpl;
+import com.google.android.gms.common.internal.FallbackServiceBroker;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -93,7 +94,7 @@ import static android.R.attr.maxHeight;
 import static android.R.attr.maxWidth;
 
 public class ProfileActivity extends AppCompatActivity {
-    RelativeLayout logo_div,splash_cover,camera_pane,permission_camera,galary,click_pane,profile_menu_cov;
+    RelativeLayout logo_div,splash_cover,camera_pane,permission_camera,galary,click_pane,profile_menu_cov,form_panel;
     ConstraintLayout root_view;
     CardView data_div;
     ImageView dp_cover,ico_splash,done,camera_flip,click,flash,dob_chooser;
@@ -163,6 +164,7 @@ public class ProfileActivity extends AppCompatActivity {
         logo_div=findViewById(R.id.logo_div);
         data_div=findViewById(R.id.data_div);
         dp_cover=findViewById(R.id.dp_cover);
+        form_panel=findViewById(R.id.form_panel);
         profile_menu_cov=findViewById(R.id.profile_menu_cov);
         toolTip = new ToolTipsManager();
         client = new OkHttpClient();
@@ -362,8 +364,7 @@ public class ProfileActivity extends AppCompatActivity {
         },1500);
     }
     public void createProfile(String dp){
-        loading_profile.setVisibility(View.VISIBLE);
-        float FinalX = CurrentX-dptopx(20);
+        float FinalX = CurrentX-dptopx(15);
         float FinalY = CurrentY-dptopx(70)-getHeightStatusNav(0);
         CurrentX = profile_menu_cov.getX();
         CurrentY = profile_menu_cov.getY();
@@ -374,6 +375,21 @@ public class ProfileActivity extends AppCompatActivity {
         startAnim.setDuration(600);
         startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
         startAnim.start();
+
+        data_div.setBackground(null);
+        anim = new AlphaAnimation(1,0);
+        anim.setDuration(500);anim.setFillAfter(true);
+        data_div.setFocusable(false);
+        form_panel.startAnimation(anim);
+        gender.startAnimation(anim);
+        gender_tag.startAnimation(anim);
+        dp_cover.startAnimation(anim);
+        ico_splash.startAnimation(anim);
+        done.startAnimation(anim);
+        page_tag.startAnimation(anim);
+        new Handler().postDelayed(() -> {
+            loading_profile.setVisibility(View.VISIBLE);
+        },800);
 
         if(isDP_added && dp.equals(""))
         {
@@ -423,43 +439,26 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful() && false){
-                        new Handler(Looper.getMainLooper()).post(() -> {loading_profile.setVisibility(View.INVISIBLE);
-                            float FinalX = CurrentX;
-                            float FinalY = CurrentY;
-                            CurrentX = ico_splash.getX();
-                            CurrentY = ico_splash.getY();
-                            Path path = new Path();
-                            path.moveTo(CurrentX, CurrentY);
-                            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
-
-                            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-                            startAnim.setDuration(800);
-                            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-                            startAnim.start();
-
-                            ico_splash.animate().scaleX(1f).scaleY(1f).setDuration(900).start();
-                            scaleY(data_div,0,500,new AccelerateDecelerateInterpolator());
-                            AlphaAnimation anims = new AlphaAnimation(1,0);
-                            anims.setDuration(500);
-                            page_tag.startAnimation(anims);done.startAnimation(anims);
+                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                        new Handler(Looper.getMainLooper()).post(() -> {
                             new Handler().postDelayed(() -> {
-                                page_tag.setVisibility(View.GONE);done.setVisibility(View.GONE);
-                            },500);
-
-                            new Handler().postDelayed(() -> {
-                                Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
-                                home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
-                                ProfileActivity.this.startActivity(home);
-                                ProfileActivity.this.overridePendingTransition(0,0);
-                                finish();},1000);
-
+                                loading_profile.setVisibility(View.INVISIBLE);
+                                anim = new AlphaAnimation(1,0);
+                                anim.setDuration(500);anim.setFillAfter(true);
+                                profile_menu_cov.startAnimation(anim);
+                                new Handler().postDelayed(() -> {
+                                    Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
+                                    home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
+                                    ProfileActivity.this.startActivity(home);
+                                    ProfileActivity.this.overridePendingTransition(0,R.anim.fade_out);
+                                    finish();},420);
+                                },1000);
                         });
                     }
                     else{
                         new Handler(Looper.getMainLooper()).post(() -> {
                             Toast.makeText(ProfileActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                            //loading_profile.setVisibility(View.INVISIBLE);
+                            loading_profile.setVisibility(View.INVISIBLE);
                         });
                     }
                 }
