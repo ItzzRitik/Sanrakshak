@@ -25,7 +25,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/logo_div"
                 android:visibility="gone"
-                android:background="@color/colorAccent"
+                android:background="@color/colorPrimary"
                 android:layout_centerInParent="true">
             </RelativeLayout>
             <RelativeLayout
