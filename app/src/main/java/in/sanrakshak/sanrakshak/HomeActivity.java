@@ -87,6 +87,7 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         );
+        home = findViewById(R.id.home);
 
         new Handler().postDelayed(() -> {
 
