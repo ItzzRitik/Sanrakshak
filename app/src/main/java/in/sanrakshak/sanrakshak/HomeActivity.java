@@ -107,13 +107,13 @@ public class HomeActivity extends AppCompatActivity {
             startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
 
             int colorFrom = getResources().getColor(R.color.colorPrimary);
-            int colorTo = getResources().getColor(R.color.colorAccentLight);
+            int colorTo = getResources().getColor(R.color.colorPrimary);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
             colorAnimation.setDuration(1000);
             colorAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
             colorAnimation.addUpdateListener(animator -> logo_div.setBackgroundColor((int) animator.getAnimatedValue()));
             colorAnimation.start();
-            startAnim.start();
+            //startAnim.start();
             ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
             new Handler().postDelayed(() -> {
                 scaleY(data_div,pxtodp(splash_cover.getHeight())-85,800,new AccelerateDecelerateInterpolator());
