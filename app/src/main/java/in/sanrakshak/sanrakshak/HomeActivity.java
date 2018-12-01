@@ -60,18 +60,15 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    RelativeLayout logo_div,splash_cover,diagnosis;
-    ImageView ico_splash,menu,done,dob_chooser;
-    EditText dob;
-    RMSwitch gender;
-    float fabX,fabY;
-    TextView page_tag,symptoms_tag,gender_tag,diag_results,disResult,appNameSplash;
+    RelativeLayout logo_div,splash_cover;
+    ImageView ico_splash,menu,done;
+    TextView page_tag,appNameSplash;
     Animator animator;
     CardView data_div;
     ObjectAnimator startAnim;
     Point screenSize;
     ToolTipsManager toolTip;
-    RecyclerView display;
+    RecyclerView home;
     double diagonal;
     OkHttpClient client;
     SwipeRefreshLayout refresh;

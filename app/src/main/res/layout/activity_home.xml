@@ -76,7 +76,7 @@
                             android:layout_height="match_parent"
                             android:scrollbars="vertical"
                             android:visibility="gone"
-                            android:id="@+id/display">
+                            android:id="@+id/home">
                         </android.support.v7.widget.RecyclerView>
                     </RelativeLayout>
                 </android.support.v4.widget.SwipeRefreshLayout>
