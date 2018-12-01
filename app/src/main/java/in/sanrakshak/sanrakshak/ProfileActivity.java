@@ -282,7 +282,7 @@ public class ProfileActivity extends AppCompatActivity {
         click.setOnLongClickListener(v -> {
             int cx=screenSize.x/2;
             int cy=screenSize.y-((int)(click.getY()));
-            galaryOn=true;vibrate(35);
+            galaryOn=true;
             animator = ViewAnimationUtils.createCircularReveal(galary,cx,cy,0,(float) diagonal);
             animator.setInterpolator(new AccelerateInterpolator());animator.setDuration(300);galary.setVisibility(View.VISIBLE);
             galary.startAnimation(AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.fade_out));
@@ -291,6 +291,7 @@ public class ProfileActivity extends AppCompatActivity {
             intent.setType("image/*");intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
             overridePendingTransition(R.anim.fade_in,0);
+            vibrate(35);
             cameraView.stop();
             return false;
         });
@@ -352,32 +353,34 @@ public class ProfileActivity extends AppCompatActivity {
         },1500);
     }
     public void createProfile(String dp){
-        float FinalX = CurrentX-dptopx(15);
-        float FinalY = CurrentY-dptopx(70)-getHeightStatusNav(0);
-        CurrentX = profile_menu_cov.getX();
-        CurrentY = profile_menu_cov.getY();
-        Path path = new Path();
-        path.moveTo(CurrentX, CurrentY);
-        path.quadTo(FinalX, (CurrentY+FinalY)/2, FinalX, FinalY);
-        startAnim = ObjectAnimator.ofFloat(profile_menu_cov, View.X, View.Y, path);
-        startAnim.setDuration(600);
-        startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        startAnim.start();
+        if(dp.equals("")){
+            float FinalX = CurrentX-dptopx(15);
+            float FinalY = CurrentY-dptopx(70)-getHeightStatusNav(0);
+            CurrentX = profile_menu_cov.getX();
+            CurrentY = profile_menu_cov.getY();
+            Path path = new Path();
+            path.moveTo(CurrentX, CurrentY);
+            path.quadTo(FinalX, (CurrentY+FinalY)/2, FinalX, FinalY);
+            startAnim = ObjectAnimator.ofFloat(profile_menu_cov, View.X, View.Y, path);
+            startAnim.setDuration(600);
+            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            startAnim.start();
 
-        data_div.setBackground(null);
-        anim = new AlphaAnimation(1,0);
-        anim.setDuration(500);anim.setFillAfter(true);
-        data_div.setFocusable(false);
-        form_panel.startAnimation(anim);
-        gender.startAnimation(anim);
-        gender_tag.startAnimation(anim);
-        dp_cover.startAnimation(anim);
-        ico_splash.startAnimation(anim);
-        done.startAnimation(anim);
-        page_tag.startAnimation(anim);
-        new Handler().postDelayed(() -> {
-            loading_profile.setVisibility(View.VISIBLE);
-        },800);
+            data_div.setBackground(null);
+            anim = new AlphaAnimation(1,0);
+            anim.setDuration(500);anim.setFillAfter(true);
+            data_div.setFocusable(false);
+            form_panel.startAnimation(anim);
+            gender.startAnimation(anim);
+            gender_tag.startAnimation(anim);
+            dp_cover.startAnimation(anim);
+            ico_splash.startAnimation(anim);
+            done.startAnimation(anim);
+            page_tag.startAnimation(anim);
+            new Handler().postDelayed(() -> {
+                loading_profile.setVisibility(View.VISIBLE);
+            },800);
+        }
 
         if(isDP_added && dp.equals(""))
         {
