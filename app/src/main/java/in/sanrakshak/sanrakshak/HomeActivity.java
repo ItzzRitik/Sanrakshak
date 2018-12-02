@@ -62,7 +62,7 @@ public class HomeActivity extends AppCompatActivity {
         data_div=findViewById(R.id.data_div);
         toolTip = new ToolTipsManager();
         client = new OkHttpClient();
-        Email=getIntent().getStringExtra("email");
+        Email="ritik.space@gmail.com";//getIntent().getStringExtra("email");
 
         page_tag=findViewById(R.id.page_tag);
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
