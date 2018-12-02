@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -61,10 +62,11 @@ public class HomeActivity extends AppCompatActivity {
     RecyclerView home;
     double diagonal;
     OkHttpClient client;
-    String Email="";
     SwipeRefreshLayout refresh;
     ProgressBar proSplash;
     RequestBody postBody=null;
+    SharedPreferences user,crack;
+    SharedPreferences.Editor user_edit,crack_edit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +83,6 @@ public class HomeActivity extends AppCompatActivity {
         data_div=findViewById(R.id.data_div);
         toolTip = new ToolTipsManager();
         client = new OkHttpClient();
-        Email="ritik.space@gmail.com";//getIntent().getStringExtra("email");
 
         page_tag=findViewById(R.id.page_tag);
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -110,7 +111,10 @@ public class HomeActivity extends AppCompatActivity {
             }
         );
         home = findViewById(R.id.home);
-
+        user = getSharedPreferences("user", MODE_PRIVATE);
+        user_edit = user.edit();
+        crack = getSharedPreferences("crack", MODE_PRIVATE);
+        crack_edit = crack.edit();
         connect();
     }
     public void connect(){
@@ -189,7 +193,34 @@ public class HomeActivity extends AppCompatActivity {
         },1500);
     }
     public void cacheData(){
+        try{
+            postBody = new FormBody.Builder()
+                    .add("email",new CryptLib().encryptPlainTextWithRandomIV(email,"sanrakshak")).build();
 
+        }
+        catch (Exception e){Log.e("encrypt","Error while encryption");}
+        Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").post(postBody).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.i("backend_call", "Connection Failed - "+e);
+                call.cancel();
+                splash();
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull final Response response) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Log.i("backend_call","Server Response => "+response.message());
+                    if(response.code()==503) {
+                        splash();
+                    }
+                    else
+                    {
+                        splash();
+                    }
+                });
+            }
+        });
     }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){
