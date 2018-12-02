@@ -111,6 +111,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         );
         home = findViewById(R.id.home);
+
         user = getSharedPreferences("user", MODE_PRIVATE);
         user_edit = user.edit();
         crack = getSharedPreferences("crack", MODE_PRIVATE);
@@ -194,8 +195,8 @@ public class HomeActivity extends AppCompatActivity {
     }
     public void cacheData(){
         try{
-            postBody = new FormBody.Builder()
-                    .add("email",new CryptLib().encryptPlainTextWithRandomIV(email,"sanrakshak")).build();
+            String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
+            postBody = new FormBody.Builder().add("email",enc).build();
 
         }
         catch (Exception e){Log.e("encrypt","Error while encryption");}
