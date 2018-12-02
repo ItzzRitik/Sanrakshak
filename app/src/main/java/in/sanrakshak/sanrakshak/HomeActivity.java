@@ -8,6 +8,8 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -109,91 +111,82 @@ public class HomeActivity extends AppCompatActivity {
         );
         home = findViewById(R.id.home);
 
-        try{
-            postBody = new FormBody.Builder()
-                    .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak")).build();
+        connect();
+    }
+    public void connect(){
+        if(isOnline())
+        {
+            Log.i("backend_call", "Connecting");
+            try{
+                postBody = new FormBody.Builder()
+                        .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak")).build();
 
+            }
+            catch (Exception e){Log.e("encrypt","Error while encryption");}
+            Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").post(postBody).build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("backend_call", "Connection Failed - "+e);
+                    call.cancel();
+                    splash();
+                }
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull final Response response) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        Log.i("backend_call","Server Response => "+response.message());
+                        if(response.code()==503) {
+                            splash();
+                        }
+                        else
+                        {
+                            splash();
+                        }
+                    });
+                }
+            });
         }
-        catch (Exception e){Log.e("encrypt","Error while encryption");}
-        splash(0);
-
+        else{splash();}
     }
-    public void splash(final int iteration){
-        Log.i("backend_call", "Connecting - "+iteration);
-        Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").post(postBody).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.i("backend_call", "Connection Failed - "+e);
-                call.cancel();
-                serverOffline(iteration);
-            }
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull final Response response) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
-                    if(response.code()==503)
-                    {
-                        serverOffline(iteration);
-                    }
-                    else
-                    {
-                        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-                        appNameSplash.setText(getString(R.string.app_name));
-                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-                        proSplash.setVisibility(View.GONE);
-                        new Handler().postDelayed(() -> {
-                            splash_cover.setVisibility(View.GONE);
-                            logo_div.setVisibility(View.VISIBLE);
+    public void splash(){
+        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        appNameSplash.setText(getString(R.string.app_name));
+        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+        proSplash.setVisibility(View.GONE);
+        new Handler().postDelayed(() -> {
+            splash_cover.setVisibility(View.GONE);
+            logo_div.setVisibility(View.VISIBLE);
 
-                            float CurrentX = ico_splash.getX();
-                            float CurrentY = ico_splash.getY();
-                            float FinalX = 0;
-                            float FinalY = 35;
-                            Path path = new Path();
-                            path.moveTo(CurrentX, CurrentY);
-                            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
+            float CurrentX = ico_splash.getX();
+            float CurrentY = ico_splash.getY();
+            float FinalX = 0;
+            float FinalY = 35;
+            Path path = new Path();
+            path.moveTo(CurrentX, CurrentY);
+            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
 
-                            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-                            startAnim.setDuration(800);
-                            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-                            startAnim.start();
-                            ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
-                            new Handler().postDelayed(() -> {
-                                scaleY(data_div,pxtodp(splash_cover.getHeight())-85,800,new AccelerateDecelerateInterpolator());
-                                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
-                                ico_splash.startAnimation(anims);
-                            },10);
-                            new Handler().postDelayed(() -> {
-                                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
-                                page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
-                                menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
-                                done.setVisibility(View.VISIBLE);done.startAnimation(anims);
-                                setLightTheme(true,true);
-                            },400);
-                            new Handler().postDelayed(() -> {
-                                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
-                                home.setVisibility(View.VISIBLE);home.startAnimation(anims);
-                            },800);
-                        },1500);
-                    }
-                });
-            }
-        });
-    }
-    public void serverOffline(final int iteration){
-        new Handler(Looper.getMainLooper()).post(() -> {
-            if(iteration==0){
-                new Handler().postDelayed(() -> {
-                    appNameSplash.setText(getString(R.string.offline));
-                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-                },1000);
-            }
-            new Handler().postDelayed(() -> splash(iteration+1),(iteration>20)?10000:iteration*500);
-        });
-    }
-    public void cacheUser(){
-
+            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
+            startAnim.setDuration(800);
+            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            startAnim.start();
+            ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
+            new Handler().postDelayed(() -> {
+                scaleY(data_div,pxtodp(splash_cover.getHeight())-85,800,new AccelerateDecelerateInterpolator());
+                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
+                ico_splash.startAnimation(anims);
+            },10);
+            new Handler().postDelayed(() -> {
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
+                page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
+                menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
+                done.setVisibility(View.VISIBLE);done.startAnimation(anims);
+                setLightTheme(true,true);
+            },400);
+            new Handler().postDelayed(() -> {
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
+                home.setVisibility(View.VISIBLE);home.startAnimation(anims);
+            },800);
+        },1500);
     }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){
@@ -211,7 +204,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
     public void scaleX(final View view,int x,int t, Interpolator interpolator)
     {
         ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredWidth(),dptopx(x));anim.setInterpolator(interpolator);
