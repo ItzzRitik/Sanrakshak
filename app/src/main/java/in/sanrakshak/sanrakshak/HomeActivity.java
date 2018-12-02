@@ -85,8 +85,11 @@ public class HomeActivity extends AppCompatActivity {
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
 
         appNameSplash=findViewById(R.id.appNameSplash);
-        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
         setMargins(appNameSplash,0,0,0,dptopx(30) + getHeightStatusNav(1));
+
+        proSplash = findViewById(R.id.proSplash);
+        setMargins(proSplash,0,0,0,(int)(dptopx(60) + getHeightStatusNav(1)));
 
         ico_splash=findViewById(R.id.ico_splash);
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
@@ -105,7 +108,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         );
         home = findViewById(R.id.home);
-        proSplash = findViewById(R.id.proSplash);
 
         try{
             postBody = new FormBody.Builder()
@@ -189,6 +191,9 @@ public class HomeActivity extends AppCompatActivity {
             }
             new Handler().postDelayed(() -> splash(iteration+1),(iteration>20)?10000:iteration*500);
         });
+    }
+    public void cacheUser(){
+
     }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){
