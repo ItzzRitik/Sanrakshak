@@ -37,9 +37,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.tomergoldst.tooltips.ToolTipsManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import okhttp3.Call;
@@ -197,10 +204,9 @@ public class HomeActivity extends AppCompatActivity {
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
             postBody = new FormBody.Builder().add("email",enc).build();
-
         }
         catch (Exception e){Log.e("encrypt","Error while encryption");}
-        Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").post(postBody).build();
+        Request request = new Request.Builder().url("http://3.16.4.70:8080/getprofile").post(postBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -209,17 +215,37 @@ public class HomeActivity extends AppCompatActivity {
                 splash();
             }
             @Override
-            public void onResponse(@NonNull Call call, @NonNull final Response response) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    Log.i("backend_call","Server Response => "+response.message());
-                    if(response.code()==503) {
-                        splash();
+            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                assert response.body() != null;
+                String mMessage = Objects.requireNonNull(response.body()).string();
+                refresh.setRefreshing(false);
+                if (response.isSuccessful()){
+                    try {
+                        JSONArray postsArray = new JSONArray(mMessage);
+                        for (int i = 0; i < postsArray.length(); i++) {
+                            JSONObject pO = postsArray.getJSONObject(i);
+                            user_edit.putString("fname", pO.getString("name"));
+                            user_edit.putString("lname", pO.getString("lname"));
+                            user_edit.putString("gender", pO.getString("name"));
+                            user_edit.putString("dob", pO.getString("dob"));
+                            user_edit.putString("aadhaar", pO.getString("aadhaar"));
+                            user_edit.apply();
+                            Toast.makeText(HomeActivity.this, user.getString("email", "-")+"\n"+
+                                            user.getString("fname", "-")+"\n"+
+                                            user.getString("lname", "-")+"\n"+
+                                            user.getString("gender", "-")+"\n"+
+                                            user.getString("dob", "-")+"\n"+
+                                            user.getString("aadhaar", "-")+"\n"
+                                    , Toast.LENGTH_SHORT).show();
+                        }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+
+                        });
                     }
-                    else
-                    {
-                        splash();
+                    catch (JSONException e) {
+                        Log.w("error", e.toString());
                     }
-                });
+                }
             }
         });
     }
