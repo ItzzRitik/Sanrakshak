@@ -201,6 +201,7 @@ public class HomeActivity extends AppCompatActivity {
         },1500);
     }
     public void cacheData(){
+        appNameSplash.setText(R.string.fetch);
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
             postBody = new FormBody.Builder().add("email",enc).build();
@@ -230,13 +231,12 @@ public class HomeActivity extends AppCompatActivity {
                             user_edit.apply();
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            Toast.makeText(HomeActivity.this, user.getString("email", "-")+"\n"+
+                            Toast.makeText(HomeActivity.this,
                                             user.getString("fname", "-")+"\n"+
                                             user.getString("lname", "-")+"\n"+
                                             user.getString("gender", "-")+"\n"+
                                             user.getString("dob", "-")+"\n"+
-                                            user.getString("aadhaar", "-")+"\n"
-                                    , Toast.LENGTH_SHORT).show();
+                                            user.getString("aadhaar", "-")+"\n", Toast.LENGTH_SHORT).show();
                             splash();
                         });
                     }
