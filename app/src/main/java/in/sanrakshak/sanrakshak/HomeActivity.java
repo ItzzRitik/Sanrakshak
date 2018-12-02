@@ -188,6 +188,9 @@ public class HomeActivity extends AppCompatActivity {
             },800);
         },1500);
     }
+    public void cacheData(){
+
+    }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){
             if(arr[i].equals(element)){
