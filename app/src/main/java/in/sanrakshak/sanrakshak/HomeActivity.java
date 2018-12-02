@@ -1,7 +1,6 @@
 package in.sanrakshak.sanrakshak;
 
 import android.animation.Animator;
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -11,6 +10,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,18 +19,33 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tomergoldst.tooltips.ToolTipsManager;
+
+import java.io.IOException;
 import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover;
@@ -46,6 +61,8 @@ public class HomeActivity extends AppCompatActivity {
     OkHttpClient client;
     String Email="";
     SwipeRefreshLayout refresh;
+    ProgressBar proSplash;
+    RequestBody postBody=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,45 +105,90 @@ public class HomeActivity extends AppCompatActivity {
             }
         );
         home = findViewById(R.id.home);
+        proSplash = findViewById(R.id.proSplash);
 
-        new Handler().postDelayed(() -> {
+        try{
+            postBody = new FormBody.Builder()
+                    .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak")).build();
 
-            splash_cover.setVisibility(View.GONE);
-            logo_div.setVisibility(View.VISIBLE);
+        }
+        catch (Exception e){Log.e("encrypt","Error while encryption");}
+        splash(0);
 
-            float CurrentX = ico_splash.getX();
-            float CurrentY = ico_splash.getY();
-            float FinalX = 0;
-            float FinalY = 35;
-            Path path = new Path();
-            path.moveTo(CurrentX, CurrentY);
-            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
+    }
+    public void splash(final int iteration){
+        Log.i("backend_call", "Connecting - "+iteration);
+        Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").post(postBody).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.i("backend_call", "Connection Failed - "+e);
+                call.cancel();
+                serverOffline(iteration);
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull final Response response) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
+                    if(response.code()==503)
+                    {
+                        serverOffline(iteration);
+                    }
+                    else
+                    {
+                        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+                        appNameSplash.setText(getString(R.string.app_name));
+                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+                        proSplash.setVisibility(View.GONE);
+                        new Handler().postDelayed(() -> {
+                            splash_cover.setVisibility(View.GONE);
+                            logo_div.setVisibility(View.VISIBLE);
 
-            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-            startAnim.setDuration(800);
-            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            startAnim.start();
+                            float CurrentX = ico_splash.getX();
+                            float CurrentY = ico_splash.getY();
+                            float FinalX = 0;
+                            float FinalY = 35;
+                            Path path = new Path();
+                            path.moveTo(CurrentX, CurrentY);
+                            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
 
-            ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
-            new Handler().postDelayed(() -> {
-                scaleY(data_div,pxtodp(splash_cover.getHeight())-85,800,new AccelerateDecelerateInterpolator());
-                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
-                ico_splash.startAnimation(anims);
-            },10);
-
-            new Handler().postDelayed(() -> {
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
-                page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
-                menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
-                done.setVisibility(View.VISIBLE);done.startAnimation(anims);
-                setLightTheme(true,true);
-            },400);
-            new Handler().postDelayed(() -> {
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
-                home.setVisibility(View.VISIBLE);home.startAnimation(anims);
-            },800);
-
-        },1500);
+                            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
+                            startAnim.setDuration(800);
+                            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+                            startAnim.start();
+                            ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
+                            new Handler().postDelayed(() -> {
+                                scaleY(data_div,pxtodp(splash_cover.getHeight())-85,800,new AccelerateDecelerateInterpolator());
+                                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
+                                ico_splash.startAnimation(anims);
+                            },10);
+                            new Handler().postDelayed(() -> {
+                                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
+                                page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
+                                menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
+                                done.setVisibility(View.VISIBLE);done.startAnimation(anims);
+                                setLightTheme(true,true);
+                            },400);
+                            new Handler().postDelayed(() -> {
+                                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
+                                home.setVisibility(View.VISIBLE);home.startAnimation(anims);
+                            },800);
+                        },1500);
+                    }
+                });
+            }
+        });
+    }
+    public void serverOffline(final int iteration){
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if(iteration==0){
+                new Handler().postDelayed(() -> {
+                    appNameSplash.setText(getString(R.string.offline));
+                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                },1000);
+            }
+            new Handler().postDelayed(() -> splash(iteration+1),(iteration>20)?10000:iteration*500);
+        });
     }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){
