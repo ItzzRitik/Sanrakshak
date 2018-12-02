@@ -219,14 +219,17 @@ public class HomeActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                        Log.i("backend_call", "Server Response - "+postsArray);
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject pO = postsArray.getJSONObject(i);
-                            user_edit.putString("fname", pO.getString("name"));
+                            user_edit.putString("fname", pO.getString("fname"));
                             user_edit.putString("lname", pO.getString("lname"));
-                            user_edit.putString("gender", pO.getString("name"));
+                            user_edit.putString("gender", pO.getString("gender"));
                             user_edit.putString("dob", pO.getString("dob"));
                             user_edit.putString("aadhaar", pO.getString("aadhaar"));
                             user_edit.apply();
+                        }
+                        new Handler(Looper.getMainLooper()).post(() -> {
                             Toast.makeText(HomeActivity.this, user.getString("email", "-")+"\n"+
                                             user.getString("fname", "-")+"\n"+
                                             user.getString("lname", "-")+"\n"+
@@ -234,8 +237,6 @@ public class HomeActivity extends AppCompatActivity {
                                             user.getString("dob", "-")+"\n"+
                                             user.getString("aadhaar", "-")+"\n"
                                     , Toast.LENGTH_SHORT).show();
-                        }
-                        new Handler(Looper.getMainLooper()).post(() -> {
                             splash();
                         });
                     }
