@@ -18,9 +18,7 @@
     <string name="interest_done">Done</string>
     <string name="apply">Apply</string>
     <string name="scheme">Application</string>
-    <string name="issue">Name of Issue</string>
-    <string name="prof_name">(Professional Name)</string>
-    <string name="solution">Specialization</string>
+    <string name="issue">Name of Place</string>
     <string name="date">10/06/1997 - (23:17)</string>
     <string name="your_name">Your Name</string>
     <string name="error">Oops! Got an Error</string>
@@ -73,6 +71,7 @@
     <string name="connect">CONNECTING TO SERVER</string>
     <string name="email_wait">Waiting for Email Verification</string>
     <string name="fetch">FETCHING DATA FROM SERVER</string>
+    <string name="map_preview">Map Preview</string>
 </resources>
 
 
