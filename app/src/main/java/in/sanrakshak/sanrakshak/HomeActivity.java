@@ -231,12 +231,6 @@ public class HomeActivity extends AppCompatActivity {
                             user_edit.apply();
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            Toast.makeText(HomeActivity.this,
-                                            user.getString("fname", "-")+"\n"+
-                                            user.getString("lname", "-")+"\n"+
-                                            user.getString("gender", "-")+"\n"+
-                                            user.getString("dob", "-")+"\n"+
-                                            user.getString("aadhaar", "-")+"\n", Toast.LENGTH_SHORT).show();
                             splash();
                         });
                     }
