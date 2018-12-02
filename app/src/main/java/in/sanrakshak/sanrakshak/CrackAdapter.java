@@ -16,25 +16,23 @@ import java.util.Random;
 public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder> {
     private List<Cracks> cracks;
     private HomeActivity homeActivity;
-    private Random random;
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name,date,prof_name,doc_name,solution;
+        TextView name,date;
         LinearLayout cardItem;
-        ImageView thumbnail;
+        ImageView preview;
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
             name.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2_bold.otf"));
             date = view.findViewById(R.id.date);
             date.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2_bold.otf"));
-            thumbnail = view.findViewById(R.id.thumbnail);
+            preview = view.findViewById(R.id.thumbnail);
             cardItem = view.findViewById(R.id.cardItem);
         }
     }
     CrackAdapter(HomeActivity homeActivity, List<Cracks> cracks) {
         this.cracks = cracks;
         this.homeActivity = homeActivity;
-        random = new Random();
     }
     @NonNull
     @Override
@@ -45,7 +43,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         final Cracks item = cracks.get(position);
-        holder.thumbnail.setImageDrawable(null);
+        holder.preview.setImageDrawable(null);
         holder.name.setText(item.getName());
         holder.date.setText(item.getDate());
         holder.cardItem.setOnClickListener(view -> {
