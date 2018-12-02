@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -69,6 +70,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     TextView appNameSplash;
     RequestBody postBody=null;
     private KeyboardHeightProvider keyProvider;
+    SharedPreferences.Editor user;
     @Override
     public void onPause() {
         super.onPause();
@@ -438,8 +440,10 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             newPageAnim(2);
                             nextLoading(false);
                             new Handler().postDelayed(() -> {
+                                user = getSharedPreferences("user", MODE_PRIVATE).edit();
+                                user.putString("email", email.getText().toString());
+                                user.apply();
                                 Intent home=new Intent(LoginActivity.this, HomeActivity.class);
-                                home.putExtra("email",email.getText().toString());
                                 LoginActivity.this.startActivity(home);
                                 finish();
                                 LoginActivity.this.overridePendingTransition(0, 0);},1500);

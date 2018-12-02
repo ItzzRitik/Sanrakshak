@@ -8,6 +8,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -107,6 +108,7 @@ public class ProfileActivity extends AppCompatActivity {
     RequestBody postBody;
     private StorageReference storageRef;
     float CurrentX,CurrentY;
+    SharedPreferences.Editor user;
     @Override
     public void onBackPressed() {
         if(camOn)
@@ -438,8 +440,10 @@ public class ProfileActivity extends AppCompatActivity {
                                 anim.setDuration(500);anim.setFillAfter(true);
                                 profile_menu_cov.startAnimation(anim);
                                 new Handler().postDelayed(() -> {
+                                    user = getSharedPreferences("user", MODE_PRIVATE).edit();
+                                    user.putString("email",ProfileActivity.this.getIntent().getStringExtra("email"));
+                                    user.apply();
                                     Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
-                                    home.putExtra("email",ProfileActivity.this.getIntent().getStringExtra("email"));
                                     ProfileActivity.this.startActivity(home);
                                     ProfileActivity.this.overridePendingTransition(0,R.anim.fade_out);
                                     finish();},420);
