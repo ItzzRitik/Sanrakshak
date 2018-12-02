@@ -152,7 +152,7 @@ public class HomeActivity extends AppCompatActivity {
                         }
                         else
                         {
-                            splash();
+                            cacheData();
                         }
                     });
                 }
@@ -216,12 +216,9 @@ public class HomeActivity extends AppCompatActivity {
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                assert response.body() != null;
-                String mMessage = Objects.requireNonNull(response.body()).string();
-                refresh.setRefreshing(false);
                 if (response.isSuccessful()){
                     try {
-                        JSONArray postsArray = new JSONArray(mMessage);
+                        JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject pO = postsArray.getJSONObject(i);
                             user_edit.putString("fname", pO.getString("name"));
@@ -239,7 +236,7 @@ public class HomeActivity extends AppCompatActivity {
                                     , Toast.LENGTH_SHORT).show();
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
-
+                            splash();
                         });
                     }
                     catch (JSONException e) {
