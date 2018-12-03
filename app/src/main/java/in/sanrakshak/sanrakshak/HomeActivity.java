@@ -262,8 +262,8 @@ public class HomeActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
-                        cracks = new ArrayList<>();
                         Log.i("backend_call", "Server Response - "+postsArray);
+                        cracks = new ArrayList<>();
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject pO = postsArray.getJSONObject(i);
                             cracks.add(new Cracks(pO.getString("x"),pO.getString("y"),pO.getString("x"),null));
