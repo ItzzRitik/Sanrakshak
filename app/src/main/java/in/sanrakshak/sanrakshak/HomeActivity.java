@@ -47,6 +47,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import okhttp3.Call;
@@ -74,6 +75,7 @@ public class HomeActivity extends AppCompatActivity {
     RequestBody postBody=null;
     SharedPreferences user,crack;
     SharedPreferences.Editor user_edit,crack_edit;
+    List<Cracks> cracks;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,6 +243,41 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
     public void setCrackList(){
+        try{
+            String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
+            postBody = new FormBody.Builder().add("email",enc).build();
+        }
+        catch (Exception e){Log.e("encrypt","Error while encryption");}
+        Request request = new Request.Builder().url("http://3.16.4.70:8080/getcrack").post(postBody).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.i("backend_call", "Failed - "+e);
+                call.cancel();
+                splash();
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                if (response.isSuccessful()){
+                    try {
+                        JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                        cracks = new ArrayList<>();
+                        Log.i("backend_call", "Server Response - "+postsArray);
+                        for (int i = 0; i < postsArray.length(); i++) {
+                            JSONObject pO = postsArray.getJSONObject(i);
+                            cracks.add(new Cracks(pO.getString("x"),pO.getString("y"),pO.getString("x"),null));
+                        }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                            splash();
+                        });
+                    }
+                    catch (JSONException e) {
+                        Log.w("error", e.toString());
+                    }
+                }
+            }
+        });
         home = findViewById(R.id.home);
         //home.setAdapter(new CrackAdapter(HomeActivity.this,history));
 
