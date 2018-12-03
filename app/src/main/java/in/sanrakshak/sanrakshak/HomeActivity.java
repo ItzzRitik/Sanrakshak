@@ -117,7 +117,6 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         );
-        home = findViewById(R.id.home);
 
         user = getSharedPreferences("user", MODE_PRIVATE);
         user_edit = user.edit();
@@ -240,6 +239,11 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    public void setCrackList(){
+        home = findViewById(R.id.home);
+        //home.setAdapter(new CrackAdapter(HomeActivity.this,history));
+
     }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){
