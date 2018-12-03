@@ -20,6 +20,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -120,6 +122,10 @@ public class HomeActivity extends AppCompatActivity {
             }
         );
         home = findViewById(R.id.home);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,1);
+        home.setLayoutManager(mLayoutManager);
+        home.addItemDecoration(new GridSpacingItemDecoration(1,dptopx(10),true));
+        home.setItemAnimator(new DefaultItemAnimator());
 
         user = getSharedPreferences("user", MODE_PRIVATE);
         user_edit = user.edit();
@@ -244,6 +250,7 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
     public void setCrackList(){
+        home.setAdapter(null);
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
             postBody = new FormBody.Builder().add("email",enc).build();
