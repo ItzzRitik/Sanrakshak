@@ -306,8 +306,8 @@ public class HomeActivity extends AppCompatActivity {
                 add = add + "\n" + obj.getSubAdminArea();
                 add = add + "\n" + obj.getLocality();
                 add = add + "\n" + obj.getSubThoroughfare();
-                Log.i("backend_call", "Server Response - "+add);
-                return obj.getAdminArea();
+                Log.i("backend_call", "Server Response - "+obj.getSubLocality());
+                return obj.getSubLocality()+", "+obj.getLocality();
             }
         } catch (IOException e) {
             e.printStackTrace();
