@@ -273,7 +273,7 @@ public class HomeActivity extends AppCompatActivity {
                         cracks = new ArrayList<>();
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject pO = postsArray.getJSONObject(i);
-                            cracks.add(new Cracks(pO.getString("x"),pO.getString("y"),pO.getString("x"),null));
+                            cracks.add(new Cracks(pO.getString("x"),pO.getString("y"),pO.getString("y"),null));
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
@@ -296,12 +296,7 @@ public class HomeActivity extends AppCompatActivity {
         return -1;
     }
     public void listRefresh(){
-        refresh.post(new Runnable() {
-            @Override
-            public void run() {
-                refresh.setRefreshing(true);
-            }
-        });
+        refresh.post(() -> refresh.setRefreshing(true));
     }
     protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

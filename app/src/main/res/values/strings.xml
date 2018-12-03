@@ -70,7 +70,7 @@
     <string name="offline">SERVER OFFLINE, RECONNECTING</string>
     <string name="connect">CONNECTING TO SERVER</string>
     <string name="email_wait">Waiting for Email Verification</string>
-    <string name="fetch">FETCHING DATA FROM SERVER</string>
+    <string name="fetch">FETCHING DATA</string>
     <string name="map_preview">Map Preview</string>
 </resources>
 
