@@ -9,6 +9,8 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -50,6 +52,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import okhttp3.Call;
@@ -273,7 +276,9 @@ public class HomeActivity extends AppCompatActivity {
                         cracks = new ArrayList<>();
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject pO = postsArray.getJSONObject(i);
-                            cracks.add(new Cracks(pO.getString("x"),pO.getString("y"),pO.getString("y"),null));
+                            double lat=Double.parseDouble(pO.getString("x"));
+                            double lng=Double.parseDouble(pO.getString("y"));
+                            cracks.add(new Cracks(getPlaceName(lat,lng),pO.getString("y"),pO.getString("y"),null));
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
@@ -286,6 +291,28 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    public String getPlaceName(double latitude, double longitude){
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if(null!=listAddresses&&listAddresses.size()>0){
+                Address obj = listAddresses.get(0);
+                String add = "\n"+obj.getAddressLine(0);
+                add = add + "\n" + obj.getCountryName();
+                add = add + "\n" + obj.getCountryCode();
+                add = add + "\n" + obj.getAdminArea();
+                add = add + "\n" + obj.getPostalCode();
+                add = add + "\n" + obj.getSubAdminArea();
+                add = add + "\n" + obj.getLocality();
+                add = add + "\n" + obj.getSubThoroughfare();
+                Log.i("backend_call", "Server Response - "+add);
+                return obj.getAdminArea();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){
