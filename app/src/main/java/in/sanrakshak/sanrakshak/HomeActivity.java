@@ -298,20 +298,19 @@ public class HomeActivity extends AppCompatActivity {
             List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
             if(null!=listAddresses&&listAddresses.size()>0){
                 Address obj = listAddresses.get(0);
-                String add = "\n"+obj.getAddressLine(0);
-                add = add + "\n" + obj.getCountryName();
-                add = add + "\n" + obj.getCountryCode();
-                add = add + "\n" + obj.getAdminArea();
-                add = add + "\n" + obj.getPostalCode();
-                add = add + "\n" + obj.getSubAdminArea();
-                add = add + "\n" + obj.getLocality();
-                add = add + "\n" + obj.getSubThoroughfare();
-                Log.i("backend_call", "Server Response - "+obj.getSubLocality());
                 return obj.getSubLocality()+", "+obj.getLocality();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return "";
+    }
+    public String getMapsAPIKey(){
+        try{
+            String token="3dd4wgt62K2sMwn/5rzbKmiZOMjvh7s8FvYkmezWkmNW7YzOu99TvSTcyJIBOzl457hHkyulDbBaKWdJccGfc4GajVR4gycz/iFwgBpiHi1dbbHaF9QnqKxO2jh9aaCfUKaFapjLuDoSLfEcZQgEAA==";
+            return new CryptLib().decryptCipherTextWithRandomIV(new CryptLib().decryptCipherTextWithRandomIV(token,"sanrakshak"),"sanrakshak");
+        }
+        catch (Exception e){Log.e("encrypt","Error while encryption");}
         return "";
     }
     public int getIndex(String element,String arr[]){
