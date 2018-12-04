@@ -130,7 +130,9 @@ public class HomeActivity extends AppCompatActivity {
 
         });
         refresh = findViewById(R.id.refresh);
-        refresh.setOnRefreshListener(() -> { setCrackList(false);});
+        refresh.setOnRefreshListener(() -> {
+            setCrackList(false);
+        });
         home = findViewById(R.id.home);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,1);
         home.setLayoutManager(mLayoutManager);
