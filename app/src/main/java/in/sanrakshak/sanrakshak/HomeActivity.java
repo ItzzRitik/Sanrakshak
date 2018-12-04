@@ -180,46 +180,6 @@ public class HomeActivity extends AppCompatActivity {
         }
         else{new Handler(Looper.getMainLooper()).post(this::splash);}
     }
-    public void splash(){
-        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-        appNameSplash.setText(getString(R.string.app_name));
-        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-        proSplash.setVisibility(View.GONE);
-        new Handler().postDelayed(() -> {
-            splash_cover.setVisibility(View.GONE);
-            logo_div.setVisibility(View.VISIBLE);
-
-            float CurrentX = ico_splash.getX();
-            float CurrentY = ico_splash.getY();
-            float FinalX = 0;
-            float FinalY = 35;
-            Path path = new Path();
-            path.moveTo(CurrentX, CurrentY);
-            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
-
-            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-            startAnim.setDuration(800);
-            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            startAnim.start();
-            ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
-            new Handler().postDelayed(() -> {
-                scaleY(data_div,pxtodp(splash_cover.getHeight())-85,800,new AccelerateDecelerateInterpolator());
-                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
-                ico_splash.startAnimation(anims);
-            },10);
-            new Handler().postDelayed(() -> {
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
-                page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
-                menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
-                done.setVisibility(View.VISIBLE);done.startAnimation(anims);
-                setLightTheme(true,true);
-            },400);
-            new Handler().postDelayed(() -> {
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
-                home.setVisibility(View.VISIBLE);home.startAnimation(anims);
-            },800);
-        },1500);
-    }
     public void cacheData(){
         appNameSplash.setText(R.string.fetch);
         try{
@@ -339,6 +299,46 @@ public class HomeActivity extends AppCompatActivity {
         }
         catch (Exception e){Log.e("signature","Error occured - "+e);}
         return "";
+    }
+    public void splash(){
+        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        appNameSplash.setText(getString(R.string.app_name));
+        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+        proSplash.setVisibility(View.GONE);
+        new Handler().postDelayed(() -> {
+            splash_cover.setVisibility(View.GONE);
+            logo_div.setVisibility(View.VISIBLE);
+
+            float CurrentX = ico_splash.getX();
+            float CurrentY = ico_splash.getY();
+            float FinalX = 0;
+            float FinalY = 35;
+            Path path = new Path();
+            path.moveTo(CurrentX, CurrentY);
+            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
+
+            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
+            startAnim.setDuration(800);
+            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            startAnim.start();
+            ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
+            new Handler().postDelayed(() -> {
+                scaleY(data_div,pxtodp(splash_cover.getHeight())-85,800,new AccelerateDecelerateInterpolator());
+                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
+                ico_splash.startAnimation(anims);
+            },10);
+            new Handler().postDelayed(() -> {
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
+                page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
+                menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
+                done.setVisibility(View.VISIBLE);done.startAnimation(anims);
+                setLightTheme(true,true);
+            },400);
+            new Handler().postDelayed(() -> {
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
+                home.setVisibility(View.VISIBLE);home.startAnimation(anims);
+            },800);
+        },1500);
     }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){

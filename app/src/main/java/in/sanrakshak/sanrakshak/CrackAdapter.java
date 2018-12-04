@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -46,8 +47,8 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         final Cracks item = cracks.get(position);
         holder.name.setText(item.getName());
         holder.date.setText(item.getDate());
-        Glide.with(homeActivity)
-                .load(item.getPreview())
+        Glide.with(homeActivity).load(item.getPreview())
+                .apply(new RequestOptions().centerCrop())
                 .into(holder.preview);
         holder.cardItem.setOnClickListener(view -> {
         });
