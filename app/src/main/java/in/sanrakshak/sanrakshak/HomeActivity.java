@@ -247,7 +247,7 @@ public class HomeActivity extends AppCompatActivity {
                             JSONObject obj = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(obj.getString("x"));
                             double lng=Double.parseDouble(obj.getString("y"));
-                            cracks.add(new Cracks(getPlaceName(lat,lng),obj.getString("y"),obj.getString("y"),getMapURL(lat,lng,15,200)));
+                            cracks.add(new Cracks(getPlaceName(lat,lng),obj.getString("y"),obj.getString("y"),getMapURL(lat,lng,16,400)));
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));

@@ -18,14 +18,23 @@
             android:layout_height="match_parent"
             android:layout_weight="0.9"
             android:layout_margin="7dp"
-            card_view:cardCornerRadius="2dp"
+            card_view:cardCornerRadius="3dp"
             card_view:cardElevation="0dp">
-            <ImageView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/thumbnail"
-                android:scaleType="fitCenter"
-                android:contentDescription="@string/map_preview" />
+                android:layout_height="match_parent">
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/thumbnail"
+                    android:scaleType="fitCenter"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@string/map_preview" />
+            </RelativeLayout>
         </android.support.v7.widget.CardView>
         <RelativeLayout
             android:layout_width="0dp"
