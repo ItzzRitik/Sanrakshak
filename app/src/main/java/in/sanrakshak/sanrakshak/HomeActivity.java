@@ -248,7 +248,8 @@ public class HomeActivity extends AppCompatActivity {
                             JSONObject obj = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(obj.getString("x"));
                             double lng=Double.parseDouble(obj.getString("y"));
-                            cracks.add(new Cracks(getPlaceName(lat,lng),obj.getString("y"),obj.getString("y"),getMapURL(lat,lng,16,400)));
+                            cracks.add(new Cracks(getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                    obj.getString("y"),obj.getString("y"),getMapURL(lat,lng,16,400)));
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
@@ -262,7 +263,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-    public String getPlaceName(double latitude, double longitude){
+    public String getPlaceName(double latitude, double longitude, int token){
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
             List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
@@ -275,8 +276,8 @@ public class HomeActivity extends AppCompatActivity {
                 int start=name.lastIndexOf(',',end-1);
                 start=start<0?0:start+2;
                 name=name.substring(start,end);
-                name+=", "+obj.getLocality();
-                return name;
+                if(token==0){return name;}
+                else if(token==1){return  obj.getLocality();}
             }
         } catch (IOException e) {
             e.printStackTrace();

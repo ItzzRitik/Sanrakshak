@@ -48,6 +48,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         final Cracks item = cracks.get(position);
         holder.name.setText(item.getName());
+        holder.city.setText(item.getCity());
         holder.date.setText(item.getDate());
         Glide.with(homeActivity).load(item.getPreview())
                 .apply(new RequestOptions().centerCrop())
