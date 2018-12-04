@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 import java.util.Random;
 
@@ -43,9 +45,11 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         final Cracks item = cracks.get(position);
-        holder.preview.setImageDrawable(null);
         holder.name.setText(item.getName());
         holder.date.setText(item.getDate());
+        Glide.with(homeActivity)
+                .load(item.getPreview())
+                .into(holder.preview);
         holder.cardItem.setOnClickListener(view -> {
         });
     }
