@@ -3,9 +3,8 @@ package in.sanrakshak.sanrakshak;
 import android.graphics.Bitmap;
 
 public class Cracks {
-    private String name,intensity,date;
-    private Bitmap preview;
-    Cracks(String name,String intensity, String date, Bitmap preview) {
+    private String name,intensity,date,preview;
+    Cracks(String name,String intensity, String date, String preview) {
         this.name = name;
         this.intensity = intensity;
         this.date = date;
@@ -17,6 +16,6 @@ public class Cracks {
     public void setIntensity(String intensity) {this.intensity = intensity;}
     public String getDate() {return date;}
     public void setDate(String date) {this.date = date;}
-    public Bitmap getPreview() {return preview;}
-    public void setPreview(Bitmap preview) {this.preview = preview;}
+    public String getPreview() {return preview;}
+    public void setPreview(String preview) {this.preview = preview;}
 }

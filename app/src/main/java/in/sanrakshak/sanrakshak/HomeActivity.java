@@ -50,10 +50,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -152,7 +158,9 @@ public class HomeActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     Log.i("backend_call", "Connection Failed - "+e);
                     call.cancel();
-                    splash();
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        splash();
+                    });
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) {
@@ -169,7 +177,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
-        else{splash();}
+        else{new Handler(Looper.getMainLooper()).post(this::splash);}
     }
     public void splash(){
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
@@ -278,6 +286,7 @@ public class HomeActivity extends AppCompatActivity {
                             JSONObject pO = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(pO.getString("x"));
                             double lng=Double.parseDouble(pO.getString("y"));
+                            Log.i("backend_call", "Server Response - "+getMapURL(lat,lng,15));
                             cracks.add(new Cracks(getPlaceName(lat,lng),pO.getString("y"),pO.getString("y"),null));
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
@@ -305,12 +314,30 @@ public class HomeActivity extends AppCompatActivity {
         }
         return "";
     }
-    public String getMapsAPIKey(){
+    public String getMapURL(double lat, double lng, int zoom){
         try{
-            String token="3dd4wgt62K2sMwn/5rzbKmiZOMjvh7s8FvYkmezWkmNW7YzOu99TvSTcyJIBOzl457hHkyulDbBaKWdJccGfc4GajVR4gycz/iFwgBpiHi1dbbHaF9QnqKxO2jh9aaCfUKaFapjLuDoSLfEcZQgEAA==";
-            return new CryptLib().decryptCipherTextWithRandomIV(new CryptLib().decryptCipherTextWithRandomIV(token,"sanrakshak"),"sanrakshak");
+            String APIKey="3dd4wgt62K2sMwn/5rzbKmiZOMjvh7s8FvYkmezWkmNW7YzOu99TvSTcyJIBOzl457hHkyulDbBaKWdJccGfc4GajVR4gycz/iFwgBpiHi1dbbHaF9QnqKxO2jh9aaCfUKaFapjLuDoSLfEcZQgEAA==";
+            APIKey = new CryptLib().decryptCipherTextWithRandomIV(new CryptLib().decryptCipherTextWithRandomIV(APIKey,"sanrakshak"),"sanrakshak");
+            String keyString="46HSOIkf1Y8T9zoxbzIjmjfD+x2T7pe4Gv0MJKDJDqNJxuVsNLYuMzpQJGLUj4pAUv3q7r8PJyuVS/YTA8iktOo1fRG0iJC6oZkuhvNtjDEAQBmYOii9z4tlSsiAGmUY";
+            keyString = new CryptLib().decryptCipherTextWithRandomIV(new CryptLib().decryptCipherTextWithRandomIV(keyString,"sanrakshak"),"sanrakshak");
+
+            String resource="https://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom="+zoom+"&size=400x400&maptype=terrain&key="+APIKey;
+            URL url=new URL(resource);
+
+            keyString = (keyString.replace('-', '+')).replace('_', '/');
+            byte[] key = android.util.Base64.decode(keyString, android.util.Base64.DEFAULT);
+
+            resource = url.getPath() + '?' + url.getQuery();
+            SecretKeySpec sha1Key = new SecretKeySpec(key, "HmacSHA1");
+            Mac mac = Mac.getInstance("HmacSHA1");
+            mac.init(sha1Key);
+            byte[] sigBytes = mac.doFinal(resource.getBytes());
+            String signature = android.util.Base64.encodeToString(sigBytes,android.util.Base64.DEFAULT);
+            signature = signature.replace('+', '-');
+            signature = signature.replace('/', '_');
+            return "https://maps.googleapis.com" + resource + "&signature=" + signature;
         }
-        catch (Exception e){Log.e("encrypt","Error while encryption");}
+        catch (Exception e){Log.e("signature","Error occured - "+e);}
         return "";
     }
     public int getIndex(String element,String arr[]){
