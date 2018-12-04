@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
-import java.util.Random;
 
 public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder> {
     private List<Cracks> cracks;
