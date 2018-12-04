@@ -130,10 +130,7 @@ public class HomeActivity extends AppCompatActivity {
 
         });
         refresh = findViewById(R.id.refresh);
-        refresh.setOnRefreshListener(() -> {
-
-            }
-        );
+        refresh.setOnRefreshListener(() -> { setCrackList(false);});
         home = findViewById(R.id.home);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,1);
         home.setLayoutManager(mLayoutManager);
@@ -220,7 +217,7 @@ public class HomeActivity extends AppCompatActivity {
                             user_edit.apply();
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            setCrackList();
+                            setCrackList(true);
                         });
                     }
                     catch (JSONException e) {
@@ -230,7 +227,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-    public void setCrackList(){
+    public void setCrackList(boolean splash){
         home.setAdapter(null);
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
@@ -243,7 +240,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Failed - "+e);
                 call.cancel();
-                splash();
+                if(splash)splash();
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
@@ -263,7 +260,7 @@ public class HomeActivity extends AppCompatActivity {
                         crack_edit.apply();
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-                            splash();
+                            if(splash)splash();
                         });
                     }
                     catch (JSONException e) {
