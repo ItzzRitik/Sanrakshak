@@ -260,6 +260,7 @@ public class HomeActivity extends AppCompatActivity {
                         crack_edit.apply();
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                            refresh.setRefreshing(false);
                             if(splash)splash();
                         });
                     }
