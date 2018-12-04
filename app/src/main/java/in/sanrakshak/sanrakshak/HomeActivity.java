@@ -183,7 +183,7 @@ public class HomeActivity extends AppCompatActivity {
         }
         else{
             new Handler(Looper.getMainLooper()).post(() -> {
-                cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<String>>() {}.getType());
+                cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
                 home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                 splash();
             });
