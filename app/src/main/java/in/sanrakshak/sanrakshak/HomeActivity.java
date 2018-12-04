@@ -55,6 +55,7 @@ import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -267,8 +268,15 @@ public class HomeActivity extends AppCompatActivity {
             List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
             if(null!=listAddresses&&listAddresses.size()>0){
                 Address obj = listAddresses.get(0);
-                Log.i("backend_call", "Server Response - "+obj.getAddressLine(obj.getMaxAddressLineIndex()));
-                return obj.getSubLocality()+", "+obj.getLocality();
+                Log.i("backend_call", obj.getLocality()+" - "+obj.getAddressLine(0));
+                String name=obj.getAddressLine(0);
+                name=name.substring(0,name.indexOf(obj.getLocality()));
+                int end=name.lastIndexOf(',',name.lastIndexOf(',')-1);
+                int start=name.lastIndexOf(',',end-1);
+                if(start<0)start=0;
+                Log.i("backend_call", start+" - "+end+" - "+name.substring(start,end));
+                name+=", "+obj.getLocality();
+                return name;
             }
         } catch (IOException e) {
             e.printStackTrace();
