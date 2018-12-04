@@ -19,13 +19,15 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     private List<Cracks> cracks;
     private HomeActivity homeActivity;
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name,date;
+        TextView name,city,date;
         LinearLayout cardItem;
         ImageView preview;
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
             name.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2_bold.otf"));
+            city = view.findViewById(R.id.city);
+            city.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2.ttf"));
             date = view.findViewById(R.id.date);
             date.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2_bold.otf"));
             preview = view.findViewById(R.id.thumbnail);
