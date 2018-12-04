@@ -244,10 +244,10 @@ public class HomeActivity extends AppCompatActivity {
                         Log.i("backend_call", "Server Response - "+postsArray);
                         cracks = new ArrayList<>();
                         for (int i = 0; i < postsArray.length(); i++) {
-                            JSONObject pO = postsArray.getJSONObject(i);
-                            double lat=Double.parseDouble(pO.getString("x"));
-                            double lng=Double.parseDouble(pO.getString("y"));
-                            cracks.add(new Cracks(getPlaceName(lat,lng),pO.getString("y"),pO.getString("y"),getMapURL(lat,lng,15)));
+                            JSONObject obj = postsArray.getJSONObject(i);
+                            double lat=Double.parseDouble(obj.getString("x"));
+                            double lng=Double.parseDouble(obj.getString("y"));
+                            cracks.add(new Cracks(getPlaceName(lat,lng),obj.getString("y"),obj.getString("y"),getMapURL(lat,lng,15)));
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
