@@ -131,7 +131,8 @@ public class HomeActivity extends AppCompatActivity {
         });
         refresh = findViewById(R.id.refresh);
         refresh.setOnRefreshListener(() -> {
-            setCrackList(false);
+            if(isOnline()){setCrackList(false);}
+            else {refresh.setRefreshing(false);}
         });
         home = findViewById(R.id.home);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,1);
@@ -242,6 +243,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Failed - "+e);
                 call.cancel();
+                refresh.setRefreshing(false);
                 if(splash)splash();
             }
             @Override

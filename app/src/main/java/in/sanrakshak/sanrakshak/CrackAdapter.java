@@ -58,6 +58,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     }
     @Override
     public int getItemCount() {
+        if(cracks==null){return 0;}
         return cracks.size();
     }
 }
