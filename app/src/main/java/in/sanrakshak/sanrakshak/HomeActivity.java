@@ -273,8 +273,8 @@ public class HomeActivity extends AppCompatActivity {
                 name=name.substring(0,name.indexOf(obj.getLocality()));
                 int end=name.lastIndexOf(',',name.lastIndexOf(',')-1);
                 int start=name.lastIndexOf(',',end-1);
-                if(start<0)start=0;
-                Log.i("backend_call", start+" - "+end+" - "+name.substring(start,end));
+                start=start<0?0:start+2;
+                name=name.substring(start,end);
                 name+=", "+obj.getLocality();
                 return name;
             }
