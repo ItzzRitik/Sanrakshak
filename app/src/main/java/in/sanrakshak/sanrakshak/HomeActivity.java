@@ -286,8 +286,7 @@ public class HomeActivity extends AppCompatActivity {
                             JSONObject pO = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(pO.getString("x"));
                             double lng=Double.parseDouble(pO.getString("y"));
-                            Log.i("backend_call", "Server Response - "+getMapURL(lat,lng,15));
-                            cracks.add(new Cracks(getPlaceName(lat,lng),pO.getString("y"),pO.getString("y"),null));
+                            cracks.add(new Cracks(getPlaceName(lat,lng),pO.getString("y"),pO.getString("y"),getMapURL(lat,lng,15)));
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
