@@ -44,6 +44,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tomergoldst.tooltips.ToolTipsManager;
 
 import org.json.JSONArray;
@@ -179,7 +181,13 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
-        else{new Handler(Looper.getMainLooper()).post(this::splash);}
+        else{
+            new Handler(Looper.getMainLooper()).post(() -> {
+                cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<String>>() {}.getType());
+                home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                splash();
+            });
+        }
     }
     public void cacheData(){
         appNameSplash.setText(R.string.fetch);
@@ -249,8 +257,10 @@ public class HomeActivity extends AppCompatActivity {
                             double lat=Double.parseDouble(obj.getString("x"));
                             double lng=Double.parseDouble(obj.getString("y"));
                             cracks.add(new Cracks(getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                    obj.getString("y"),obj.getString("y"),getMapURL(lat,lng,16,400)));
+                                    obj.getString("y"),"Date (DD/MM/YYYY)",getMapURL(lat,lng,16,400)));
                         }
+                        crack_edit.putString("list", new Gson().toJson(cracks));
+                        crack_edit.apply();
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                             splash();
@@ -277,7 +287,7 @@ public class HomeActivity extends AppCompatActivity {
                 start=start<0?0:start+2;
                 name=name.substring(start,end);
                 if(token==0){return name;}
-                else if(token==1){return  obj.getLocality();}
+                else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea();}
             }
         } catch (IOException e) {
             e.printStackTrace();
