@@ -247,7 +247,7 @@ public class HomeActivity extends AppCompatActivity {
                             JSONObject obj = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(obj.getString("x"));
                             double lng=Double.parseDouble(obj.getString("y"));
-                            cracks.add(new Cracks(getPlaceName(lat,lng),obj.getString("y"),obj.getString("y"),getMapURL(lat,lng,15)));
+                            cracks.add(new Cracks(getPlaceName(lat,lng),obj.getString("y"),obj.getString("y"),getMapURL(lat,lng,15,200)));
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
@@ -267,6 +267,7 @@ public class HomeActivity extends AppCompatActivity {
             List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
             if(null!=listAddresses&&listAddresses.size()>0){
                 Address obj = listAddresses.get(0);
+                Log.i("backend_call", "Server Response - "+obj.getAddressLine(obj.getMaxAddressLineIndex()));
                 return obj.getSubLocality()+", "+obj.getLocality();
             }
         } catch (IOException e) {
@@ -274,14 +275,14 @@ public class HomeActivity extends AppCompatActivity {
         }
         return "";
     }
-    public String getMapURL(double lat, double lng, int zoom){
+    public String getMapURL(double lat, double lng, int zoom, int size){
         try{
             String APIKey="3dd4wgt62K2sMwn/5rzbKmiZOMjvh7s8FvYkmezWkmNW7YzOu99TvSTcyJIBOzl457hHkyulDbBaKWdJccGfc4GajVR4gycz/iFwgBpiHi1dbbHaF9QnqKxO2jh9aaCfUKaFapjLuDoSLfEcZQgEAA==";
             APIKey = new CryptLib().decryptCipherTextWithRandomIV(new CryptLib().decryptCipherTextWithRandomIV(APIKey,"sanrakshak"),"sanrakshak");
             String keyString="46HSOIkf1Y8T9zoxbzIjmjfD+x2T7pe4Gv0MJKDJDqNJxuVsNLYuMzpQJGLUj4pAUv3q7r8PJyuVS/YTA8iktOo1fRG0iJC6oZkuhvNtjDEAQBmYOii9z4tlSsiAGmUY";
             keyString = new CryptLib().decryptCipherTextWithRandomIV(new CryptLib().decryptCipherTextWithRandomIV(keyString,"sanrakshak"),"sanrakshak");
 
-            String resource="https://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom="+zoom+"&size=400x400&maptype=terrain&key="+APIKey;
+            String resource="https://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom="+zoom+"&size="+size+"x"+size+"&maptype=terrain&key="+APIKey;
             URL url=new URL(resource);
 
             keyString = (keyString.replace('-', '+')).replace('_', '/');
