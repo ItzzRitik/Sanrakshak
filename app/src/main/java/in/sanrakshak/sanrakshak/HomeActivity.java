@@ -271,6 +271,7 @@ public class HomeActivity extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                             refresh.setRefreshing(false);
+                            Toast.makeText(HomeActivity.this, ""+data_div.getWidth()*5/11, Toast.LENGTH_SHORT).show();
                             if(splash)splash();
                         });
                     }
