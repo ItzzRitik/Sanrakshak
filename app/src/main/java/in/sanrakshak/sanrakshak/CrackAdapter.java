@@ -60,21 +60,17 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 .apply(new RequestOptions().centerCrop())
                 .into(holder.preview);
         holder.preview.setOnClickListener(view -> {
-            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);anims.setFillAfter(true);
-            holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.startAnimation(anims);
-            holder.navtrigger.requestFocus();
+            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
+            holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();holder.navtrigger.startAnimation(anims);
         });
         holder.navtrigger.setOnClickListener(view -> {
-            AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(400);anims.setFillAfter(true);
+            AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(400);
             holder.navtrigger.startAnimation(anims);
             anims.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {}
                 @Override
-                public void onAnimationEnd(Animation animation) {
-                    holder.navtrigger.setVisibility(View.GONE);
-                    holder.preview.requestFocus();
-                }
+                public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);holder.preview.requestFocus(); }
                 @Override
                 public void onAnimationRepeat(Animation animation) {}
             });
