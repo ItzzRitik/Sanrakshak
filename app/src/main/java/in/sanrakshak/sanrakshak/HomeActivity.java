@@ -203,7 +203,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Connection Failed - "+e);
                 call.cancel();
-                Toast.makeText(HomeActivity.this, "R.string.unreachable", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                 splash();
             }
             @Override
@@ -246,7 +246,7 @@ public class HomeActivity extends AppCompatActivity {
                 Log.i("backend_call", "Failed - "+e);
                 call.cancel();
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    Toast.makeText(HomeActivity.this, "R.string.unreachable", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                     cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
                     home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                     refresh.setRefreshing(false);
