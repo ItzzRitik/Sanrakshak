@@ -14,8 +14,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="back_tictac" />
-                            <entry key="sourceFile" value="C:\Users\Ritik Srivastava\Desktop\tic-tac-toe.svg" />
+                            <entry key="outputName" value="navigation" />
+                            <entry key="sourceFile" value="C:\Users\Ritik Srivastava\Downloads\cursor.svg" />
                           </map>
                         </option>
                       </PersistentState>
