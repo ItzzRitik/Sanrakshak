@@ -132,7 +132,7 @@ public class HomeActivity extends AppCompatActivity {
         refresh = findViewById(R.id.refresh);
         refresh.setOnRefreshListener(() -> {
             if(isOnline()){setCrackList(false);}
-            else {refresh.setRefreshing(false);}
+            else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
         });
         home = findViewById(R.id.home);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,1);
@@ -163,7 +163,6 @@ public class HomeActivity extends AppCompatActivity {
                     Log.i("backend_call", "Connection Failed - "+e);
                     call.cancel();
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                         splash();
                     });
                 }
@@ -185,9 +184,7 @@ public class HomeActivity extends AppCompatActivity {
             });
         }
         else{
-            new Handler(Looper.getMainLooper()).post(() -> {
-                splash();
-            });
+            splash();
         }
     }
     public void cacheData(){
