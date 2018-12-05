@@ -298,10 +298,11 @@ public class HomeActivity extends AppCompatActivity {
                 //Log.i("backend_call", obj.getLocality()+" - "+obj.getAddressLine(0));
                 String name=obj.getAddressLine(0);
                 String[] split = name.split(", ");
-                int title=getIndex(obj.getLocality(),split)-2;
-                title = (title<=0)?0:title;
-                name=split[title];
-                name=name.substring(0,name.indexOf(' ')+1);
+                int index=getIndex(obj.getLocality(),split)-2;
+                index = (index<=0)?0:index;
+                name=split[index];
+                index=name.indexOf(' ',name.indexOf(' ')+1);
+                if(index>=0){name=name.substring(0,index);}
                 if(token==0){return name;}
                 else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea();}
             }
