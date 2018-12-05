@@ -295,14 +295,12 @@ public class HomeActivity extends AppCompatActivity {
             List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
             if(null!=listAddresses&&listAddresses.size()>0){
                 Address obj = listAddresses.get(0);
-                Log.i("backend_call", obj.getLocality()+" - "+obj.getAddressLine(0));
+                //Log.i("backend_call", obj.getLocality()+" - "+obj.getAddressLine(0));
                 String name=obj.getAddressLine(0);
-                name=name.substring(0,name.indexOf(obj.getLocality()));
-                int end=name.lastIndexOf(',',name.lastIndexOf(',')-1);
-                int start=name.lastIndexOf(',',end-1);
+                String[] split = name.split(", ");
 
-                start=(start<=0)?0:start+2;
-                name=name.substring(start,end);
+                Log.i("backend_call", ""+split[getIndex(obj.getLocality(),split)]);
+
                 if(token==0){return name;}
                 else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea();}
             }
