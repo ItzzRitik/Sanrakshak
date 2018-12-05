@@ -6,10 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -57,16 +59,13 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 .apply(new RequestOptions().centerCrop())
                 .into(holder.preview);
         holder.preview.setOnClickListener(view -> {
-            if(holder.navtrigger.getVisibility()==View.VISIBLE)
-                holder.navtrigger.setVisibility(View.INVISIBLE);
-            else if(holder.navtrigger.getVisibility()==View.INVISIBLE)
-                holder.navtrigger.setVisibility(View.VISIBLE);
+            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);anims.setFillAfter(true);
+            holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.startAnimation(anims);
             holder.navtrigger.requestFocus();
         });
-        holder.navtrigger.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                holder.navtrigger.setVisibility(View.INVISIBLE);
-            }
+        holder.navtrigger.setOnClickListener(view -> {
+            AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(400);anims.setFillAfter(true);
+            holder.navtrigger.setVisibility(View.GONE);holder.navtrigger.startAnimation(anims);
         });
         holder.cardItem.setOnClickListener(view -> {
         });
