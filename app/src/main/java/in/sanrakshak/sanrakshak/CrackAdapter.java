@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -22,6 +23,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         TextView name,city,date;
         LinearLayout cardItem;
         ImageView preview;
+        RelativeLayout navtrigger;
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
@@ -31,6 +33,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             date = view.findViewById(R.id.date);
             date.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2_bold.otf"));
             preview = view.findViewById(R.id.thumbnail);
+            navtrigger = view.findViewById(R.id.navtrigger);
             cardItem = view.findViewById(R.id.cardItem);
         }
     }
@@ -53,6 +56,9 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         Glide.with(homeActivity).load(item.getPreview())
                 .apply(new RequestOptions().centerCrop())
                 .into(holder.preview);
+        holder.preview.setOnClickListener(view -> {
+            holder.navtrigger.setVisibility(View.VISIBLE);
+        });
         holder.cardItem.setOnClickListener(view -> {
         });
     }
