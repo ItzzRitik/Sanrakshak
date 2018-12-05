@@ -301,6 +301,7 @@ public class HomeActivity extends AppCompatActivity {
                 int index=getIndex(obj.getLocality(),split)-2;
                 index = (index<=0)?0:index;
                 name=split[index];
+                Log.i("backend_call", name);
                 index=name.indexOf(' ',name.indexOf(' ')+1);
                 if(index>=0){name=name.substring(0,index);}
                 if(token==0){return name;}
