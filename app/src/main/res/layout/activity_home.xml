@@ -86,7 +86,7 @@
                             android:layout_height="match_parent"
                             android:scrollbars="vertical"
                             android:visibility="gone"
-                            android:paddingTop="90dp"
+                            android:paddingTop="85dp"
                             android:clipToPadding="false"
                             android:id="@+id/home">
                         </android.support.v7.widget.RecyclerView>
@@ -95,9 +95,9 @@
             </android.support.v7.widget.CardView>
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="135dp"
+                android:layout_height="125dp"
                 android:layout_alignParentTop="true"
-                android:background="@drawable/actionbar">
+                android:background="@drawable/tint_actionbar">
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
@@ -127,6 +127,12 @@
                     android:layout_marginEnd="25dp"
                     android:visibility="invisible"
                     style="@style/SelectableItemBackgroundBorderless"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/tint_actionbar">
+
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
