@@ -21,14 +21,16 @@
         android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait">
 
         </activity>
-        <activity
-            android:name=".ProfileActivity">
+        <activity android:name=".ProfileActivity"
+            android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".HomeActivity">
+        <activity android:name=".HomeActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
