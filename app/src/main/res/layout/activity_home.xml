@@ -87,6 +87,7 @@
                             android:scrollbars="vertical"
                             android:visibility="gone"
                             android:paddingTop="85dp"
+                            android:paddingBottom="50dp"
                             android:clipToPadding="false"
                             android:id="@+id/home">
                         </android.support.v7.widget.RecyclerView>
@@ -130,8 +131,9 @@
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:background="@drawable/tint_actionbar">
+                android:layout_height="50dp"
+                android:background="@drawable/tint_navbar"
+                android:layout_alignParentBottom="true">
 
             </RelativeLayout>
         </RelativeLayout>
