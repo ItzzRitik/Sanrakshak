@@ -300,7 +300,8 @@ public class HomeActivity extends AppCompatActivity {
                 name=name.substring(0,name.indexOf(obj.getLocality()));
                 int end=name.lastIndexOf(',',name.lastIndexOf(',')-1);
                 int start=name.lastIndexOf(',',end-1);
-                start=start<0?0:start+2;
+
+                start=(start<=0)?0:start+2;
                 name=name.substring(start,end);
                 if(token==0){return name;}
                 else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea();}
