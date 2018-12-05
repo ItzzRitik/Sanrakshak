@@ -264,14 +264,13 @@ public class HomeActivity extends AppCompatActivity {
                             double lat=Double.parseDouble(obj.getString("x"));
                             double lng=Double.parseDouble(obj.getString("y"));
                             cracks.add(new Cracks(getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                    obj.getString("y"),"Date (DD/MM/YYYY)",getMapURL(lat,lng,16,400)));
+                                    obj.getString("y"),"Date (DD/MM/YYYY)",getMapURL(lat,lng,16,data_div.getWidth()*7/17)));
                         }
                         crack_edit.putString("list", new Gson().toJson(cracks));
                         crack_edit.apply();
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                             refresh.setRefreshing(false);
-                            Toast.makeText(HomeActivity.this, ""+data_div.getWidth()*5/11, Toast.LENGTH_SHORT).show();
                             if(splash)splash();
                         });
                     }
