@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -65,7 +66,18 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         });
         holder.navtrigger.setOnClickListener(view -> {
             AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(400);anims.setFillAfter(true);
-            holder.navtrigger.setVisibility(View.GONE);holder.navtrigger.startAnimation(anims);
+            holder.navtrigger.startAnimation(anims);
+            anims.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {}
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    holder.navtrigger.setVisibility(View.GONE);
+                    holder.preview.requestFocus();
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {}
+            });
         });
         holder.cardItem.setOnClickListener(view -> {
         });
