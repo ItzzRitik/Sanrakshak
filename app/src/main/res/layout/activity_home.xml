@@ -91,38 +91,41 @@
                     </RelativeLayout>
                 </android.support.v4.widget.SwipeRefreshLayout>
             </android.support.v7.widget.CardView>
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:id="@+id/menu"
-                android:src="@drawable/menu"
-                android:layout_above="@+id/data_div"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="18dp"
-                android:layout_marginStart="28dp"
-                android:visibility="invisible"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/page_tag"
-                android:text="@string/home"
-                android:layout_above="@+id/data_div"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="15dp"
-                android:layout_marginStart="85dp"
-                android:visibility="invisible"
-                android:textSize="28sp"
-                android:textColor="@color/profile"/>
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:id="@+id/done"
-                android:layout_above="@+id/data_div"
-                android:layout_alignParentEnd="true"
-                android:layout_marginBottom="18dp"
-                android:layout_marginEnd="25dp"
-                android:visibility="invisible"
-                style="@style/SelectableItemBackgroundBorderless"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/actionbar">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:id="@+id/menu"
+                    android:src="@drawable/menu"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="28dp"
+                    android:visibility="invisible"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/page_tag"
+                    android:text="@string/home"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="85dp"
+                    android:visibility="invisible"
+                    android:textSize="28sp"
+                    android:textColor="@color/profile"/>
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:id="@+id/done"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="25dp"
+                    android:visibility="invisible"
+                    style="@style/SelectableItemBackgroundBorderless"/>
+            </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 </FrameLayout>

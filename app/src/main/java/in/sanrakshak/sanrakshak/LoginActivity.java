@@ -281,6 +281,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
 
         }
         catch (Exception e){Log.e("encrypt","Error while encryption");}
+        Toast.makeText(LoginActivity.this, " - "+getHeightStatusNav(1), Toast.LENGTH_SHORT).show();
         splash(0);
     }
     public void splash(final int iteration){
@@ -316,7 +317,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
 
                             anim=AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_trans);
                             anim.setDuration(550);ico_splash.startAnimation(anim);
-
                             new Handler().postDelayed(() -> {
                                 new Handler().postDelayed(() -> scaleY(login_div,48,400,new OvershootInterpolator()),200);
                                 scaleY(social_div,80,280,new AccelerateInterpolator());
