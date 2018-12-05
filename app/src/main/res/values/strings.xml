@@ -72,6 +72,7 @@
     <string name="email_wait">Waiting for Email Verification</string>
     <string name="fetch">FETCHING DATA</string>
     <string name="map_preview">Map Preview</string>
+    <string name="unreachable">SERVER UNREACHABLE</string>
 </resources>
 
 

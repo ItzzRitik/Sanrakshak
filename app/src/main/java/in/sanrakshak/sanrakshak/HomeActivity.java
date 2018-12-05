@@ -163,6 +163,7 @@ public class HomeActivity extends AppCompatActivity {
                     Log.i("backend_call", "Connection Failed - "+e);
                     call.cancel();
                     new Handler(Looper.getMainLooper()).post(() -> {
+                        Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                         splash();
                     });
                 }
@@ -171,7 +172,9 @@ public class HomeActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         Log.i("backend_call","Server Response => "+response.message());
                         if(response.code()==503) {
-                            splash();
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                splash();
+                            });
                         }
                         else
                         {
@@ -183,8 +186,6 @@ public class HomeActivity extends AppCompatActivity {
         }
         else{
             new Handler(Looper.getMainLooper()).post(() -> {
-                cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
-                home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                 splash();
             });
         }
@@ -202,6 +203,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Connection Failed - "+e);
                 call.cancel();
+                Toast.makeText(HomeActivity.this, "R.string.unreachable", Toast.LENGTH_SHORT).show();
                 splash();
             }
             @Override
@@ -243,8 +245,13 @@ public class HomeActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Failed - "+e);
                 call.cancel();
-                refresh.setRefreshing(false);
-                if(splash)splash();
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Toast.makeText(HomeActivity.this, "R.string.unreachable", Toast.LENGTH_SHORT).show();
+                    cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
+                    home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                    refresh.setRefreshing(false);
+                    if(splash)splash();
+                });
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
@@ -271,6 +278,12 @@ public class HomeActivity extends AppCompatActivity {
                     catch (JSONException e) {
                         Log.w("error", e.toString());
                     }
+                }
+                else{
+                    cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
+                    home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                    refresh.setRefreshing(false);
+                    if(splash)splash();
                 }
             }
         });
@@ -323,6 +336,9 @@ public class HomeActivity extends AppCompatActivity {
         return "";
     }
     public void splash(){
+        cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
+        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
         appNameSplash.setText(getString(R.string.app_name));
         appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
