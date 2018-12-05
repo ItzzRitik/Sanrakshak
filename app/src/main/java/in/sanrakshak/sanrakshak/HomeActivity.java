@@ -130,10 +130,14 @@ public class HomeActivity extends AppCompatActivity {
 
         });
         refresh = findViewById(R.id.refresh);
+        refresh.setProgressViewOffset(true,dptopx(0),dptopx(100));
+        refresh.setNestedScrollingEnabled(true);
+        refresh.setSlingshotDistance(dptopx(200));
         refresh.setOnRefreshListener(() -> {
             if(isOnline()){setCrackList(false);}
             else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
         });
+
         home = findViewById(R.id.home);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,1);
         home.setLayoutManager(mLayoutManager);

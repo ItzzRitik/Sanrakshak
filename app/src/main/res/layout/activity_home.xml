@@ -86,6 +86,8 @@
                             android:layout_height="match_parent"
                             android:scrollbars="vertical"
                             android:visibility="gone"
+                            android:paddingTop="90dp"
+                            android:clipToPadding="false"
                             android:id="@+id/home">
                         </android.support.v7.widget.RecyclerView>
                     </RelativeLayout>
