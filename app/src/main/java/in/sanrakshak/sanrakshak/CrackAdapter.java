@@ -58,6 +58,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 .into(holder.preview);
         holder.preview.setOnClickListener(view -> {
             holder.navtrigger.setVisibility(View.VISIBLE);
+            holder.navtrigger.requestFocus();
         });
         holder.cardItem.setOnClickListener(view -> {
         });

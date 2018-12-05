@@ -39,6 +39,8 @@
                     android:layout_height="match_parent"
                     android:id="@+id/navtrigger"
                     android:visibility="invisible"
+                    android:focusable="true"
+                    android:clickable="true"
                     android:background="#aa000000">
                     <ImageView
                         android:layout_width="wrap_content"
