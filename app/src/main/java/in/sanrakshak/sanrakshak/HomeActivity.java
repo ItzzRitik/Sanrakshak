@@ -212,7 +212,6 @@ public class HomeActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
-                        Log.i("backend_call", "Server Response - "+postsArray);
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject pO = postsArray.getJSONObject(i);
                             user_edit.putString("fname", pO.getString("fname"));
@@ -259,7 +258,6 @@ public class HomeActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
-                        Log.i("backend_call", "Server Response - "+postsArray);
                         cracks = new ArrayList<>();
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject obj = postsArray.getJSONObject(i);
@@ -296,15 +294,14 @@ public class HomeActivity extends AppCompatActivity {
             if(null!=listAddresses&&listAddresses.size()>0){
                 Address obj = listAddresses.get(0);
                 //Log.i("backend_call", obj.getLocality()+" - "+obj.getAddressLine(0));
-                String name=obj.getAddressLine(0);
-                String[] split = name.split(", ");
-                int index=getIndex(obj.getLocality(),split)-2;
-                index = (index<=0)?0:index;
-                name=split[index];
-                Log.i("backend_call", name);
-                index=name.indexOf(' ',name.indexOf(' ')+1);
-                if(index>=0){name=name.substring(0,index);}
-                if(token==0){return name;}
+                if(token==0){
+                    String name=obj.getAddressLine(0);
+                    String[] split = name.split(", ");
+                    int index=getIndex(obj.getLocality(),split)-2;
+                    index = (index<=0)?0:index;
+                    name=split[index];
+                    return name;
+                }
                 else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea();}
             }
         } catch (IOException e) {
