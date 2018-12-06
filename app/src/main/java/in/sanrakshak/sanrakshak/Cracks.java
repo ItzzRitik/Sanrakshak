@@ -3,14 +3,20 @@ package in.sanrakshak.sanrakshak;
 import android.graphics.Bitmap;
 
 public class Cracks {
-    private String name,city,intensity,date,preview;
-    Cracks(String name,String city,String intensity, String date, String preview) {
+    private String latitude,longitude,name,city,intensity,date,preview;
+    Cracks(String latitude,String longitude,String name,String city,String intensity, String date, String preview) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.name = name;
         this.city = city;
         this.intensity = intensity;
         this.date = date;
         this.preview = preview;
     }
+    public String getLatitude() {return latitude;}
+    public void setLatitude(String latitude) {this.latitude = latitude;}
+    public String getLongitude() {return longitude;}
+    public void setLongitude(String longitude) {this.longitude = longitude;}
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
     public String getCity() {return city;}
