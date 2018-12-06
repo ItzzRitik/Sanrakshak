@@ -6,7 +6,7 @@
     <color name="colorAccentLight">#42a5f5</color>
     <color name="colorAccentDark">#0091ea</color>
     <color name="green">#71DE56</color>
-    <color name="ripple">#f187b8d9</color>
+    <color name="ripple">#64ffffff</color>
 
     <color name="disabled">#c1c1c1</color>
     <color name="profile">#6c6c6c</color>
