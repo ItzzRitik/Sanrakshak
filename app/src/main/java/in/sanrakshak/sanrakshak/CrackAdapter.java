@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +11,13 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.danimahardhika.cafebar.CafeBar;
 
 import java.util.List;
 
@@ -91,18 +88,11 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 homeActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
             else{
-                BottomSheetDialog dialog = new BottomSheetDialog(homeActivity);
-                dialog.setContentView(R.layout.your_bottomsheet_layout);
-                dialog.setCanceledOnTouchOutside(false);
-
-                ImageView btnClose = dialog.findViewById(R.id.button_close);
-                btnClose.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
+                CafeBar.builder(homeActivity)
+                        .content(R.string.map_preview)
+                        //automatically determine if device has soft navigation bar and translucent navigation bar
+                        .fitSystemWindow()
+                        .show();
             }
         });
         holder.cardItem.setOnClickListener(view -> {
