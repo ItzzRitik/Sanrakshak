@@ -48,6 +48,7 @@
                         android:padding="10dp"
                         android:id="@+id/navigate"
                         android:layout_centerInParent="true"
+                        android:background="@drawable/navigator"
                         android:src="@drawable/navigation"
                         android:clickable="true"
                         android:focusable="true"
