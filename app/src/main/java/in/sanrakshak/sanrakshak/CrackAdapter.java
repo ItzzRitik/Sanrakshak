@@ -1,6 +1,8 @@
 package in.sanrakshak.sanrakshak;
 
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,7 +28,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,city,date;
         LinearLayout cardItem;
-        ImageView preview;
+        ImageView preview,navigate;
         RelativeLayout navtrigger;
         MyViewHolder(View view) {
             super(view);
@@ -38,6 +40,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             date.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2_bold.otf"));
             preview = view.findViewById(R.id.thumbnail);
             navtrigger = view.findViewById(R.id.navtrigger);
+            navigate = view.findViewById(R.id.navigate);
             cardItem = view.findViewById(R.id.cardItem);
         }
     }
@@ -75,6 +78,13 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 @Override
                 public void onAnimationRepeat(Animation animation) {}
             });
+        });
+        holder.navigate.setOnClickListener(view -> {
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+item.getLatitude()+","+item.getLongitude()));
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(homeActivity.getPackageManager()) != null) {
+                homeActivity.startActivity(mapIntent);
+            }
         });
         holder.cardItem.setOnClickListener(view -> {
         });
