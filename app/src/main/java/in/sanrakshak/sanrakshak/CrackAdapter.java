@@ -1,6 +1,7 @@
 package in.sanrakshak.sanrakshak;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -17,7 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.danimahardhika.cafebar.CafeBar;
+import com.irozon.sneaker.Sneaker;
 
 import java.util.List;
 
@@ -88,12 +89,19 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 homeActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
             else{
-                CafeBar.builder(homeActivity)
-                        .content(R.string.map_preview)
-                        //automatically determine if device has soft navigation bar and translucent navigation bar
-                        .fitSystemWindow()
-                        .show();
-            }
+                Sneaker.with(homeActivity)
+                        .setTitle("Download",  Color.WHITE) // Title and title color
+                        .setMessage(homeActivity.getString(R.string.mapsdownload), Color.WHITE) // Message and message color
+                        .setDuration(4000) // Time duration to show
+                        .autoHide(true) // Auto hide Sneaker view
+                        .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT) // Height of the Sneaker layout
+                        .setIcon(R.drawable.icon, R.color.colorAccent, true) // Icon, icon tint color and circular icon view
+                        .setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2.ttf")) // Custom font for title and message
+                        //.setOnSneakerClickListener(homeActivity) // Click listener for Sneaker
+                        //.setOnSneakerDismissListener(this) // Dismiss listener for Sneaker. - Version 1.0.2
+                        .setCornerRadius(5, 5) // Radius and margin for round corner Sneaker. - Version 1.0.2
+                        .sneak(R.color.colorAccent); // Sneak with background color
+                 }
         });
         holder.cardItem.setOnClickListener(view -> {
         });
