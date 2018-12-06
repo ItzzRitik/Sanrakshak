@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -60,11 +61,11 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 .apply(new RequestOptions().centerCrop())
                 .into(holder.preview);
         holder.preview.setOnClickListener(view -> {
-            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
+            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
             holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();holder.navtrigger.startAnimation(anims);
         });
         holder.navtrigger.setOnClickListener(view -> {
-            AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(400);
+            AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
             holder.navtrigger.startAnimation(anims);
             anims.setAnimationListener(new Animation.AnimationListener() {
                 @Override

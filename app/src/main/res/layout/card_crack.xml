@@ -41,7 +41,7 @@
                     android:visibility="gone"
                     android:focusable="true"
                     android:clickable="true"
-                    android:background="#96000000">
+                    android:background="#82000000">
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
