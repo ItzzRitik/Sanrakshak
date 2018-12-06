@@ -84,8 +84,8 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude()));
             mapIntent.setPackage("com.google.android.apps.maps");
             if (mapIntent.resolveActivity(homeActivity.getPackageManager()) != null) {
-
                 homeActivity.startActivity(mapIntent);
+                homeActivity.overridePendingTransition(0, R.anim.fade_out);
             }
             else{
                 Toast.makeText(homeActivity, "Google Maps Not Available", Toast.LENGTH_SHORT).show();
