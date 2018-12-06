@@ -80,10 +80,15 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             });
         });
         holder.navigate.setOnClickListener(view -> {
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+item.getLatitude()+","+item.getLongitude()));
+            holder.navtrigger.performClick();
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude()));
             mapIntent.setPackage("com.google.android.apps.maps");
             if (mapIntent.resolveActivity(homeActivity.getPackageManager()) != null) {
+
                 homeActivity.startActivity(mapIntent);
+            }
+            else{
+                Toast.makeText(homeActivity, "Google Maps Not Available", Toast.LENGTH_SHORT).show();
             }
         });
         holder.cardItem.setOnClickListener(view -> {
