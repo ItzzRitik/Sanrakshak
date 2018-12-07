@@ -189,7 +189,6 @@ public class HomeActivity extends AppCompatActivity {
         if(isOnline())
         {
             splash(true);
-            refresh.setRefreshing(true);
             Log.i("backend_call", "Connecting");
             try{
                 postBody = new FormBody.Builder()
@@ -218,7 +217,7 @@ public class HomeActivity extends AppCompatActivity {
             });
         }
         else{
-            splash(true);
+            splash(false);
         }
     }
     public void cacheData(){
@@ -368,8 +367,8 @@ public class HomeActivity extends AppCompatActivity {
         home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
         refresh.setRefreshing(false);
     }
-    public void splash(boolean loadCache){
-        if(loadCache)loadCache();
+    public void splash(final boolean loadOnline){
+        loadCache();
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
         appNameSplash.setText(getString(R.string.app_name));
         appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
@@ -378,19 +377,6 @@ public class HomeActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             splash_cover.setVisibility(View.GONE);
             logo_div.setVisibility(View.VISIBLE);
-
-            float CurrentX = ico_splash.getX();
-            float CurrentY = ico_splash.getY();
-            float FinalX = 0;
-            float FinalY = 35;
-            Path path = new Path();
-            path.moveTo(CurrentX, CurrentY);
-            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
-
-            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-            startAnim.setDuration(600);
-            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            startAnim.start();
             ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
             new Handler().postDelayed(() -> {
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
@@ -401,11 +387,12 @@ public class HomeActivity extends AppCompatActivity {
                 page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
                 menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
                 done.setVisibility(View.VISIBLE);done.startAnimation(anims);
-                setLightTheme(true,true);
-            },400);
-            new Handler().postDelayed(() -> {
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(800);
+                anims = new AlphaAnimation(0,1);anims.setDuration(800);
                 data_div.startAnimation(anims);
+                new Handler().postDelayed(() -> {
+                    if(loadOnline)listRefresh();
+                },800);
+                setLightTheme(true,true);
             },400);
         },1500);
     }
