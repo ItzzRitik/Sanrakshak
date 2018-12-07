@@ -312,7 +312,8 @@ public class HomeActivity extends AppCompatActivity {
                             home.setAdapter(null);
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                             refresh.setRefreshing(false);
-                            Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
+                            if(splash)splash(false);
+                            else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
                         });
                     }
                     catch (JSONException e) {
