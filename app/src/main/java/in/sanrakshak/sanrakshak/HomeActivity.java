@@ -184,6 +184,7 @@ public class HomeActivity extends AppCompatActivity {
         connect();
     }
     public void connect(){
+        splash();
         if(isOnline())
         {
             Log.i("backend_call", "Connecting");
@@ -199,33 +200,19 @@ public class HomeActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     Log.i("backend_call", "Connection Failed - "+e);
                     call.cancel();
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        splash();
-                    });
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         Log.i("backend_call","Server Response => "+response.message());
-                        if(response.code()==503) {
-                            new Handler(Looper.getMainLooper()).post(() -> {
-                                splash();
-                            });
-                        }
-                        else
-                        {
-                            cacheData();
-                        }
+                        if(response.code()==503) {}
+                        else{cacheData();}
                     });
                 }
             });
         }
-        else{
-            splash();
-        }
     }
     public void cacheData(){
-        appNameSplash.setText(R.string.fetch);
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
             postBody = new FormBody.Builder().add("email",enc).build();
@@ -291,6 +278,9 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         cracks = new ArrayList<>();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            home.setAdapter(null);
+                        });
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject obj = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(obj.getString("x"));
@@ -301,7 +291,6 @@ public class HomeActivity extends AppCompatActivity {
                         crack_edit.putString("list", new Gson().toJson(cracks));
                         crack_edit.apply();
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            home.setAdapter(null);
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                             refresh.setRefreshing(false);
                             if(splash)splash();
