@@ -164,6 +164,7 @@ public class HomeActivity extends AppCompatActivity {
                 case MotionEvent.ACTION_UP:
                     sheet_action.setBackgroundResource(R.drawable.signin);sheet_action.setTextColor(getResources().getColor(R.color.colorAccent));
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.apps.maps")));
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     vibrate(20);
                     break;
             }
