@@ -141,7 +141,7 @@ public class HomeActivity extends AppCompatActivity {
         refresh.setNestedScrollingEnabled(true);
         refresh.setSlingshotDistance(dptopx(150));
         refresh.setOnRefreshListener(() -> {
-            if(isOnline()){getCrackList();}
+            if(isOnline()){getCrackList(false);}
             else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
         });
 
@@ -213,7 +213,7 @@ public class HomeActivity extends AppCompatActivity {
                         }
                         else{
                             if(crack.getString("list", null)==null){
-                                getCrackList();
+                                getCrackList(true);
                             }
                             else{
                                 splash(true);
@@ -264,13 +264,13 @@ public class HomeActivity extends AppCompatActivity {
                         Log.w("error", e.toString());
                     }
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        getCrackList();
+                        getCrackList(false);
                     });
                 }
             }
         });
     }
-    public void getCrackList(){
+    public void getCrackList(boolean splash){
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
             postBody = new FormBody.Builder().add("email",enc).build();
