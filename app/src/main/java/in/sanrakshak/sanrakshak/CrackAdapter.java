@@ -28,7 +28,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,city,date;
         LinearLayout cardItem;
-        ImageView preview,navigate;
+        ImageView preview,locate,navigate;
         RelativeLayout navtrigger;
         MyViewHolder(View view) {
             super(view);
@@ -40,6 +40,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             date.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2_bold.otf"));
             preview = view.findViewById(R.id.thumbnail);
             navtrigger = view.findViewById(R.id.navtrigger);
+            locate = view.findViewById(R.id.locate);
             navigate = view.findViewById(R.id.navigate);
             cardItem = view.findViewById(R.id.cardItem);
         }
@@ -79,23 +80,25 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 public void onAnimationRepeat(Animation animation) {}
             });
         });
-        holder.navigate.setOnClickListener(view -> {
-            holder.navtrigger.performClick();
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude()));
-
-            mapIntent.setPackage("com.google.android.apps.maps");
-            if (mapIntent.resolveActivity(homeActivity.getPackageManager()) != null) {
-                homeActivity.startActivity(mapIntent);
-                homeActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-            }
-            else{
-                homeActivity.showSheet("Google Maps Required",
-                        "In order to use navigation feature, Google maps should to be installed on this device.","DOWNLOAD",200);
-
-            }
-        });
+        holder.locate.setOnClickListener(view -> startMap(holder,Uri.parse("geo:"+item.getLatitude()+","+item.getLongitude())));
+        holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
         holder.cardItem.setOnClickListener(view -> {
         });
+    }
+    private void startMap(@NonNull final MyViewHolder holder, Uri address){
+        holder.navtrigger.performClick();
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, address);
+
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(homeActivity.getPackageManager()) != null) {
+            homeActivity.startActivity(mapIntent);
+            homeActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        }
+        else{
+            homeActivity.showSheet("Google Maps Required",
+                    "In order to use navigation feature, Google maps should to be installed on this device.","DOWNLOAD",200);
+
+        }
     }
     @Override
     public int getItemCount() {
