@@ -170,6 +170,11 @@ public class HomeActivity extends AppCompatActivity {
             }
             return true;
         });
+        sheet.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                scaleY(sheet,0,500,new AccelerateDecelerateInterpolator());
+            }
+        });
 
         user = getSharedPreferences("user", MODE_PRIVATE);
         user_edit = user.edit();
@@ -488,6 +493,7 @@ public class HomeActivity extends AppCompatActivity {
         sheet_title.setText(title);
         sheet_msg.setText(msg);
         sheet_action.setText(action);
+        sheet.requestFocus();
         scaleY(sheet,size,500,new AccelerateDecelerateInterpolator());
     }
     public int getHeightStatusNav(int viewid) {
