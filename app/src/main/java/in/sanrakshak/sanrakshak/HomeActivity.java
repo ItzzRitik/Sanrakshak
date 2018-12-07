@@ -212,6 +212,9 @@ public class HomeActivity extends AppCompatActivity {
                         if(response.code()==503) {
                             new Handler(Looper.getMainLooper()).post(() ->loadCache());
                         }
+                        else if(crack.getString("list", null)==null){
+                            getCrackList();
+                        }
                     });
                 }
             });
@@ -318,6 +321,54 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+    public void splash(final boolean loadOnline){
+        loadCache();
+        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        appNameSplash.setText(getString(R.string.app_name));
+        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+        proSplash.setVisibility(View.GONE);
+
+        new Handler().postDelayed(() -> {
+            splash_cover.setVisibility(View.GONE);
+            logo_div.setVisibility(View.VISIBLE);
+
+            float CurrentX = ico_splash.getX();
+            float CurrentY = ico_splash.getY();
+            float FinalX = 0;
+            float FinalY = 35;
+            Path path = new Path();
+            path.moveTo(CurrentX, CurrentY);
+            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
+
+            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
+            startAnim.setDuration(700);
+            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            startAnim.start();
+
+            new Handler().postDelayed(() -> {
+                ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(800).start();
+                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
+                ico_splash.startAnimation(anims);appNameSplash.startAnimation(anims);
+            },10);
+            new Handler().postDelayed(() -> {
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
+                actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
+
+                anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
+                logo_div_fade.startAnimation(anims);
+                new Handler().postDelayed(() -> {
+                    if(loadOnline)listRefresh();
+                },500);
+                setLightTheme(true,true);
+            },400);
+        },1500);
+    }
+    public void loadCache(){
+        home.setAdapter(null);
+        cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
+        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+        refresh.setRefreshing(false);
+    }
     public String getPlaceName(double latitude, double longitude, int token){
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
@@ -365,54 +416,6 @@ public class HomeActivity extends AppCompatActivity {
         }
         catch (Exception e){Log.e("signature","Error occured - "+e);}
         return "";
-    }
-    public void loadCache(){
-        home.setAdapter(null);
-        cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
-        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-        refresh.setRefreshing(false);
-    }
-    public void splash(final boolean loadOnline){
-        loadCache();
-        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-        appNameSplash.setText(getString(R.string.app_name));
-        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-        proSplash.setVisibility(View.GONE);
-
-        new Handler().postDelayed(() -> {
-            splash_cover.setVisibility(View.GONE);
-            logo_div.setVisibility(View.VISIBLE);
-
-            float CurrentX = ico_splash.getX();
-            float CurrentY = ico_splash.getY();
-            float FinalX = 0;
-            float FinalY = 35;
-            Path path = new Path();
-            path.moveTo(CurrentX, CurrentY);
-            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
-
-            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-            startAnim.setDuration(700);
-            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            startAnim.start();
-
-            new Handler().postDelayed(() -> {
-                ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(800).start();
-                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
-                ico_splash.startAnimation(anims);appNameSplash.startAnimation(anims);
-            },10);
-            new Handler().postDelayed(() -> {
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
-                actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
-
-                anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
-                logo_div_fade.startAnimation(anims);
-                new Handler().postDelayed(() -> {
-                    if(loadOnline)listRefresh();
-                },500);
-                setLightTheme(true,true);
-            },400);
-        },1500);
     }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){
