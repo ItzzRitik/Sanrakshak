@@ -3,8 +3,10 @@ package in.sanrakshak.sanrakshak;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +16,15 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 
 
 import java.util.List;
@@ -30,6 +37,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         LinearLayout cardItem;
         ImageView preview,locate,navigate;
         RelativeLayout navtrigger;
+        ProgressBar glidepro;
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
@@ -43,6 +51,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             locate = view.findViewById(R.id.locate);
             navigate = view.findViewById(R.id.navigate);
             cardItem = view.findViewById(R.id.cardItem);
+            glidepro = view.findViewById(R.id.glidepro);
         }
     }
     CrackAdapter(HomeActivity homeActivity, List<Cracks> cracks) {
@@ -63,6 +72,18 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.date.setText(item.getDate());
         Glide.with(homeActivity).load(item.getPreview())
                 .apply(new RequestOptions().centerCrop())
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.glidepro.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
                 .into(holder.preview);
         holder.preview.setOnClickListener(view -> {
             AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -80,7 +101,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 public void onAnimationRepeat(Animation animation) {}
             });
         });
-        holder.locate.setOnClickListener(view -> startMap(holder,Uri.parse("geo:"+item.getLatitude()+","+item.getLongitude()+"?q="+item.getLatitude()+","+item.getLongitude())));
+        holder.locate.setOnClickListener(view -> startMap(holder,Uri.parse("geo:"+item.getLatitude()+","+item.getLongitude()+"?q="+item.getLatitude()+","+item.getLongitude() )));
         holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
         holder.cardItem.setOnClickListener(view -> {
         });
