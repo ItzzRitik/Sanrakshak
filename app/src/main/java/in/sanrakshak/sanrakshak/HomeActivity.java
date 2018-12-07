@@ -39,6 +39,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.AnticipateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
@@ -173,7 +174,7 @@ public class HomeActivity extends AppCompatActivity {
         });
         sheet_back=findViewById(R.id.sheet_back);
         sheet_back.setOnClickListener(view -> {
-            scaleY(sheet,0,500,new AccelerateDecelerateInterpolator());
+            scaleY(sheet,0,500,new AnticipateInterpolator());
             sheet_back.setVisibility(View.GONE);
         });
         user = getSharedPreferences("user", MODE_PRIVATE);
@@ -494,7 +495,7 @@ public class HomeActivity extends AppCompatActivity {
         sheet_msg.setText(msg);
         sheet_action.setText(action);
         sheet_back.setVisibility(View.VISIBLE);
-        scaleY(sheet,size,500,new AccelerateDecelerateInterpolator());
+        scaleY(sheet,size,500,new OvershootInterpolator());
     }
     public int getHeightStatusNav(int viewid) {
         int result = 0;
