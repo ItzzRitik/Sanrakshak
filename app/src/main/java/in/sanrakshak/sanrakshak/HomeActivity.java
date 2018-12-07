@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane;
     CardView sheet;
     ImageView ico_splash,menu,done;
-    TextView page_tag,appNameSplash,sheet_download;
+    TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
     Animator animator;
     CardView data_div;
     ObjectAnimator startAnim;
@@ -148,15 +148,17 @@ public class HomeActivity extends AppCompatActivity {
         sheet=findViewById(R.id.sheet);
         sheet_pane=findViewById(R.id.sheet_pane);
         sheet_pane.setPadding(dptopx(20),dptopx(20),dptopx(20),dptopx(20)+getHeightStatusNav(1));
-        sheet_download=findViewById(R.id.sheet_download);
-        sheet_download.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
-        sheet_download.setOnTouchListener((v, event) -> {
+        sheet_title=findViewById(R.id.sheet_title);
+        sheet_msg=findViewById(R.id.sheet_msg);
+        sheet_action=findViewById(R.id.sheet_download);
+        sheet_action.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+        sheet_action.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    sheet_download.setBackgroundResource(R.drawable.signin_pressed);sheet_download.setTextColor(Color.parseColor("#ffffff"));
+                    sheet_action.setBackgroundResource(R.drawable.signin_pressed);sheet_action.setTextColor(Color.parseColor("#ffffff"));
                     break;
                 case MotionEvent.ACTION_UP:
-                    sheet_download.setBackgroundResource(R.drawable.signin);sheet_download.setTextColor(getResources().getColor(R.color.colorAccent));
+                    sheet_action.setBackgroundResource(R.drawable.signin);sheet_action.setTextColor(getResources().getColor(R.color.colorAccent));
                     vibrate(20);
                     break;
             }
@@ -475,6 +477,11 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+    public void showSheet(String title,String msg,String action){
+        sheet_title.setText(title);
+        sheet_msg.setText(msg);
+        sheet_action.setText(action);
     }
     public int getHeightStatusNav(int viewid) {
         int result = 0;
