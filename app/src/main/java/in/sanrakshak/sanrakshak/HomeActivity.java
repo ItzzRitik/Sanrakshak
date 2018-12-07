@@ -266,7 +266,6 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
     public void setCrackList(boolean splash){
-        home.setAdapter(null);
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
             postBody = new FormBody.Builder().add("email",enc).build();
@@ -292,6 +291,7 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         cracks = new ArrayList<>();
+                        home.setAdapter(null);
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject obj = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(obj.getString("x"));
