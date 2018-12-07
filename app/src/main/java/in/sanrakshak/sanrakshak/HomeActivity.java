@@ -217,6 +217,7 @@ public class HomeActivity extends AppCompatActivity {
                             }
                             else{
                                 if(crack.getString("list", null)==null){
+                                    appNameSplash.setText(R.string.resources);
                                     cacheData(true);
                                 }
                                 else{

@@ -66,6 +66,7 @@
     <string name="download">Download</string>
     <string name="sheet_title">Title Goes Here</string>
     <string name="sheet_content">Content of the sheet goes here. Content of the sheet maybe big or small depending upon the requirement</string>
+    <string name="resources">SETTING UP RESOURCES</string>
 </resources>
 
 
