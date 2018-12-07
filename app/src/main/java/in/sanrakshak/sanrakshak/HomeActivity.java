@@ -212,7 +212,7 @@ public class HomeActivity extends AppCompatActivity {
                         if(response.code()==503) {
                             new Handler(Looper.getMainLooper()).post(() ->loadCache());
                         }
-                        else{cacheData();}
+                        else{}
                     });
                 }
             });
@@ -254,6 +254,9 @@ public class HomeActivity extends AppCompatActivity {
                     catch (JSONException e) {
                         Log.w("error", e.toString());
                     }
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        getCrackList();
+                    });
                 }
             }
         });
@@ -399,7 +402,7 @@ public class HomeActivity extends AppCompatActivity {
     }
     public void listRefresh(){
         refresh.post(() -> {
-            if(isOnline()){getCrackList();}
+            if(isOnline()){cacheData();}
             else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
             refresh.setRefreshing(true);
         });
