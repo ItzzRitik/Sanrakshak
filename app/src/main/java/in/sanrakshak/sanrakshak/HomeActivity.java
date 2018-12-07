@@ -188,8 +188,8 @@ public class HomeActivity extends AppCompatActivity {
     public void connect(){
         if(isOnline())
         {
-            refresh.setRefreshing(true);
             splash(true);
+            refresh.setRefreshing(true);
             Log.i("backend_call", "Connecting");
             try{
                 postBody = new FormBody.Builder()
