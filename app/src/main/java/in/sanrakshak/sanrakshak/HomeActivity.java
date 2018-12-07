@@ -403,7 +403,8 @@ public class HomeActivity extends AppCompatActivity {
     }
     public void listRefresh(){
         refresh.post(() -> {
-            getCrackList();
+            if(isOnline()){getCrackList();}
+            else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
             refresh.setRefreshing(true);
         });
     }
