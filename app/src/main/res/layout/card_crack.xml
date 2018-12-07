@@ -52,7 +52,7 @@
                             android:padding="10dp"
                             android:id="@+id/locate"
                             android:layout_alignParentStart="true"
-                            android:src="@drawable/locate"
+                            android:src="@drawable/map"
                             android:clickable="true"
                             android:focusable="true"
                             style="@style/SelectableItemBackgroundBorderless"/>
