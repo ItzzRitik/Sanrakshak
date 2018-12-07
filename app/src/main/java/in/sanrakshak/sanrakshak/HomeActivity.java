@@ -295,7 +295,7 @@ public class HomeActivity extends AppCompatActivity {
                             new Handler().postDelayed(() -> {
                                 refresh.setRefreshing(false);
                                 Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
-                            },800);
+                            },1000);
                         });
                     }
                     catch (JSONException e) {
@@ -386,7 +386,7 @@ public class HomeActivity extends AppCompatActivity {
                 data_div.startAnimation(anims);
                 new Handler().postDelayed(() -> {
                     if(loadOnline)listRefresh();
-                },800);
+                },500);
                 setLightTheme(true,true);
             },400);
         },1500);
