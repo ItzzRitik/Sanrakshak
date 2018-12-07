@@ -212,7 +212,6 @@ public class HomeActivity extends AppCompatActivity {
                         if(response.code()==503) {
                             new Handler(Looper.getMainLooper()).post(() ->loadCache());
                         }
-                        else{}
                     });
                 }
             });
@@ -233,7 +232,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Connection Failed - "+e);
                 call.cancel();
-                Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
+                new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show());
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
