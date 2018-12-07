@@ -174,7 +174,7 @@ public class HomeActivity extends AppCompatActivity {
         });
         sheet_back=findViewById(R.id.sheet_back);
         sheet_back.setOnClickListener(view -> {
-            scaleY(sheet,0,500,new AnticipateInterpolator());
+            scaleY(sheet,0,400,new AnticipateInterpolator());
             sheet_back.setVisibility(View.GONE);
         });
         user = getSharedPreferences("user", MODE_PRIVATE);

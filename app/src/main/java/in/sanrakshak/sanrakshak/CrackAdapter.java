@@ -90,7 +90,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             }
             else{
                 homeActivity.showSheet("Google Maps Required",
-                        "In order to use navigation feature, Google maps application need to be installed on this device.","DOWNLOAD",200);
+                        "In order to use navigation feature, Google maps should to be installed on this device.","DOWNLOAD",200);
 
             }
         });
