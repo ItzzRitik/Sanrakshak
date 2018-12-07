@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -28,6 +29,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -54,8 +56,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,9 +74,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    RelativeLayout logo_div,splash_cover;
+    RelativeLayout logo_div,splash_cover,sheet_pane;
+    CardView sheet;
     ImageView ico_splash,menu,done;
-    TextView page_tag,appNameSplash;
+    TextView page_tag,appNameSplash,sheet_download;
     Animator animator;
     CardView data_div;
     ObjectAnimator startAnim;
@@ -143,6 +144,24 @@ public class HomeActivity extends AppCompatActivity {
         home.setLayoutManager(mLayoutManager);
         home.addItemDecoration(new GridSpacingItemDecoration(1,dptopx(10),true));
         home.setItemAnimator(new DefaultItemAnimator());
+
+        sheet=findViewById(R.id.sheet);
+        sheet_pane=findViewById(R.id.sheet_pane);
+        sheet_pane.setPadding(dptopx(20),dptopx(20),dptopx(20),dptopx(20)+getHeightStatusNav(1));
+        sheet_download=findViewById(R.id.sheet_download);
+        sheet_download.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+        sheet_download.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    sheet_download.setBackgroundResource(R.drawable.signin_pressed);sheet_download.setTextColor(Color.parseColor("#ffffff"));
+                    break;
+                case MotionEvent.ACTION_UP:
+                    sheet_download.setBackgroundResource(R.drawable.signin);sheet_download.setTextColor(getResources().getColor(R.color.colorAccent));
+                    vibrate(20);
+                    break;
+            }
+            return true;
+        });
 
         user = getSharedPreferences("user", MODE_PRIVATE);
         user_edit = user.edit();
