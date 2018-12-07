@@ -295,7 +295,6 @@ public class HomeActivity extends AppCompatActivity {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                             refresh.setRefreshing(false);
                             if(splash)splash();
-                            showSheet("Google Maps Required","In Order to use navigation feature, Google maps need to be installed on device.","DOWNLOAD",200);
                         });
                     }
                     catch (JSONException e) {
