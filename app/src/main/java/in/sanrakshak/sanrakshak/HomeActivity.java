@@ -201,17 +201,15 @@ public class HomeActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     Log.i("backend_call", "Connection Failed - "+e);
                     call.cancel();
-                    home.setAdapter(null);
-                    home.setAdapter(null);
-                    cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
-                    home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-                    refresh.setRefreshing(false);
+                    new Handler(Looper.getMainLooper()).post(() ->loadCache());
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         Log.i("backend_call","Server Response => "+response.message());
-                        if(response.code()==503) {}
+                        if(response.code()==503) {
+                            new Handler(Looper.getMainLooper()).post(() ->loadCache());
+                        }
                         else{cacheData();}
                     });
                 }
@@ -364,13 +362,14 @@ public class HomeActivity extends AppCompatActivity {
         catch (Exception e){Log.e("signature","Error occured - "+e);}
         return "";
     }
+    public void loadCache(){
+        home.setAdapter(null);
+        cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
+        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+        refresh.setRefreshing(false);
+    }
     public void splash(boolean loadCache){
-        if(loadCache){
-            home.setAdapter(null);
-            cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
-            home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-        }
-
+        if(loadCache)loadCache();
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
         appNameSplash.setText(getString(R.string.app_name));
         appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
