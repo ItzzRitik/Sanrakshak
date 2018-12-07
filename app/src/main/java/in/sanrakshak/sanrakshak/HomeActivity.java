@@ -212,6 +212,9 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
+        else{
+            splash(true);
+        }
     }
     public void cacheData(){
         try{
