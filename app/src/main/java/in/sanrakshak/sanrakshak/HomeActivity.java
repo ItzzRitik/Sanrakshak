@@ -201,6 +201,11 @@ public class HomeActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     Log.i("backend_call", "Connection Failed - "+e);
                     call.cancel();
+                    home.setAdapter(null);
+                    home.setAdapter(null);
+                    cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
+                    home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                    refresh.setRefreshing(false);
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) {
