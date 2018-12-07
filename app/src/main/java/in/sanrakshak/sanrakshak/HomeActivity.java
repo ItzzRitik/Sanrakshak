@@ -140,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
         refresh.setNestedScrollingEnabled(true);
         refresh.setSlingshotDistance(dptopx(150));
         refresh.setOnRefreshListener(() -> {
-            if(isOnline()){setCrackList();}
+            if(isOnline()){getCrackList();}
             else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
         });
 
@@ -257,7 +257,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-    public void setCrackList(){
+    public void getCrackList(){
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
             postBody = new FormBody.Builder().add("email",enc).build();
@@ -402,7 +402,10 @@ public class HomeActivity extends AppCompatActivity {
         return -1;
     }
     public void listRefresh(){
-        refresh.post(() -> refresh.setRefreshing(true));
+        refresh.post(() -> {
+            getCrackList();
+            refresh.setRefreshing(true);
+        });
     }
     protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
