@@ -213,7 +213,7 @@ public class HomeActivity extends AppCompatActivity {
                         }
                         else{
                             if(crack.getString("list", null)==null){
-                                getCrackList(true);
+                                cacheData(true);
                             }
                             else{
                                 splash(true);
@@ -227,7 +227,7 @@ public class HomeActivity extends AppCompatActivity {
             splash(false);
         }
     }
-    public void cacheData(){
+    public void cacheData(boolean splash){
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
             postBody = new FormBody.Builder().add("email",enc).build();
@@ -264,7 +264,7 @@ public class HomeActivity extends AppCompatActivity {
                         Log.w("error", e.toString());
                     }
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        getCrackList(false);
+                        getCrackList(splash);
                     });
                 }
             }
@@ -432,7 +432,7 @@ public class HomeActivity extends AppCompatActivity {
     }
     public void listRefresh(){
         refresh.post(() -> {
-            if(isOnline()){cacheData();}
+            if(isOnline()){cacheData(false);}
             else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
             refresh.setRefreshing(true);
         });
