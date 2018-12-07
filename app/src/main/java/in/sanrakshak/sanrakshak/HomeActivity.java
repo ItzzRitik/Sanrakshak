@@ -77,7 +77,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    RelativeLayout logo_div,splash_cover,sheet_pane,sheet_back;
+    RelativeLayout logo_div,splash_cover,sheet_pane,sheet_back,logo_div_fade;
     CardView sheet;
     ImageView ico_splash,menu,done;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
@@ -108,11 +108,11 @@ public class HomeActivity extends AppCompatActivity {
         diagonal=Math.sqrt((screenSize.x*screenSize.x) + (screenSize.y*screenSize.y));
         splash_cover=findViewById(R.id.splash_cover);
         logo_div=findViewById(R.id.logo_div);
+        logo_div_fade=findViewById(R.id.logo_div_fade);
         toolTip = new ToolTipsManager();
         client = new OkHttpClient();
 
         data_div=findViewById(R.id.data_div);
-        AlphaAnimation aanim = new AlphaAnimation(1,0);aanim.setDuration(0);aanim.setFillAfter(true);data_div.startAnimation(aanim);
 
         page_tag=findViewById(R.id.page_tag);
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -382,8 +382,9 @@ public class HomeActivity extends AppCompatActivity {
                 page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
                 menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
                 done.setVisibility(View.VISIBLE);done.startAnimation(anims);
-                anims = new AlphaAnimation(0,1);anims.setDuration(800);
-                data_div.startAnimation(anims);
+
+                anims = new AlphaAnimation(1,0);anims.setDuration(800);anims.setFillAfter(true);
+                logo_div_fade.startAnimation(anims);
                 new Handler().postDelayed(() -> {
                     if(loadOnline)listRefresh();
                 },500);
