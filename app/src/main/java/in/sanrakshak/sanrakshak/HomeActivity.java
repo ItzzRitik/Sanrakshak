@@ -388,7 +388,7 @@ public class HomeActivity extends AppCompatActivity {
             path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
 
             startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-            startAnim.setDuration(800);
+            startAnim.setDuration(600);
             startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
             startAnim.start();
             ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
