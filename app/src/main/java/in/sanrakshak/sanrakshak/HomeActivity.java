@@ -189,6 +189,7 @@ public class HomeActivity extends AppCompatActivity {
             refresh.setRefreshing(true);
             splash(false);
             cacheData();
+            setCrackList();
             Log.i("backend_call", "Connecting");
             try{
                 postBody = new FormBody.Builder()
@@ -241,9 +242,6 @@ public class HomeActivity extends AppCompatActivity {
                             user_edit.putString("aadhaar", pO.getString("aadhaar"));
                             user_edit.apply();
                         }
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            setCrackList();
-                        });
                     }
                     catch (JSONException e) {
                         Log.w("error", e.toString());
