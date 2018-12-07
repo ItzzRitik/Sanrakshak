@@ -374,6 +374,7 @@ public class HomeActivity extends AppCompatActivity {
         appNameSplash.setText(getString(R.string.app_name));
         appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         proSplash.setVisibility(View.GONE);
+        AlphaAnimation aanim = new AlphaAnimation(1,0);aanim.setDuration(0);aanim.setFillAfter(true);data_div.startAnimation(aanim);
         new Handler().postDelayed(() -> {
             splash_cover.setVisibility(View.GONE);
             logo_div.setVisibility(View.VISIBLE);
@@ -392,7 +393,6 @@ public class HomeActivity extends AppCompatActivity {
             startAnim.start();
             ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
             new Handler().postDelayed(() -> {
-                scaleY(data_div,pxtodp(splash_cover.getHeight()),800,new AccelerateDecelerateInterpolator());
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
                 ico_splash.startAnimation(anims);
             },10);
@@ -404,9 +404,9 @@ public class HomeActivity extends AppCompatActivity {
                 setLightTheme(true,true);
             },400);
             new Handler().postDelayed(() -> {
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
-                home.startAnimation(anims);
-            },800);
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(800);
+                data_div.startAnimation(anims);
+            },400);
         },1500);
     }
     public int getIndex(String element,String arr[]){
