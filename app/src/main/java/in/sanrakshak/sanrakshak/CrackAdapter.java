@@ -89,8 +89,6 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 homeActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
             else{
-                homeActivity.sheet_action.setOnClickListener(view1 ->
-                        homeActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.apps.maps"))));
                 homeActivity.showSheet("Google Maps Required",
                         "In Order to use navigation feature, Google maps need to be installed on device.","DOWNLOAD",200);
 
