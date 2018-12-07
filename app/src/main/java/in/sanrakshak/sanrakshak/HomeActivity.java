@@ -189,7 +189,6 @@ public class HomeActivity extends AppCompatActivity {
     public void connect(){
         if(isOnline())
         {
-            splash(true);
             Log.i("backend_call", "Connecting");
             try{
                 postBody = new FormBody.Builder()
@@ -203,17 +202,22 @@ public class HomeActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     Log.i("backend_call", "Connection Failed - "+e);
                     call.cancel();
-                    new Handler(Looper.getMainLooper()).post(() ->loadCache());
+                    new Handler(Looper.getMainLooper()).post(() ->splash(false));
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         Log.i("backend_call","Server Response => "+response.message());
                         if(response.code()==503) {
-                            new Handler(Looper.getMainLooper()).post(() ->loadCache());
+                            new Handler(Looper.getMainLooper()).post(() -> splash(false));
                         }
-                        else if(crack.getString("list", null)==null){
-                            getCrackList();
+                        else{
+                            if(crack.getString("list", null)==null){
+                                getCrackList();
+                            }
+                            else{
+                                splash(true);
+                            }
                         }
                     });
                 }
