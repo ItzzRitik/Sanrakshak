@@ -150,7 +150,7 @@ public class HomeActivity extends AppCompatActivity {
         sheet_pane.setPadding(dptopx(20),dptopx(20),dptopx(20),dptopx(20)+getHeightStatusNav(1));
         sheet_title=findViewById(R.id.sheet_title);
         sheet_msg=findViewById(R.id.sheet_msg);
-        sheet_action=findViewById(R.id.sheet_download);
+        sheet_action=findViewById(R.id.sheet_action);
         sheet_action.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
         sheet_action.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
