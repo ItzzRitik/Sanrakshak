@@ -75,6 +75,8 @@
     <string name="unreachable">SERVER UNREACHABLE</string>
     <string name="mapsdownload">Google Maps Application is required for navigation to work!</string>
     <string name="download">Download</string>
+    <string name="sheet_title">Title Goes Here</string>
+    <string name="sheet_content">Content of the sheet goes here</string>
 </resources>
 
 
