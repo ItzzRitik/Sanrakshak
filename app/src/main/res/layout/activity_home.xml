@@ -85,7 +85,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scrollbars="vertical"
-                            android:visibility="gone"
                             android:paddingTop="85dp"
                             android:paddingBottom="50dp"
                             android:clipToPadding="false"

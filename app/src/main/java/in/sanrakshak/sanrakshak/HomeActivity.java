@@ -405,7 +405,7 @@ public class HomeActivity extends AppCompatActivity {
             },400);
             new Handler().postDelayed(() -> {
                 AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
-                home.setVisibility(View.VISIBLE);home.startAnimation(anims);
+                home.startAnimation(anims);
             },800);
         },1500);
     }
