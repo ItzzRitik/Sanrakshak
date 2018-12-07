@@ -374,6 +374,21 @@ public class HomeActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             splash_cover.setVisibility(View.GONE);
             logo_div.setVisibility(View.VISIBLE);
+
+
+            float CurrentX = ico_splash.getX();
+            float CurrentY = ico_splash.getY();
+            float FinalX = 0;
+            float FinalY = 35;
+            Path path = new Path();
+            path.moveTo(CurrentX, CurrentY);
+            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
+
+            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
+            startAnim.setDuration(800);
+            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            startAnim.start();
+
             new Handler().postDelayed(() -> {
                 ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
