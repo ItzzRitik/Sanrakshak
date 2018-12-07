@@ -295,6 +295,7 @@ public class HomeActivity extends AppCompatActivity {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                             refresh.setRefreshing(false);
                             if(splash)splash();
+                            showSheet("Google Maps Required","In Order to use navigation feature, Google maps need to be installed on device.","DOWNLOAD",200);
                         });
                     }
                     catch (JSONException e) {
@@ -480,10 +481,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
     }
-    public void showSheet(String title,String msg,String action){
+    public void showSheet(String title,String msg,String action,int size){
         sheet_title.setText(title);
         sheet_msg.setText(msg);
         sheet_action.setText(action);
+        scaleY(sheet,size,500,new AccelerateDecelerateInterpolator());
     }
     public int getHeightStatusNav(int viewid) {
         int result = 0;

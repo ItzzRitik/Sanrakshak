@@ -57,16 +57,6 @@
     <string name="flash">flash</string>
     <string name="camera_flip">camera_flip</string>
     <string name="i_m_sad">I\'m Sad</string>
-    <string name="enter_symptoms">Enter Your Symptoms</string>
-    <string name="diagnosis">Diagnosis</string>
-    <string name="symptoms_tag">Symptoms</string>
-    <string name="doc_name">Doctor\'s Name</string>
-    <string name="results">Results</string>
-    <string name="name_doctor">Name of Doctor</string>
-    <string name="generated_key">(Generated Key)</string>
-    <string name="accept">Accept</string>
-    <string name="reject">Reject</string>
-    <string name="request">Key Request</string>
     <string name="offline">SERVER OFFLINE, RECONNECTING</string>
     <string name="connect">CONNECTING TO SERVER</string>
     <string name="email_wait">Waiting for Email Verification</string>
@@ -76,7 +66,7 @@
     <string name="mapsdownload">Google Maps Application is required for navigation to work!</string>
     <string name="download">Download</string>
     <string name="sheet_title">Title Goes Here</string>
-    <string name="sheet_content">Content of the sheet goes here</string>
+    <string name="sheet_content">Content of the sheet goes here. Content of the sheet maybe big or small depending upon the requirement</string>
 </resources>
 
 
