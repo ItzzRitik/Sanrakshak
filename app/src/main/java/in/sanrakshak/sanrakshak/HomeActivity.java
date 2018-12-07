@@ -291,7 +291,6 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         cracks = new ArrayList<>();
-                        home.setAdapter(null);
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject obj = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(obj.getString("x"));
@@ -302,6 +301,7 @@ public class HomeActivity extends AppCompatActivity {
                         crack_edit.putString("list", new Gson().toJson(cracks));
                         crack_edit.apply();
                         new Handler(Looper.getMainLooper()).post(() -> {
+                            home.setAdapter(null);
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                             refresh.setRefreshing(false);
                             if(splash)splash();
