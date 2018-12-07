@@ -138,7 +138,7 @@ public class HomeActivity extends AppCompatActivity {
         refresh.setNestedScrollingEnabled(true);
         refresh.setSlingshotDistance(dptopx(150));
         refresh.setOnRefreshListener(() -> {
-            if(isOnline()){setCrackList(false);}
+            if(isOnline()){setCrackList();}
             else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
         });
 
@@ -187,6 +187,7 @@ public class HomeActivity extends AppCompatActivity {
         splash();
         if(isOnline())
         {
+            refresh.setRefreshing(true);
             Log.i("backend_call", "Connecting");
             try{
                 postBody = new FormBody.Builder()
@@ -225,7 +226,6 @@ public class HomeActivity extends AppCompatActivity {
                 Log.i("backend_call", "Connection Failed - "+e);
                 call.cancel();
                 Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
-                splash();
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
@@ -242,7 +242,7 @@ public class HomeActivity extends AppCompatActivity {
                             user_edit.apply();
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            setCrackList(true);
+                            setCrackList();
                         });
                     }
                     catch (JSONException e) {
@@ -252,7 +252,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-    public void setCrackList(boolean splash){
+    public void setCrackList(){
         try{
             String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
             postBody = new FormBody.Builder().add("email",enc).build();
@@ -266,10 +266,7 @@ public class HomeActivity extends AppCompatActivity {
                 call.cancel();
                 new Handler(Looper.getMainLooper()).post(() -> {
                     Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
-                    cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
-                    home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                     refresh.setRefreshing(false);
-                    if(splash)splash();
                 });
             }
             @Override
@@ -278,9 +275,7 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         cracks = new ArrayList<>();
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            home.setAdapter(null);
-                        });
+                        home.setAdapter(null);
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject obj = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(obj.getString("x"));
@@ -293,7 +288,6 @@ public class HomeActivity extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                             refresh.setRefreshing(false);
-                            if(splash)splash();
                         });
                     }
                     catch (JSONException e) {
@@ -304,7 +298,6 @@ public class HomeActivity extends AppCompatActivity {
                     cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
                     home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
                     refresh.setRefreshing(false);
-                    if(splash)splash();
                 }
             }
         });
