@@ -326,7 +326,7 @@ public class HomeActivity extends AppCompatActivity {
             List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
             if(null!=listAddresses&&listAddresses.size()>0){
                 Address obj = listAddresses.get(0);
-                //Log.i("backend_call", obj.getLocality()+" - "+obj.getAddressLine(0));
+                Log.i("backend_call", obj.getLocality()+" - "+obj.getAddressLine(0));
                 if(token==0){
                     String name=obj.getAddressLine(0);
                     String[] split = name.split(", ");
