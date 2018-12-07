@@ -148,7 +148,7 @@ public class HomeActivity extends AppCompatActivity {
         home.setItemAnimator(new DefaultItemAnimator());
 
         sheet=findViewById(R.id.sheet);
-        sheet_back=findViewById(R.id.sheet);
+        sheet_back=findViewById(R.id.sheet_back);
         sheet_pane=findViewById(R.id.sheet_pane);
         sheet_pane.setPadding(dptopx(20),dptopx(20),dptopx(20),dptopx(20)+getHeightStatusNav(1));
         sheet_title=findViewById(R.id.sheet_title);
@@ -171,12 +171,10 @@ public class HomeActivity extends AppCompatActivity {
             }
             return true;
         });
-        sheet_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                scaleY(sheet,0,500,new AccelerateDecelerateInterpolator());
-                sheet_back.setVisibility(View.GONE);
-            }
+        sheet_back=findViewById(R.id.sheet_back);
+        sheet_back.setOnClickListener(view -> {
+            scaleY(sheet,0,500,new AccelerateDecelerateInterpolator());
+            sheet_back.setVisibility(View.GONE);
         });
         user = getSharedPreferences("user", MODE_PRIVATE);
         user_edit = user.edit();
