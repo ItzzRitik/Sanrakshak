@@ -232,7 +232,10 @@ public class HomeActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Connection Failed - "+e);
                 call.cancel();
-                new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show());
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
+                    refresh.setRefreshing(false);
+                });
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
@@ -279,7 +282,13 @@ public class HomeActivity extends AppCompatActivity {
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                if (response.isSuccessful()){
+                if(response.code()==503) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
+                        refresh.setRefreshing(false);
+                    });
+                }
+                else if (response.isSuccessful()){
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         cracks = new ArrayList<>();
