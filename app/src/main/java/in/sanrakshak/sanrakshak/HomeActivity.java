@@ -189,39 +189,44 @@ public class HomeActivity extends AppCompatActivity {
     public void connect(){
         if(isOnline())
         {
-            Log.i("backend_call", "Connecting");
-            try{
-                postBody = new FormBody.Builder()
-                        .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak")).build();
-
+            if(crack.getString("list", null)!=null){
+                splash(true);
             }
-            catch (Exception e){Log.e("encrypt","Error while encryption");}
-            Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").post(postBody).build();
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    Log.i("backend_call", "Connection Failed - "+e);
-                    call.cancel();
-                    new Handler(Looper.getMainLooper()).post(() ->splash(false));
+            else{
+                Log.i("backend_call", "Connecting");
+                try{
+                    postBody = new FormBody.Builder()
+                            .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak")).build();
+
                 }
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull final Response response) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        Log.i("backend_call","Server Response => "+response.message());
-                        if(response.code()==503) {
-                            new Handler(Looper.getMainLooper()).post(() -> splash(false));
-                        }
-                        else{
-                            if(crack.getString("list", null)==null){
-                                cacheData(true);
+                catch (Exception e){Log.e("encrypt","Error while encryption");}
+                Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").post(postBody).build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                        Log.i("backend_call", "Connection Failed - "+e);
+                        call.cancel();
+                        new Handler(Looper.getMainLooper()).post(() ->splash(false));
+                    }
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull final Response response) {
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Log.i("backend_call","Server Response => "+response.message());
+                            if(response.code()==503) {
+                                new Handler(Looper.getMainLooper()).post(() -> splash(false));
                             }
                             else{
-                                splash(true);
+                                if(crack.getString("list", null)==null){
+                                    cacheData(true);
+                                }
+                                else{
+                                    splash(true);
+                                }
                             }
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
+            }
         }
         else{
             splash(false);
