@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.aviran.cookiebar2.CookieBar;
+
 import java.util.List;
 
 public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder> {
@@ -88,7 +90,8 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 homeActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
             else{
-                 }
+
+            }
         });
         holder.cardItem.setOnClickListener(view -> {
         });
