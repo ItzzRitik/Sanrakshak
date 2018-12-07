@@ -76,7 +76,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    RelativeLayout logo_div,splash_cover,sheet_pane;
+    RelativeLayout logo_div,splash_cover,sheet_pane,sheet_back;
     CardView sheet;
     ImageView ico_splash,menu,done;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
@@ -148,6 +148,7 @@ public class HomeActivity extends AppCompatActivity {
         home.setItemAnimator(new DefaultItemAnimator());
 
         sheet=findViewById(R.id.sheet);
+        sheet_back=findViewById(R.id.sheet);
         sheet_pane=findViewById(R.id.sheet_pane);
         sheet_pane.setPadding(dptopx(20),dptopx(20),dptopx(20),dptopx(20)+getHeightStatusNav(1));
         sheet_title=findViewById(R.id.sheet_title);
@@ -170,12 +171,13 @@ public class HomeActivity extends AppCompatActivity {
             }
             return true;
         });
-        sheet.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
+        sheet_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 scaleY(sheet,0,500,new AccelerateDecelerateInterpolator());
+                sheet_back.setVisibility(View.GONE);
             }
         });
-
         user = getSharedPreferences("user", MODE_PRIVATE);
         user_edit = user.edit();
         crack = getSharedPreferences("crack", MODE_PRIVATE);
@@ -493,7 +495,7 @@ public class HomeActivity extends AppCompatActivity {
         sheet_title.setText(title);
         sheet_msg.setText(msg);
         sheet_action.setText(action);
-        sheet.requestFocus();
+        sheet_back.setVisibility(View.VISIBLE);
         scaleY(sheet,size,500,new AccelerateDecelerateInterpolator());
     }
     public int getHeightStatusNav(int viewid) {
