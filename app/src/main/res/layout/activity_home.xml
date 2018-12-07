@@ -104,6 +104,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="125dp"
                 android:layout_alignParentTop="true"
+                android:id="@+id/actionbar"
                 android:background="@drawable/tint_actionbar">
                 <ImageView
                     android:layout_width="25dp"
@@ -113,7 +114,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="28dp"
-                    android:visibility="invisible"
                     android:clickable="true"
                     android:focusable="true"
                     style="@style/SelectableItemBackgroundBorderless"/>
@@ -125,7 +125,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="85dp"
-                    android:visibility="invisible"
                     android:textSize="28sp"
                     android:textColor="@color/profile"/>
                 <ImageView
@@ -135,7 +134,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="25dp"
-                    android:visibility="invisible"
                     android:clickable="true"
                     android:focusable="true"
                     style="@style/SelectableItemBackgroundBorderless"/>

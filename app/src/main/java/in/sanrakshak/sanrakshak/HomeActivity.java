@@ -77,7 +77,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    RelativeLayout logo_div,splash_cover,sheet_pane,sheet_back,logo_div_fade;
+    RelativeLayout logo_div,splash_cover,sheet_pane,sheet_back,logo_div_fade,actionbar;
     CardView sheet;
     ImageView ico_splash,menu,done;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
@@ -113,6 +113,7 @@ public class HomeActivity extends AppCompatActivity {
         client = new OkHttpClient();
 
         data_div=findViewById(R.id.data_div);
+        actionbar=findViewById(R.id.actionbar);
 
         page_tag=findViewById(R.id.page_tag);
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -292,10 +293,8 @@ public class HomeActivity extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(null);
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-                            new Handler().postDelayed(() -> {
-                                refresh.setRefreshing(false);
-                                Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
-                            },1000);
+                            refresh.setRefreshing(false);
+                            Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
                         });
                     }
                     catch (JSONException e) {
@@ -378,12 +377,10 @@ public class HomeActivity extends AppCompatActivity {
                 ico_splash.startAnimation(anims);appNameSplash.startAnimation(anims);
             },10);
             new Handler().postDelayed(() -> {
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
-                page_tag.setVisibility(View.VISIBLE);page_tag.startAnimation(anims);
-                menu.setVisibility(View.VISIBLE);menu.startAnimation(anims);
-                done.setVisibility(View.VISIBLE);done.startAnimation(anims);
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
+                actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
 
-                anims = new AlphaAnimation(1,0);anims.setDuration(800);anims.setFillAfter(true);
+                anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
                 logo_div_fade.startAnimation(anims);
                 new Handler().postDelayed(() -> {
                     if(loadOnline)listRefresh();
