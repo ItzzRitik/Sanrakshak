@@ -292,7 +292,10 @@ public class HomeActivity extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(() -> {
                             home.setAdapter(null);
                             home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-                            refresh.setRefreshing(false);
+                            new Handler().postDelayed(() -> {
+                                refresh.setRefreshing(false);
+                                Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
+                            },800);
                         });
                     }
                     catch (JSONException e) {
@@ -300,12 +303,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
                 else{
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        home.setAdapter(null);
-                        cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
-                        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-                        refresh.setRefreshing(false);
-                    });
+                    new Handler(Looper.getMainLooper()).post(() -> loadCache());
                 }
             }
         });
@@ -374,10 +372,10 @@ public class HomeActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             splash_cover.setVisibility(View.GONE);
             logo_div.setVisibility(View.VISIBLE);
-            ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
             new Handler().postDelayed(() -> {
+                ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(1000).start();
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
-                ico_splash.startAnimation(anims);
+                ico_splash.startAnimation(anims);appNameSplash.startAnimation(anims);
             },10);
             new Handler().postDelayed(() -> {
                 AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(400);
