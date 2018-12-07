@@ -184,10 +184,11 @@ public class HomeActivity extends AppCompatActivity {
         connect();
     }
     public void connect(){
-        splash();
         if(isOnline())
         {
             refresh.setRefreshing(true);
+            splash(false);
+            cacheData();
             Log.i("backend_call", "Connecting");
             try{
                 postBody = new FormBody.Builder()
@@ -206,8 +207,6 @@ public class HomeActivity extends AppCompatActivity {
                 public void onResponse(@NonNull Call call, @NonNull final Response response) {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         Log.i("backend_call","Server Response => "+response.message());
-                        if(response.code()==503) {}
-                        else{cacheData();}
                     });
                 }
             });
@@ -229,7 +228,8 @@ public class HomeActivity extends AppCompatActivity {
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                if (response.isSuccessful()){
+                if(response.code()==503) {}
+                else if (response.isSuccessful()){
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         for (int i = 0; i < postsArray.length(); i++) {
@@ -275,7 +275,9 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         cracks = new ArrayList<>();
-                        home.setAdapter(null);
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            home.setAdapter(null);
+                        });
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject obj = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(obj.getString("x"));
@@ -295,9 +297,12 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
                 else{
-                    cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
-                    home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-                    refresh.setRefreshing(false);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        home.setAdapter(null);
+                        cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
+                        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                        refresh.setRefreshing(false);
+                    });
                 }
             }
         });
@@ -350,9 +355,12 @@ public class HomeActivity extends AppCompatActivity {
         catch (Exception e){Log.e("signature","Error occured - "+e);}
         return "";
     }
-    public void splash(){
-        cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
-        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+    public void splash(boolean loadCache){
+        if(loadCache){
+            home.setAdapter(null);
+            cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
+            home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+        }
 
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
         appNameSplash.setText(getString(R.string.app_name));
