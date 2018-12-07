@@ -108,7 +108,7 @@ public class HomeActivity extends AppCompatActivity {
         diagonal=Math.sqrt((screenSize.x*screenSize.x) + (screenSize.y*screenSize.y));
         splash_cover=findViewById(R.id.splash_cover);
         logo_div=findViewById(R.id.logo_div);
-        data_div=findViewById(R.id.data_div);
+        data_div=findViewById(R.id.data_div);data_div.setAlpha(0);
         toolTip = new ToolTipsManager();
         client = new OkHttpClient();
 
@@ -374,7 +374,7 @@ public class HomeActivity extends AppCompatActivity {
         appNameSplash.setText(getString(R.string.app_name));
         appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         proSplash.setVisibility(View.GONE);
-        AlphaAnimation aanim = new AlphaAnimation(1,0);aanim.setDuration(0);aanim.setFillAfter(true);data_div.startAnimation(aanim);
+//        AlphaAnimation aanim = new AlphaAnimation(1,0);aanim.setDuration(0);aanim.setFillAfter(true);data_div.startAnimation(aanim);
         new Handler().postDelayed(() -> {
             splash_cover.setVisibility(View.GONE);
             logo_div.setVisibility(View.VISIBLE);
