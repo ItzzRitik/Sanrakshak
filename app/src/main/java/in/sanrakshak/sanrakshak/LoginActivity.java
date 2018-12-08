@@ -96,16 +96,15 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try{
-            if(users.getString("email", null)!=null){
-                Intent home=new Intent(LoginActivity.this, ProfileActivity.class);
-                home.putExtra("email",email.getText().toString());
-                LoginActivity.this.startActivity(home);
-                finish();
-                LoginActivity.this.overridePendingTransition(0, 0);
-            }
+        users = getSharedPreferences("user", MODE_PRIVATE);
+        if(users.getString("email", null)!=null){
+            Intent home=new Intent(LoginActivity.this, HomeActivity.class);
+            LoginActivity.this.startActivity(home);
+            finish();
+            LoginActivity.this.overridePendingTransition(0, 0);
         }
-        catch (NullPointerException e){}
+        else {Toast.makeText(this, "nope", Toast.LENGTH_SHORT).show();}
+
         setContentView(R.layout.activity_login);
         root_view=findViewById(R.id.root_view);
         keyProvider = new KeyboardHeightProvider(this);
