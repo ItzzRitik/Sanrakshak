@@ -281,7 +281,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
 
         }
         catch (Exception e){Log.e("encrypt","Error while encryption");}
-        Toast.makeText(LoginActivity.this, " - "+getHeightStatusNav(1), Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, " Height : "+getHeightStatusNav(1), Toast.LENGTH_SHORT).show();
         splash(0);
     }
     public void splash(final int iteration){
