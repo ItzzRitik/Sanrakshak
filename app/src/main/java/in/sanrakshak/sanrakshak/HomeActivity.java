@@ -388,6 +388,7 @@ public class HomeActivity extends AppCompatActivity {
                 Address obj = listAddresses.get(0);
                 Log.i("backend_call", obj.getLocality()+" - "+obj.getAddressLine(0));
                 if(token==0){
+                    if(obj.getFeatureName()!=null)return obj.getFeatureName();
                     String name=obj.getAddressLine(0);
                     String[] split = name.split(", ");
                     int index=getIndex(obj.getLocality(),split)-2;
