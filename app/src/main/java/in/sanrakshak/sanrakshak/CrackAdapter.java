@@ -48,7 +48,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             city = view.findViewById(R.id.city);
             city.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2.ttf"));
             date = view.findViewById(R.id.date);
-            date.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2_bold.otf"));
+            date.setTypeface(Typeface.createFromAsset(homeActivity.getAssets(), "fonts/exo2.ttf"));
             preview = view.findViewById(R.id.thumbnail);
             navtrigger = view.findViewById(R.id.navtrigger);
             locate = view.findViewById(R.id.locate);
