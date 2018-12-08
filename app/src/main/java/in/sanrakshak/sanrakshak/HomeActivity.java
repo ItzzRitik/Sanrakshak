@@ -386,14 +386,14 @@ public class HomeActivity extends AppCompatActivity {
             List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
             if(null!=listAddresses&&listAddresses.size()>0){
                 Address obj = listAddresses.get(0);
-                Log.i("backend_call", obj.getLocality()+" - "+obj.getAddressLine(0));
+                Log.i("backend_call", obj.getFeatureName()+" - "+obj.getAddressLine(0));
                 if(token==0){
-                    if(obj.getFeatureName()!=null)return obj.getFeatureName();
                     String name=obj.getAddressLine(0);
                     String[] split = name.split(", ");
-                    int index=getIndex(obj.getLocality(),split)-2;
+                    int index=getIndex(obj.getLocality(),split)-1;
                     index = (index<=0)?0:index;
-                    name=(split[index].toLowerCase().contains("unnamed road"))?split[index+1]:split[index];
+                    name=split[index];
+                    name=(name.toLowerCase().contains("unnamed road"))?split[index+1]:name;
                     return name;
                 }
                 else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea();}
