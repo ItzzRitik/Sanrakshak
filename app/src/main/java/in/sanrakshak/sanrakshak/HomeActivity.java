@@ -48,6 +48,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tomergoldst.tooltips.ToolTipsManager;
@@ -133,7 +134,13 @@ public class HomeActivity extends AppCompatActivity {
         });
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
-
+            user_edit.clear();user_edit.apply();
+            crack_edit.clear();crack_edit.apply();
+            new Thread(() -> Glide.get(HomeActivity.this).clearDiskCache()).start();
+            Intent home=new Intent(HomeActivity.this, LoginActivity.class);
+            HomeActivity.this.startActivity(home);
+            finish();
+            HomeActivity.this.overridePendingTransition(0, 0);
         });
         refresh = findViewById(R.id.refresh);
         refresh.setProgressViewOffset(true,dptopx(50),dptopx(100));
