@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -63,7 +64,7 @@ import okhttp3.Response;
 public class LoginActivity extends AppCompatActivity  implements KeyboardHeightObserver  {
     FrameLayout root_view;
     Animation anim;
-    RelativeLayout login_div,social_div,logo_div,splash_cover,forget_pass,email_reset;
+    RelativeLayout login_div,social_div,bottompadding,logo_div,splash_cover,forget_pass,email_reset;
     ImageView ico_splash;
     TextView signin,forget_create;
     EditText email,pass,con_pass;
@@ -109,6 +110,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         logo_div=findViewById(R.id.logo_div);
         login_div=findViewById(R.id.login_div);
         social_div=findViewById(R.id.social_div);
+        bottompadding=findViewById(R.id.bottompadding);
 
         client = new OkHttpClient();
 
@@ -186,13 +188,14 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     con_pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     pass.setSelection(pass.getText().length());
+                    scaleY(bottompadding,(int)pxtodp(keyHeight-(int)(con_pass.getHeight()-dptopx(5))),200,new AnticipateInterpolator());
                     break;
             }
             return false;
         });
         pass.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_NEXT) {
-                if(con_pass.isEnabled()){setMargins(social_div,0,0,0,keyHeight+(int)(dptopx(7)));}
+                if(con_pass.isEnabled()){scaleY(bottompadding,(int)pxtodp(keyHeight+(int)(dptopx(7))),200,new OvershootInterpolator());}
                 con_pass.requestFocus();
                 return true;
             }
@@ -239,21 +242,23 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         forget_pass.setOnClickListener(v -> vibrate(20));
         email_reset=findViewById(R.id.email_reset);
         email_reset.setOnClickListener(v -> {
-            scaleY(social_div,80,300,new AccelerateDecelerateInterpolator());
-            scaleY(login_div,48,300,new AccelerateDecelerateInterpolator());
-            scaleY(forget_pass,0,300,new AccelerateDecelerateInterpolator());
+            showKeyboard(v,false);
+            new Handler().postDelayed(() -> {
+                scaleY(social_div,80,300,new AccelerateDecelerateInterpolator());
+                scaleY(login_div,48,300,new AccelerateDecelerateInterpolator());
+                scaleY(forget_pass,0,300,new AccelerateDecelerateInterpolator());
+                nextPad( 5,2);
+                login_div.setPadding(0,(int)(10 * getResources().getDisplayMetrics().density),0,0);
 
-            nextPad( 5,2);
-            login_div.setPadding(0,(int)(10 * getResources().getDisplayMetrics().density),0,0);
-
-            email_reset.setVisibility(View.GONE);email.setEnabled(true);
-            pass.setText("");con_pass.setText("");
-            signin.setText(getString(R.string.next));
-            setButtonEnabled(true);vibrate(20);
-            email.setVisibility(View.VISIBLE);
-            pass.setVisibility(View.GONE);
-            con_pass.setVisibility(View.GONE);
-            log=0;
+                email_reset.setVisibility(View.GONE);email.setEnabled(true);
+                pass.setText("");con_pass.setText("");
+                signin.setText(getString(R.string.next));
+                setButtonEnabled(true);vibrate(20);
+                email.setVisibility(View.VISIBLE);
+                pass.setVisibility(View.GONE);
+                con_pass.setVisibility(View.GONE);
+                log=0;
+            },100);
 
         });
 
@@ -285,7 +290,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
 
         }
         catch (Exception e){Log.e("encrypt","Error while encryption");}
-        Toast.makeText(LoginActivity.this, " Height : "+getHeightStatusNav(1), Toast.LENGTH_SHORT).show();
         splash(0);
     }
     public void splash(final int iteration){
@@ -737,7 +741,8 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             }
             else if(pass.isFocused())
             {
-                margin=height-(int)(con_pass.getHeight()-dptopx(5));
+                if(log==2)margin=height-(int)(con_pass.getHeight()-dptopx(5));
+                else if(log==1)margin=height+(int)(dptopx(7));
             }
             else if(con_pass.isFocused())
             {
@@ -746,7 +751,9 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         }
         final int fmargin=margin;
         keyHeight=height;
-        new Handler().postDelayed(() -> setMargins(social_div,0,0,0,fmargin),50);
+        Log.i("keyboard", "Margin Calculated : "+pxtodp(fmargin));
+        scaleY(bottompadding,(int)pxtodp(fmargin),75,new AccelerateDecelerateInterpolator());
+
     }
     public int getHeightStatusNav(int viewid) {
         int result = 0;
