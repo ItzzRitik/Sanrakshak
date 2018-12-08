@@ -310,7 +310,7 @@ public class HomeActivity extends AppCompatActivity {
                             double lat=Double.parseDouble(obj.getString("x"));
                             double lng=Double.parseDouble(obj.getString("y"));
                             cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                    obj.getString("y"),"Date (DD/MM/YYYY)",getMapURL(lat,lng,16,data_div.getWidth()*7/17)));
+                                    obj.getString("y"),obj.getString("date"),getMapURL(lat,lng,16,data_div.getWidth()*7/17)));
                         }
                         crack_edit.putString("list", new Gson().toJson(cracks));
                         crack_edit.apply();

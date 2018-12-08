@@ -1,7 +1,5 @@
 package in.sanrakshak.sanrakshak;
 
-import android.graphics.Bitmap;
-
 public class Cracks {
     private String latitude,longitude,name,city,intensity,date,preview;
     Cracks(String latitude,String longitude,String name,String city,String intensity, String date, String preview) {

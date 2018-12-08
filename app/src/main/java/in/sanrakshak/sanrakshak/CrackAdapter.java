@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -88,6 +91,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.preview.setOnClickListener(view -> {
             AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
             holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();holder.navtrigger.startAnimation(anims);
+            new Handler().postDelayed(() -> holder.navtrigger.performClick(),2000);
         });
         holder.navtrigger.setOnClickListener(view -> {
             AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -104,6 +108,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.locate.setOnClickListener(view -> startMap(holder,Uri.parse("geo:"+item.getLatitude()+","+item.getLongitude()+"?q="+item.getLatitude()+","+item.getLongitude() )));
         holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
         holder.cardItem.setOnClickListener(view -> {
+            Toast.makeText(homeActivity, "Card Clicked", Toast.LENGTH_SHORT).show();
         });
     }
     private void startMap(@NonNull final MyViewHolder holder, Uri address){
