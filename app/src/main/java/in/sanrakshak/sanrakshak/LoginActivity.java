@@ -75,7 +75,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     TextView appNameSplash;
     RequestBody postBody=null;
     private KeyboardHeightProvider keyProvider;
-    SharedPreferences users;
     SharedPreferences.Editor user;
     @Override
     public void onPause() {
@@ -96,14 +95,13 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        users = getSharedPreferences("user", MODE_PRIVATE);
-        if(users.getString("email", null)!=null){
+
+        if(getSharedPreferences("user", MODE_PRIVATE).getString("email", null)!=null){
             Intent home=new Intent(LoginActivity.this, HomeActivity.class);
             LoginActivity.this.startActivity(home);
             finish();
             LoginActivity.this.overridePendingTransition(0, 0);
         }
-        else {Toast.makeText(this, "nope", Toast.LENGTH_SHORT).show();}
 
         setContentView(R.layout.activity_login);
         root_view=findViewById(R.id.root_view);
