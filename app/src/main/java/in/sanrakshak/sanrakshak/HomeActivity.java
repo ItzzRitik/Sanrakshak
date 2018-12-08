@@ -386,7 +386,7 @@ public class HomeActivity extends AppCompatActivity {
             List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
             if(null!=listAddresses&&listAddresses.size()>0){
                 Address obj = listAddresses.get(0);
-                Log.i("backend_call", obj.getFeatureName()+" - "+obj.getAddressLine(0));
+                Log.i("backend_call", obj.getPremises()+" - "+obj.getAddressLine(0));
                 if(token==0){
                     String name=obj.getAddressLine(0);
                     String[] split = name.split(", ");
@@ -396,7 +396,7 @@ public class HomeActivity extends AppCompatActivity {
                     name=(name.toLowerCase().contains("unnamed road"))?split[index+1]:name;
                     return name;
                 }
-                else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea();}
+                else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea()+" - "+obj.getPostalCode();}
             }
         } catch (IOException e) {
             e.printStackTrace();
