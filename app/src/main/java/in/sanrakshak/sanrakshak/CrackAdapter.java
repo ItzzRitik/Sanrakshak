@@ -1,7 +1,6 @@
 package in.sanrakshak.sanrakshak;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;

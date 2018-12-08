@@ -392,7 +392,7 @@ public class HomeActivity extends AppCompatActivity {
                     String[] split = name.split(", ");
                     int index=getIndex(obj.getLocality(),split)-2;
                     index = (index<=0)?0:index;
-                    name=split[index];
+                    name=(split[index].toLowerCase().contains("unnamed road"))?split[index+1]:split[index];
                     return name;
                 }
                 else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea();}
