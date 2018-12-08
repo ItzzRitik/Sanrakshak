@@ -6,7 +6,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
@@ -22,6 +24,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,6 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -702,14 +706,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             view.requestLayout();
         }
     }
-    public int getHeightStatusNav(int viewid) {
-        int result = 0;
-        String view=(viewid==0)?"status_bar_height":"navigation_bar_height";
-        int resourceId = getResources().getIdentifier(view, "dimen", "android");
-        if (resourceId > 0) { result = getResources().getDimensionPixelSize(resourceId); }
-        if(viewid==1){result = result* 5/8;}
-        return result;
-    }
     public void setLightTheme(boolean status,boolean nav){
         int flags = getWindow().getDecorView().getSystemUiVisibility();
         if(status && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -751,5 +747,42 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         final int fmargin=margin;
         keyHeight=height;
         new Handler().postDelayed(() -> setMargins(social_div,0,0,0,fmargin),50);
+    }
+    public int getHeightStatusNav(int viewid) {
+        int result = 0;
+        if(viewid==0){
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) { result = getResources().getDimensionPixelSize(resourceId); }
+        }
+        else if(viewid==1){ result = getNavigationBarSize(this).y * 5/8; }
+        return result;
+    }
+    public Point getNavigationBarSize(Context context) {
+        Point appUsableSize = getAppUsableScreenSize(context);
+        Point realScreenSize = getRealScreenSize(context);
+        // navigation bar on the right
+        if (appUsableSize.x < realScreenSize.x) {
+            return new Point(realScreenSize.x - appUsableSize.x, appUsableSize.y);
+        }
+        // navigation bar at the bottom
+        if (appUsableSize.y < realScreenSize.y) {
+            return new Point(appUsableSize.x, realScreenSize.y - appUsableSize.y);
+        }
+        // navigation bar is not present
+        return new Point();
+    }
+    public Point getAppUsableScreenSize(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size;
+    }
+    public Point getRealScreenSize(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getRealSize(size);
+        return size;
     }
 }
