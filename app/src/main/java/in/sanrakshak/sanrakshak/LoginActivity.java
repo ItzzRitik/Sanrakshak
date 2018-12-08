@@ -188,6 +188,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     con_pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     pass.setSelection(pass.getText().length());
+                    if(log==2)
                     scaleY(bottompadding,(int)pxtodp(keyHeight-(int)(con_pass.getHeight()-dptopx(5))),200,new AnticipateInterpolator());
                     break;
             }
@@ -749,6 +750,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 margin=height+(int)(dptopx(7));
             }
         }
+        //if(log==1 && height>0)margin=height+(int)(dptopx(7));
         final int fmargin=margin;
         keyHeight=height;
         Log.i("keyboard", "Margin Calculated : "+pxtodp(fmargin));
