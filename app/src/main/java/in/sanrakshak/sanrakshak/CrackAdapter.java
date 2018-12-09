@@ -41,6 +41,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     private List<Cracks> cracks;
     private HomeActivity home;
     private int cardHeight=0,imgHeight=0;
+    boolean animating=false;
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,city,date;
         ImageView preview,locate,navigate;
@@ -101,13 +102,14 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
 
         holder.cardItem.setOnClickListener(view -> {
+            animating=true;
             AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(200);anims.setInterpolator(new AccelerateDecelerateInterpolator());
             holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();
             anims.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {}
                 @Override
-                public void onAnimationEnd(Animation animation) {holder.navtrigger.setFocusable(true);holder.navtrigger.setClickable(true);}
+                public void onAnimationEnd(Animation animation) {animating=false;}
                 @Override
                 public void onAnimationRepeat(Animation animation) {}
             });holder.navtrigger.startAnimation(anims);
@@ -119,8 +121,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             scaleX(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
         });
         holder.navtrigger.setOnClickListener(view -> {
-            holder.navtrigger.setFocusable(true);holder.navtrigger.setClickable(true);
-
+            if(animating)return;
             scaleY(holder.root_view,cardHeight,200,new AccelerateDecelerateInterpolator());
             scaleY(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
             scaleX(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
