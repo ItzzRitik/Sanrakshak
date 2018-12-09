@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -45,6 +46,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -725,6 +729,28 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             }
             else {scaleX(social_google_logo,50,100,new AccelerateDecelerateInterpolator());}
         }
+    }
+    public void getCover(String ID){
+        Request request = new Request.Builder().url("https://people.googleapis.com/v1/people/"+ID+"?personFields=coverPhotos&key=AIzaSyCmHrrjRt6ryGbnhM6zt4aR7FYornmTWw8").get()
+                .addHeader("Content-Type", "application/json").build();
+        new OkHttpClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.w("coverPic", e.getMessage());
+                call.cancel();
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                assert response.body() != null;
+                String coverJSON = Objects.requireNonNull(response.body()).string();
+                if (response.isSuccessful())
+                {
+                    int urlIndex=coverJSON.indexOf("\"url\": \"")+8;
+                    final String coverUrl=coverJSON.substring(urlIndex,coverJSON.indexOf("\"",urlIndex));
+
+                }
+            }
+        });
     }
     public void newPageAnim(final int type)
     {

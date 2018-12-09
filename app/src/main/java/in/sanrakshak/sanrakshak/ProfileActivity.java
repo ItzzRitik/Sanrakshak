@@ -334,10 +334,10 @@ public class ProfileActivity extends AppCompatActivity {
         account = GoogleSignIn.getLastSignedInAccount(this);
         if(account!=null){
             f_name.setText(account.getGivenName());
-            l_name.setText(account.getGivenName());
+            l_name.setText(account.getFamilyName());
             new Thread(() -> {
                 try {
-                    HttpURLConnection connection = (HttpURLConnection) new URL(account.getPhotoUrl().toString()).openConnection();
+                    HttpURLConnection connection = (HttpURLConnection) new URL(Objects.requireNonNull(account.getPhotoUrl()).toString()).openConnection();
                     connection.setDoInput(true);connection.connect();
                     InputStream input = connection.getInputStream();
                     final Bitmap bmp = BitmapFactory.decodeStream(input);
