@@ -112,7 +112,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             if(expand==1){
                 expand=-1;
 
-                home.home.getLayoutManager().scrollToPosition(0);
+                home.home.scrollToPosition(3);
 
                 cardHeight=holder.root_view.getHeight();
                 imgHeight=holder.cardthumb.getWidth();
