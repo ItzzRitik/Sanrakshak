@@ -635,7 +635,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             {
                                 //If Exists then Login without password
                                 new Handler(Looper.getMainLooper()).post(() -> {
-                                    //SignIn Initiate
                                     newPageAnim(2);
                                     new Handler().postDelayed(() -> {
                                         user = getSharedPreferences("user", MODE_PRIVATE).edit();
@@ -651,7 +650,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             {
                                 //If Doesn't exist then ask signup
                                 Log.e("sign", "SignUP");
-                                email.setText(account.getEmail());
+                                email.setText(account.getEmail());email.setEnabled(false);
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
                                     login_div.setPadding(0,0,0,0);
