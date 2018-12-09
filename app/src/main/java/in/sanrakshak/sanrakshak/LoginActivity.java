@@ -536,7 +536,8 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             try{
                 postBody = new FormBody.Builder()
                         .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"))
-                        .add("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak")).build();
+                        .add("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak"))
+                        .add("verified",(account==null?0:1)+"").build();
             }
             catch (Exception e){Log.e("encrypt","Error while encryption");}
             Request request = new Request.Builder().url("http://3.16.4.70:8080/signup").post(postBody).build();
@@ -552,14 +553,25 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     if(response.body().string().equals("1") && response.isSuccessful()){
                         Log.i("sign","Account Creation Successful");
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            try{
-                                postBody = new FormBody.Builder()
-                                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
+                            if(account==null){
+                                try{
+                                    postBody = new FormBody.Builder()
+                                            .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
 
+                                }
+                                catch (Exception e){Log.e("encrypt","Error while encryption");return;}
+                                newPageAnim(1);
+                                nextLoading(false);
                             }
-                            catch (Exception e){Log.e("encrypt","Error while encryption");return;}
-                            newPageAnim(1);
-                            nextLoading(false);
+                            else{
+                                newPageAnim(2);
+                                new Handler().postDelayed(() -> {
+                                    Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
+                                    profile.putExtra("email",email.getText().toString());
+                                    LoginActivity.this.startActivity(profile);
+                                    finish();
+                                    LoginActivity.this.overridePendingTransition(0, 0);},1500);
+                            }
                         });
                     }
                     else{

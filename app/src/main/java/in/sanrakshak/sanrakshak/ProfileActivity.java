@@ -151,6 +151,10 @@ public class ProfileActivity extends AppCompatActivity {
         setLightTheme(true,true);
 
         account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account!=null){
+            Toast.makeText(this, ""+account.getDisplayName(), Toast.LENGTH_SHORT).show();
+        }
+        else Toast.makeText(this, ""+account, Toast.LENGTH_SHORT).show();
 
         screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
