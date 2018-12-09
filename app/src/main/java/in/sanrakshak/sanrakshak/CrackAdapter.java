@@ -120,6 +120,10 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 cardHeight=holder.root_view.getHeight();
                 imgHeight=holder.cardthumb.getWidth();
 
+                holder.name.setVisibility(View.INVISIBLE);
+                holder.city.setVisibility(View.INVISIBLE);
+                holder.date.setVisibility(View.INVISIBLE);
+
                 scaleY(holder.root_view,holder.root_view.getWidth(),speed,interpolator);
                 scaleY(holder.cardthumb,holder.root_view.getWidth(),speed,interpolator);
                 scaleX(holder.cardthumb,holder.root_view.getWidth(),speed,interpolator);
@@ -140,6 +144,9 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             if(expand==0){
                 expand=-1;
 
+                holder.name.setVisibility(View.VISIBLE);
+                holder.city.setVisibility(View.VISIBLE);
+                holder.date.setVisibility(View.VISIBLE);
 
                 scaleY(holder.root_view,cardHeight,speed,interpolator);
                 scaleY(holder.cardthumb,imgHeight,speed,interpolator);
