@@ -51,7 +51,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
@@ -105,6 +107,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestScopes(new Scope(Scopes.PROFILE))
                 .requestEmail()
                 .build();
         gclient = GoogleSignIn.getClient(this, gso);
@@ -565,13 +568,41 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                 nextLoading(false);
                             }
                             else{
-                                newPageAnim(2);
-                                new Handler().postDelayed(() -> {
-                                    Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
-                                    profile.putExtra("email",email.getText().toString());
-                                    LoginActivity.this.startActivity(profile);
-                                    finish();
-                                    LoginActivity.this.overridePendingTransition(0, 0); },1500);
+                                try {
+                                    postBody = new FormBody.Builder()
+                                            .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail(),"sanrakshak"))
+                                            .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName(),"sanrakshak"))
+                                            .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName(),"sanrakshak"))
+                                            .add("profile",new CryptLib().encryptPlainTextWithRandomIV(account.getPhotoUrl().toString(),"sanrakshak")).build();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                Request request = new Request.Builder().url("http://3.16.4.70:8080/profile").post(postBody).build();
+                                client.newCall(request).enqueue(new Callback() {
+                                    @Override
+                                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                        call.cancel();
+                                    }
+                                    @Override
+                                    public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                                        if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                                            new Handler(Looper.getMainLooper()).post(() -> {
+                                                newPageAnim(2);
+                                                new Handler().postDelayed(() -> {
+                                                    Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
+                                                    profile.putExtra("email",email.getText().toString());
+                                                    LoginActivity.this.startActivity(profile);
+                                                    finish();
+                                                    LoginActivity.this.overridePendingTransition(0, 0); },1500);
+                                            });
+                                        }
+                                        else{
+                                            new Handler(Looper.getMainLooper()).post(() -> {
+                                                Toast.makeText(LoginActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                                            });
+                                        }
+                                    }
+                                });
                             }
                         });
                     }

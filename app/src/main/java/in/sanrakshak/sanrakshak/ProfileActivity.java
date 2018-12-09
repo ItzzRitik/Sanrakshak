@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Path;
@@ -19,6 +20,7 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -66,6 +68,9 @@ import com.yalantis.ucrop.UCrop;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -149,12 +154,6 @@ public class ProfileActivity extends AppCompatActivity {
         root_view=findViewById(R.id.root_view);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setLightTheme(true,true);
-
-        account = GoogleSignIn.getLastSignedInAccount(this);
-        if(account!=null){
-            Toast.makeText(this, ""+account.getDisplayName(), Toast.LENGTH_SHORT).show();
-        }
-        else Toast.makeText(this, ""+account, Toast.LENGTH_SHORT).show();
 
         screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
@@ -332,6 +331,23 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         cameraView=findViewById(R.id.cam);
+        account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account!=null){
+            f_name.setText(account.getGivenName());
+            l_name.setText(account.getGivenName());
+            Runnable runnable = () -> {
+                try {
+                    HttpURLConnection connection = (HttpURLConnection) new URL(account.getPhotoUrl().toString()).openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    profile.setImageBitmap(BitmapFactory.decodeStream(input));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            };
+            runnable.run();
+        }
 
         new Handler().postDelayed(() -> {
             // SignUp Animation
@@ -468,6 +484,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
     public void cameraListener(){
         cameraView.setOnFocusLockedListener(() -> {
