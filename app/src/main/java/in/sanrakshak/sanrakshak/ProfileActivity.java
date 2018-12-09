@@ -335,18 +335,19 @@ public class ProfileActivity extends AppCompatActivity {
         if(account!=null){
             f_name.setText(account.getGivenName());
             l_name.setText(account.getGivenName());
-            Runnable runnable = () -> {
+            new Thread(() -> {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(account.getPhotoUrl().toString()).openConnection();
-                    connection.setDoInput(true);
-                    connection.connect();
+                    connection.setDoInput(true);connection.connect();
                     InputStream input = connection.getInputStream();
-                    profile.setImageBitmap(BitmapFactory.decodeStream(input));
+                    final Bitmap bmp = BitmapFactory.decodeStream(input);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        profile.setImageBitmap(bmp);
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            };
-            runnable.run();
+            }).start();
         }
 
         new Handler().postDelayed(() -> {
