@@ -10,7 +10,6 @@
 
     <color name="disabled">#c1c1c1</color>
     <color name="profile">#6c6c6c</color>
-    <color name="profile_text">#d3d3d3</color>
     <color name="profile_back">#82ffffff</color>
     <color name="gender_back">#d1d1d1</color>
     <color name="gender_male">#555555</color>

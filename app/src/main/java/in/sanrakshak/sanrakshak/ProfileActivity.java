@@ -231,7 +231,7 @@ public class ProfileActivity extends AppCompatActivity {
                     new Handler().postDelayed(() -> {
                         ToolTip.Builder builder = new ToolTip.Builder(ProfileActivity.this, click,camera_pane, getString(R.string.open_galary), ToolTip.POSITION_ABOVE);
                         builder.setBackgroundColor(getResources().getColor(R.color.profile));
-                        builder.setTextColor(getResources().getColor(R.color.profile_text));
+                        builder.setTextColor(getResources().getColor(R.color.gender_back));
                         builder.setGravity(ToolTip.GRAVITY_CENTER);
                         builder.setTextSize(15);
                         toolTip.show(builder.build());
@@ -587,7 +587,7 @@ public class ProfileActivity extends AppCompatActivity {
                         new Handler().postDelayed(() -> {
                             ToolTip.Builder builder = new ToolTip.Builder(ProfileActivity.this, click,camera_pane, getString(R.string.open_galary), ToolTip.POSITION_ABOVE);
                             builder.setBackgroundColor(getResources().getColor(R.color.profile));
-                            builder.setTextColor(getResources().getColor(R.color.profile_text));
+                            builder.setTextColor(getResources().getColor(R.color.gender_back));
                             builder.setGravity(ToolTip.GRAVITY_CENTER);
                             builder.setTextSize(15);
                             toolTip.show(builder.build());

@@ -41,7 +41,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     private List<Cracks> cracks;
     private HomeActivity home;
     private int cardHeight=0,imgHeight=0;
-    private boolean expand=true;
+    private int expand=1;
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,city,date;
         ImageView preview,locate,navigate;
@@ -102,26 +102,34 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
 
         holder.cardItem.setOnClickListener(view -> {
-            if(expand){
+            if(expand==1){
+                expand=-1;
                 cardHeight=holder.root_view.getHeight();
                 imgHeight=holder.cardthumb.getWidth();
+
+                holder.name.setTextColor(home.getResources().getColor(R.color.colorPrimary));
+                holder.city.setTextColor(home.getResources().getColor(R.color.colorPrimary));
+                holder.date.setTextColor(home.getResources().getColor(R.color.colorPrimary));
+
                 scaleY(holder.root_view,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
                 scaleY(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
                 scaleX(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+
                 AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(200);anims.setInterpolator(new AccelerateDecelerateInterpolator());
                 holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();
                 anims.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {}
                     @Override
-                    public void onAnimationEnd(Animation animation) {expand=false;}
+                    public void onAnimationEnd(Animation animation) {expand=0;}
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
                 });holder.navtrigger.startAnimation(anims);
             }
         });
         holder.navtrigger.setOnClickListener(view -> {
-            if(!expand){
+            if(expand==0){
+                expand=-1;
                 scaleY(holder.root_view,cardHeight,200,new AccelerateDecelerateInterpolator());
                 scaleY(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
                 scaleX(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
@@ -131,7 +139,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     @Override
                     public void onAnimationStart(Animation animation) {}
                     @Override
-                    public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);holder.preview.requestFocus();expand=true; }
+                    public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);holder.preview.requestFocus();expand=1;}
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
                 });holder.navtrigger.startAnimation(anims);
