@@ -17,6 +17,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnticipateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
@@ -70,7 +71,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     CrackAdapter(HomeActivity home, List<Cracks> cracks) {
         this.cracks = cracks;
         this.home = home;
-        interpolator = new OvershootInterpolator();
+        interpolator = new DecelerateInterpolator();
     }
     @NonNull
     @Override
