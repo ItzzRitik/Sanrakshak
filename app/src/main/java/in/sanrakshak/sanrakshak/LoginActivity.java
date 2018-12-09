@@ -616,7 +616,59 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 try {
                     account = task.getResult(ApiException.class);
                     assert account != null;
-                    Toast.makeText(this, ""+account.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    try{
+                        postBody = new FormBody.Builder()
+                                .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail(),"sanrakshak")).build();
+                    }
+                    catch (Exception e){Log.e("encrypt","Error while encryption");}
+                    Request request = new Request.Builder().url("http://3.16.4.70:8080/check").post(postBody).build();
+                    client.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            Log.i("sign", e.getMessage());
+                            call.cancel();
+                        }
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            assert response.body() != null;
+                            if(response.body().string().equals("1") && response.isSuccessful())
+                            {
+                                //If Exists then Login without password
+                                user = getSharedPreferences("user", MODE_PRIVATE).edit();
+                                user.putString("email", email.getText().toString());
+                                user.apply();
+                                Intent home=new Intent(LoginActivity.this, HomeActivity.class);
+                                LoginActivity.this.startActivity(home);
+                                finish();
+                                LoginActivity.this.overridePendingTransition(0, 0);},1500);
+                            }
+                            else
+                            {
+                                //If Doesn't exist then ask signup
+                                Log.e("sign", "SignUP");
+                                new Handler(Looper.getMainLooper()).post(() -> {
+                                    scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
+                                    login_div.setPadding(0,0,0,0);
+                                    nextPad(8,4);
+                                    nextLoading(false);
+
+                                    //Ask SignUp Details
+                                    pass.setVisibility(View.VISIBLE);
+                                    con_pass.setVisibility(View.VISIBLE);
+                                    email_reset.setVisibility(View.VISIBLE);
+                                    pass.requestFocus();
+                                    pass.setEnabled(true);
+                                    pass.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                                    setButtonEnabled(false);
+                                    forget_create.setTextSize(14);
+                                    forget_create.setText(getResources().getString(R.string.login_create));
+                                    scaleY(forget_pass,30,300,new OvershootInterpolator());
+                                    scaleY(login_div,148,300,new AccelerateDecelerateInterpolator());
+                                    log=2;
+                                });
+                            }
+                        }
+                    });
                 }
                 catch (Exception e) {
                     Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
