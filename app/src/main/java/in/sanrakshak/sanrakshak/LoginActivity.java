@@ -277,6 +277,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         email_reset=findViewById(R.id.email_reset);
         email_reset.setOnClickListener(v -> {
             showKeyboard(v,false);
+            if(account!=null){gclient.signOut();}
             new Handler().postDelayed(() -> {
                 scaleY(social_div,80,300,new AccelerateDecelerateInterpolator());
                 scaleY(login_div,48,300,new AccelerateDecelerateInterpolator());
@@ -570,7 +571,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     profile.putExtra("email",email.getText().toString());
                                     LoginActivity.this.startActivity(profile);
                                     finish();
-                                    LoginActivity.this.overridePendingTransition(0, 0);},1500);
+                                    LoginActivity.this.overridePendingTransition(0, 0); },1500);
                             }
                         });
                     }
