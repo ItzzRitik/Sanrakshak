@@ -373,10 +373,7 @@ public class HomeActivity extends AppCompatActivity {
                 AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
                 actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
 
-                RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                rotate.setDuration(5000);
-                rotate.setInterpolator(new AccelerateDecelerateInterpolator());
-                menu.startAnimation(rotate);
+                menu.animate().rotationBy(720).withEndAction(null).setDuration(3000).setInterpolator(new AccelerateDecelerateInterpolator()).start();
 
                 anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
                 logo_div_fade.startAnimation(anims);
