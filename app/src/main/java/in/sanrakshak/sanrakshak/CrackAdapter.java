@@ -47,19 +47,26 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     private Interpolator interpolator;
     private int speed;
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name,city,date;
+        TextView name,city,date,name_details,city_details,date_details;
         ImageView preview,locate,navigate;
         RelativeLayout navtrigger,cardItem,cardthumb;
         ProgressBar glidepro;
         CardView root_view;
         MyViewHolder(View view) {
             super(view);
-            name = view.findViewById(R.id.name);
+
+            name = view.findViewById(R.id.name);name_details = view.findViewById(R.id.name_details);
             name.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2_bold.otf"));
-            city = view.findViewById(R.id.city);
+            name_details.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2_bold.otf"));
+
+            city = view.findViewById(R.id.city);city_details = view.findViewById(R.id.city_details);
             city.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
-            date = view.findViewById(R.id.date);
+            city_details.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
+
+            date = view.findViewById(R.id.date);date_details = view.findViewById(R.id.date_details);
             date.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
+            date_details.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
+
             preview = view.findViewById(R.id.thumbnail);
             navtrigger = view.findViewById(R.id.navtrigger);
             locate = view.findViewById(R.id.locate);
