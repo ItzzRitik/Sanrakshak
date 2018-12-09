@@ -97,9 +97,6 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     }
                 })
                 .into(holder.preview);
-        holder.preview.setOnClickListener(view -> {
-
-        });
         holder.navtrigger.setOnClickListener(view -> {
             scaleY(holder.root_view,cardHeight,200,new AccelerateDecelerateInterpolator());
             scaleY(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
