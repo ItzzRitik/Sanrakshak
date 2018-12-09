@@ -41,7 +41,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     private List<Cracks> cracks;
     private HomeActivity home;
     private int cardHeight=0,imgHeight=0;
-    boolean animating=false;
+    private boolean expand=true;
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,city,date;
         ImageView preview,locate,navigate;
@@ -102,39 +102,40 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
 
         holder.cardItem.setOnClickListener(view -> {
-            animating=true;
-            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(200);anims.setInterpolator(new AccelerateDecelerateInterpolator());
-            holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();
-            anims.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {}
-                @Override
-                public void onAnimationEnd(Animation animation) {animating=false;}
-                @Override
-                public void onAnimationRepeat(Animation animation) {}
-            });holder.navtrigger.startAnimation(anims);
-
-            cardHeight=holder.root_view.getHeight();
-            imgHeight=holder.cardthumb.getWidth();
-            scaleY(holder.root_view,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
-            scaleY(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
-            scaleX(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+            if(expand){
+                cardHeight=holder.root_view.getHeight();
+                imgHeight=holder.cardthumb.getWidth();
+                scaleY(holder.root_view,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+                scaleY(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+                scaleX(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(200);anims.setInterpolator(new AccelerateDecelerateInterpolator());
+                holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();
+                anims.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {}
+                    @Override
+                    public void onAnimationEnd(Animation animation) {expand=false;}
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });holder.navtrigger.startAnimation(anims);
+            }
         });
         holder.navtrigger.setOnClickListener(view -> {
-            if(animating)return;
-            scaleY(holder.root_view,cardHeight,200,new AccelerateDecelerateInterpolator());
-            scaleY(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
-            scaleX(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
+            if(!expand){
+                scaleY(holder.root_view,cardHeight,200,new AccelerateDecelerateInterpolator());
+                scaleY(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
+                scaleX(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
 
-            AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(200);anims.setInterpolator(new AccelerateDecelerateInterpolator());
-            anims.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {}
-                @Override
-                public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);holder.preview.requestFocus(); }
-                @Override
-                public void onAnimationRepeat(Animation animation) {}
-            });holder.navtrigger.startAnimation(anims);
+                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(200);anims.setInterpolator(new AccelerateDecelerateInterpolator());
+                anims.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {}
+                    @Override
+                    public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);holder.preview.requestFocus();expand=true; }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });holder.navtrigger.startAnimation(anims);
+            }
         });
     }
     private void startMap(@NonNull final MyViewHolder holder, Uri address){
