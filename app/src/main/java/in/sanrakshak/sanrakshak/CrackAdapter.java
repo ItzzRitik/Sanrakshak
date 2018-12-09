@@ -43,7 +43,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,city,date;
         ImageView preview,locate,navigate;
-        RelativeLayout navtrigger,cardItem;
+        RelativeLayout navtrigger,cardItem,cardthumb;
         ProgressBar glidepro;
         CardView root_view;
         MyViewHolder(View view) {
@@ -61,6 +61,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             cardItem = view.findViewById(R.id.cardItem);
             glidepro = view.findViewById(R.id.glidepro);
             root_view = view.findViewById(R.id.root_view);
+            cardthumb = view.findViewById(R.id.cardthumb);
         }
     }
     CrackAdapter(HomeActivity home, List<Cracks> cracks) {
@@ -81,7 +82,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.date.setText(item.getDate());
         Glide.with(home).load(item.getPreview())
                 .apply(new RequestOptions()
-                        .fitCenter()
+                        .centerCrop()
                         .override(Target.SIZE_ORIGINAL))
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -116,7 +117,9 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
         holder.cardItem.setOnClickListener(view -> {
             Toast.makeText(home, "Card Clicked", Toast.LENGTH_SHORT).show();
-            scaleY(holder.root_view,holder.root_view.getWidth(),400,new OvershootInterpolator());
+            scaleY(holder.root_view,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+            scaleY(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+            scaleX(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
         });
     }
     private void startMap(@NonNull final MyViewHolder holder, Uri address){
@@ -139,13 +142,23 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         if(cracks==null){return 0;}
         return cracks.size();
     }
-    public void scaleY(final View view,int y,int t, Interpolator interpolator)
+    private void scaleY(final View view, int y, int t, Interpolator interpolator)
     {
         ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredHeight(),y);anim.setInterpolator(interpolator);
         anim.addUpdateListener(valueAnimator -> {
             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
             layoutParams.height = (Integer) valueAnimator.getAnimatedValue();
             view.setLayoutParams(layoutParams);view.invalidate();
+        });
+        anim.setDuration(t);anim.start();
+    }
+    public void scaleX(final View view,int x,int t, Interpolator interpolator)
+    {
+        ValueAnimator anim = ValueAnimator.ofInt(view.getMeasuredWidth(),x);anim.setInterpolator(interpolator);
+        anim.addUpdateListener(valueAnimator -> {
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            layoutParams.width = (Integer) valueAnimator.getAnimatedValue();
+            view.setLayoutParams(layoutParams);
         });
         anim.setDuration(t);anim.start();
     }
