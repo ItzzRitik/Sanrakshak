@@ -43,9 +43,9 @@
                         android:layout_height="match_parent"
                         android:id="@+id/navtrigger"
                         android:visibility="gone"
-                        android:focusable="true"
-                        android:clickable="true"
-                        android:background="#96000000">
+                        android:focusable="false"
+                        android:clickable="false"
+                        android:background="#b4000000">
                         <RelativeLayout
                             android:layout_width="110dp"
                             android:layout_height="50dp"

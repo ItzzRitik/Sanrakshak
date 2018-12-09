@@ -97,13 +97,35 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     }
                 })
                 .into(holder.preview);
+        holder.locate.setOnClickListener(view -> startMap(holder,Uri.parse("geo:"+item.getLatitude()+","+item.getLongitude()+"?q="+item.getLatitude()+","+item.getLongitude() )));
+        holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
+
+        holder.cardItem.setOnClickListener(view -> {
+            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(200);anims.setInterpolator(new AccelerateDecelerateInterpolator());
+            holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();
+            anims.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {}
+                @Override
+                public void onAnimationEnd(Animation animation) {holder.navtrigger.setFocusable(true);holder.navtrigger.setClickable(true);}
+                @Override
+                public void onAnimationRepeat(Animation animation) {}
+            });holder.navtrigger.startAnimation(anims);
+
+            cardHeight=holder.root_view.getHeight();
+            imgHeight=holder.cardthumb.getWidth();
+            scaleY(holder.root_view,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+            scaleY(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+            scaleX(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+        });
         holder.navtrigger.setOnClickListener(view -> {
+            holder.navtrigger.setFocusable(true);holder.navtrigger.setClickable(true);
+
             scaleY(holder.root_view,cardHeight,200,new AccelerateDecelerateInterpolator());
             scaleY(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
             scaleX(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
 
-            AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
-            holder.navtrigger.startAnimation(anims);
+            AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(200);anims.setInterpolator(new AccelerateDecelerateInterpolator());
             anims.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {}
@@ -111,19 +133,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);holder.preview.requestFocus(); }
                 @Override
                 public void onAnimationRepeat(Animation animation) {}
-            });
-        });
-        holder.locate.setOnClickListener(view -> startMap(holder,Uri.parse("geo:"+item.getLatitude()+","+item.getLongitude()+"?q="+item.getLatitude()+","+item.getLongitude() )));
-        holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
-        holder.cardItem.setOnClickListener(view -> {
-            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
-            holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();holder.navtrigger.startAnimation(anims);
-
-            cardHeight=holder.root_view.getHeight();
-            imgHeight=holder.cardthumb.getWidth();
-            scaleY(holder.root_view,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
-            scaleY(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
-            scaleX(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
+            });holder.navtrigger.startAnimation(anims);
         });
     }
     private void startMap(@NonNull final MyViewHolder holder, Uri address){
