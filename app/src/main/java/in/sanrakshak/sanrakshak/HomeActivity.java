@@ -38,10 +38,12 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -370,6 +372,11 @@ public class HomeActivity extends AppCompatActivity {
             new Handler().postDelayed(() -> {
                 AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
                 actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
+
+                RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rotate.setDuration(5000);
+                rotate.setInterpolator(new AccelerateDecelerateInterpolator());
+                menu.startAnimation(rotate);
 
                 anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
                 logo_div_fade.startAnimation(anims);
