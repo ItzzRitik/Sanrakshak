@@ -43,7 +43,9 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     private HomeActivity home;
     private int cardHeight=0,imgHeight=0;
     private int expand=1;
+
     private Interpolator interpolator;
+    private int speed;
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,city,date;
         ImageView preview,locate,navigate;
@@ -71,7 +73,8 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     CrackAdapter(HomeActivity home, List<Cracks> cracks) {
         this.cracks = cracks;
         this.home = home;
-        interpolator = new DecelerateInterpolator();
+        this.interpolator = new DecelerateInterpolator();
+        this.speed = 250;
     }
     @NonNull
     @Override
@@ -110,11 +113,11 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 cardHeight=holder.root_view.getHeight();
                 imgHeight=holder.cardthumb.getWidth();
 
-                scaleY(holder.root_view,holder.root_view.getWidth(),200,interpolator);
-                scaleY(holder.cardthumb,holder.root_view.getWidth(),200,interpolator);
-                scaleX(holder.cardthumb,holder.root_view.getWidth(),200,interpolator);
+                scaleY(holder.root_view,holder.root_view.getWidth(),speed,interpolator);
+                scaleY(holder.cardthumb,holder.root_view.getWidth(),speed,interpolator);
+                scaleX(holder.cardthumb,holder.root_view.getWidth(),speed,interpolator);
 
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(200);anims.setInterpolator(interpolator);
+                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(speed);anims.setInterpolator(interpolator);
                 holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();
                 anims.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -131,11 +134,11 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 expand=-1;
 
 
-                scaleY(holder.root_view,cardHeight,200,interpolator);
-                scaleY(holder.cardthumb,imgHeight,200,interpolator);
-                scaleX(holder.cardthumb,imgHeight,200,interpolator);
+                scaleY(holder.root_view,cardHeight,speed,interpolator);
+                scaleY(holder.cardthumb,imgHeight,speed,interpolator);
+                scaleX(holder.cardthumb,imgHeight,speed,interpolator);
 
-                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(200);anims.setInterpolator(interpolator);
+                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(speed);anims.setInterpolator(interpolator);
                 anims.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {}
