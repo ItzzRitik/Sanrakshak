@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -154,8 +155,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         home = findViewById(R.id.home);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,1);
-        home.setLayoutManager(mLayoutManager);
+        home.setLayoutManager(new LinearLayoutManager(this));
         home.addItemDecoration(new GridSpacingItemDecoration(1,dptopx(10),true));
         home.setItemAnimator(new DefaultItemAnimator());
 
@@ -352,18 +352,21 @@ public class HomeActivity extends AppCompatActivity {
             splash_cover.setVisibility(View.GONE);
             logo_div.setVisibility(View.VISIBLE);
 
-            float CurrentX = ico_splash.getX();
-            float CurrentY = ico_splash.getY();
-            float FinalX = 0;
-            float FinalY = 35;
-            Path path = new Path();
-            path.moveTo(CurrentX, CurrentY);
-            path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
+            Runnable runn = () -> {
+                float CurrentX = ico_splash.getX();
+                float CurrentY = ico_splash.getY();
+                float FinalX = 0;
+                float FinalY = 35;
+                Path path = new Path();
+                path.moveTo(CurrentX, CurrentY);
+                path.quadTo(CurrentX*4/3, (CurrentY+FinalY)/4, FinalX, FinalY);
 
-            startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
-            startAnim.setDuration(700);
-            startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            startAnim.start();
+                startAnim = ObjectAnimator.ofFloat(ico_splash, View.X, View.Y, path);
+                startAnim.setDuration(700);
+                startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+                startAnim.start();                   };
+            runn.run();
+
 
             new Handler().postDelayed(() -> {
                 ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(800).start();
@@ -375,7 +378,7 @@ public class HomeActivity extends AppCompatActivity {
                 Runnable runnable = () -> {
                     AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
                     actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
-                    menu.animate().rotationBy(720).withEndAction(null).setDuration(1000).setInterpolator(new AccelerateDecelerateInterpolator()).start();                    };
+                    menu.animate().rotationBy(1080).withEndAction(null).setDuration(1100).setInterpolator(new AccelerateDecelerateInterpolator()).start();                    };
                 runnable.run();
 
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
