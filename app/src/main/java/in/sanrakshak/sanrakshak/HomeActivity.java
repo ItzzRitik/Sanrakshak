@@ -364,18 +364,22 @@ public class HomeActivity extends AppCompatActivity {
             startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
             startAnim.start();
 
-            new Handler().postDelayed(() -> {
+            Runnable runnable = () -> {
                 ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(800).start();
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
                 ico_splash.startAnimation(anims);appNameSplash.startAnimation(anims);
-            },10);
+            };
+            runnable.run();
             new Handler().postDelayed(() -> {
-                AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
-                actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
 
-                menu.animate().rotationBy(720).withEndAction(null).setDuration(3000).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                Runnable run = () -> {
+                    AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
+                    actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
+                    menu.animate().rotationBy(720).withEndAction(null).setDuration(1000).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                };
+                run.run();
 
-                anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
+                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
                 logo_div_fade.startAnimation(anims);
                 new Handler().postDelayed(() -> {
                     if(loadOnline)listRefresh();
