@@ -53,6 +53,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -109,6 +111,7 @@ public class ProfileActivity extends AppCompatActivity {
     private StorageReference storageRef;
     float CurrentX,CurrentY;
     SharedPreferences.Editor user;
+    GoogleSignInAccount account;
     @Override
     public void onBackPressed() {
         if(camOn)
@@ -146,6 +149,8 @@ public class ProfileActivity extends AppCompatActivity {
         root_view=findViewById(R.id.root_view);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setLightTheme(true,true);
+
+        account = GoogleSignIn.getLastSignedInAccount(this);
 
         screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
