@@ -640,12 +640,13 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                 Intent home=new Intent(LoginActivity.this, HomeActivity.class);
                                 LoginActivity.this.startActivity(home);
                                 finish();
-                                LoginActivity.this.overridePendingTransition(0, 0);},1500);
+                                LoginActivity.this.overridePendingTransition(0, 0);
                             }
                             else
                             {
                                 //If Doesn't exist then ask signup
                                 Log.e("sign", "SignUP");
+                                email.setText(account.getEmail());
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
                                     login_div.setPadding(0,0,0,0);
