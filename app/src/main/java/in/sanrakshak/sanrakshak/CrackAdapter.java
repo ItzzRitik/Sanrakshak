@@ -57,7 +57,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
 
             name = view.findViewById(R.id.name);name_details = view.findViewById(R.id.name_details);
             name.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2_bold.otf"));
-            name_details.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2_bold.otf"));
+            name_details.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
 
             city = view.findViewById(R.id.city);city_details = view.findViewById(R.id.city_details);
             city.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
