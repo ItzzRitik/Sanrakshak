@@ -364,20 +364,18 @@ public class HomeActivity extends AppCompatActivity {
             startAnim.setInterpolator(new AccelerateDecelerateInterpolator());
             startAnim.start();
 
-            Runnable runnable = () -> {
+            new Handler().postDelayed(() -> {
                 ico_splash.animate().scaleX(0f).scaleY(0f).setDuration(800).start();
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(700);anims.setFillAfter(true);
                 ico_splash.startAnimation(anims);appNameSplash.startAnimation(anims);
-            };
-            runnable.run();
+            },10);
             new Handler().postDelayed(() -> {
 
-                Runnable run = () -> {
+                Runnable runnable = () -> {
                     AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
                     actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
-                    menu.animate().rotationBy(720).withEndAction(null).setDuration(1000).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-                };
-                run.run();
+                    menu.animate().rotationBy(720).withEndAction(null).setDuration(1000).setInterpolator(new AccelerateDecelerateInterpolator()).start();                    };
+                runnable.run();
 
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
                 logo_div_fade.startAnimation(anims);
