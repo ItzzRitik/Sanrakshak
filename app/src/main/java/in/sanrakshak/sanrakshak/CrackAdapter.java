@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
@@ -41,9 +42,8 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     private HomeActivity home;
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,city,date;
-        LinearLayout cardItem;
         ImageView preview,locate,navigate;
-        RelativeLayout navtrigger;
+        RelativeLayout navtrigger,cardItem;
         ProgressBar glidepro;
         CardView root_view;
         MyViewHolder(View view) {
@@ -80,7 +80,9 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.city.setText(item.getCity());
         holder.date.setText(item.getDate());
         Glide.with(home).load(item.getPreview())
-                .apply(new RequestOptions().centerCrop())
+                .apply(new RequestOptions()
+                        .fitCenter()
+                        .override(Target.SIZE_ORIGINAL))
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -114,7 +116,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
         holder.cardItem.setOnClickListener(view -> {
             Toast.makeText(home, "Card Clicked", Toast.LENGTH_SHORT).show();
-            scaleY(holder.root_view,holder.root_view.getHeight()*2,400,new OvershootInterpolator());
+            scaleY(holder.root_view,holder.root_view.getWidth(),400,new OvershootInterpolator());
         });
     }
     private void startMap(@NonNull final MyViewHolder holder, Uri address){
