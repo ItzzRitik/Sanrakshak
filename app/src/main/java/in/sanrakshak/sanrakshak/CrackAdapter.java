@@ -130,6 +130,11 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.navtrigger.setOnClickListener(view -> {
             if(expand==0){
                 expand=-1;
+
+                holder.name.setTextColor(home.getResources().getColor(R.color.colorPrimary));
+                holder.city.setTextColor(home.getResources().getColor(R.color.colorPrimary));
+                holder.date.setTextColor(home.getResources().getColor(R.color.colorPrimary));
+
                 scaleY(holder.root_view,cardHeight,200,new AccelerateDecelerateInterpolator());
                 scaleY(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
                 scaleX(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
