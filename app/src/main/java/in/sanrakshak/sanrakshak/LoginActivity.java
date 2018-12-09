@@ -649,9 +649,9 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             else
                             {
                                 //If Doesn't exist then ask signup
-                                Log.e("sign", "SignUP");
-                                email.setText(account.getEmail());email.setEnabled(false);
                                 new Handler(Looper.getMainLooper()).post(() -> {
+                                    scaleX(social_google_logo,50,100,new AccelerateDecelerateInterpolator());
+                                    email.setText(account.getEmail());email.setEnabled(false);
                                     scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
                                     login_div.setPadding(0,0,0,0);
                                     nextPad(8,4);
