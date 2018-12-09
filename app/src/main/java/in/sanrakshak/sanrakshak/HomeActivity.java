@@ -409,7 +409,7 @@ public class HomeActivity extends AppCompatActivity {
                     name=(name.toLowerCase().contains("unnamed road"))?split[index+1]:name;
                     return name;
                 }
-                else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea()+" - "+obj.getPostalCode();}
+                else if(token==1){return  obj.getLocality()+", "+obj.getAdminArea();}
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -84,8 +84,6 @@
                     android:layout_height="match_parent"
                     android:id="@+id/navtrigger"
                     android:visibility="gone"
-                    android:focusable="false"
-                    android:clickable="false"
                     android:background="#b4000000">
                     <RelativeLayout
                         android:layout_width="150dp"
@@ -113,31 +111,34 @@
                             style="@style/SelectableItemBackgroundBorderless"/>
                     </RelativeLayout>
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/name_details"
                         android:text="@string/issue"
                         android:textStyle="bold"
                         android:lines="1"
-                        android:textColor="@color/profile"
+                        android:textColor="@color/colorPrimary"
                         android:textAllCaps="true"
                         android:layout_alignParentTop="true"
-                        android:textSize="20sp"/>
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:textSize="35sp"/>
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/city_details"
                         android:text="@string/issue"
                         android:textStyle="bold"
-                        android:textColor="@color/profile"
+                        android:textColor="@color/colorPrimary"
                         android:layout_alignParentTop="true"
-                        android:layout_marginTop="20dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="30dp"
                         android:textSize="14sp"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/date_details"
-                        android:textColor="@color/profile"
+                        android:textColor="@color/colorPrimary"
                         android:text="@string/date"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentEnd="true"/>
