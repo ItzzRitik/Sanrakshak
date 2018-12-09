@@ -40,6 +40,7 @@ import java.util.List;
 public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder> {
     private List<Cracks> cracks;
     private HomeActivity home;
+    private int cardHeight=0,imgHeight=0;
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,city,date;
         ImageView preview,locate,navigate;
@@ -97,11 +98,13 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                 })
                 .into(holder.preview);
         holder.preview.setOnClickListener(view -> {
-            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
-            holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();holder.navtrigger.startAnimation(anims);
-            new Handler().postDelayed(() -> holder.navtrigger.performClick(),2000);
+
         });
         holder.navtrigger.setOnClickListener(view -> {
+            scaleY(holder.root_view,cardHeight,200,new AccelerateDecelerateInterpolator());
+            scaleY(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
+            scaleX(holder.cardthumb,imgHeight,200,new AccelerateDecelerateInterpolator());
+
             AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
             holder.navtrigger.startAnimation(anims);
             anims.setAnimationListener(new Animation.AnimationListener() {
@@ -116,7 +119,11 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.locate.setOnClickListener(view -> startMap(holder,Uri.parse("geo:"+item.getLatitude()+","+item.getLongitude()+"?q="+item.getLatitude()+","+item.getLongitude() )));
         holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
         holder.cardItem.setOnClickListener(view -> {
-            Toast.makeText(home, "Card Clicked", Toast.LENGTH_SHORT).show();
+            AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(250);anims.setInterpolator(new AccelerateDecelerateInterpolator());
+            holder.navtrigger.setVisibility(View.VISIBLE);holder.navtrigger.requestFocus();holder.navtrigger.startAnimation(anims);
+
+            cardHeight=holder.root_view.getHeight();
+            imgHeight=holder.cardthumb.getWidth();
             scaleY(holder.root_view,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
             scaleY(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
             scaleX(holder.cardthumb,holder.root_view.getWidth(),200,new AccelerateDecelerateInterpolator());
