@@ -155,7 +155,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         home = findViewById(R.id.home);
-        home.setLayoutManager(new LinearLayoutManager(this));
+        home.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
         home.addItemDecoration(new GridSpacingItemDecoration(1,dptopx(10),true));
         home.setItemAnimator(new DefaultItemAnimator());
 

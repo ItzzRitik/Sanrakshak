@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -111,12 +112,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             if(expand==1){
                 expand=-1;
 
-                home.home.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        home.home.smoothScrollToPosition(0);
-                    }
-                });
+                home.home.getLayoutManager().scrollToPosition(0);
 
                 cardHeight=holder.root_view.getHeight();
                 imgHeight=holder.cardthumb.getWidth();
