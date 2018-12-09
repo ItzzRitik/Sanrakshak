@@ -26,7 +26,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -37,14 +36,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -52,6 +47,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tomergoldst.tooltips.ToolTipsManager;
@@ -63,7 +62,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -98,6 +96,10 @@ public class HomeActivity extends AppCompatActivity {
     SharedPreferences user,crack;
     SharedPreferences.Editor user_edit,crack_edit;
     List<Cracks> cracks;
+
+    GoogleSignInOptions gso;
+    GoogleSignInClient gclient;
+    GoogleSignInAccount account;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +107,12 @@ public class HomeActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setLightTheme(true,true);
+
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        gclient = GoogleSignIn.getClient(this, gso);
+        account = GoogleSignIn.getLastSignedInAccount(this);
 
         screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
@@ -140,6 +148,7 @@ public class HomeActivity extends AppCompatActivity {
         });
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
+            gclient.signOut();
             user_edit.clear();user_edit.apply();
             crack_edit.clear();crack_edit.apply();
             new Thread(() -> Glide.get(HomeActivity.this).clearDiskCache()).start();

@@ -634,13 +634,18 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             if(response.body().string().equals("1") && response.isSuccessful())
                             {
                                 //If Exists then Login without password
-                                user = getSharedPreferences("user", MODE_PRIVATE).edit();
-                                user.putString("email", email.getText().toString());
-                                user.apply();
-                                Intent home=new Intent(LoginActivity.this, HomeActivity.class);
-                                LoginActivity.this.startActivity(home);
-                                finish();
-                                LoginActivity.this.overridePendingTransition(0, 0);
+                                new Handler(Looper.getMainLooper()).post(() -> {
+                                    //SignIn Initiate
+                                    newPageAnim(2);
+                                    new Handler().postDelayed(() -> {
+                                        user = getSharedPreferences("user", MODE_PRIVATE).edit();
+                                        user.putString("email", email.getText().toString());
+                                        user.apply();
+                                        Intent home=new Intent(LoginActivity.this, HomeActivity.class);
+                                        LoginActivity.this.startActivity(home);
+                                        finish();
+                                        LoginActivity.this.overridePendingTransition(0, 0);},1500);
+                                });
                             }
                             else
                             {
