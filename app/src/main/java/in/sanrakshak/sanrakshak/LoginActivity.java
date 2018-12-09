@@ -1,12 +1,10 @@
 package in.sanrakshak.sanrakshak;
 
-
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -15,7 +13,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -48,8 +45,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -64,8 +69,8 @@ import okhttp3.Response;
 public class LoginActivity extends AppCompatActivity  implements KeyboardHeightObserver  {
     FrameLayout root_view;
     Animation anim;
-    RelativeLayout login_div,social_div,bottompadding,logo_div,splash_cover,forget_pass,email_reset;
-    ImageView ico_splash;
+    RelativeLayout login_div,social_div,bottompadding,logo_div,splash_cover,forget_pass,email_reset,social_google,social_facebook;
+    ImageView ico_splash,social_google_logo,social_facebook_logo;
     TextView signin,forget_create;
     EditText email,pass,con_pass;
     int log=0,keyHeight=0;
@@ -76,6 +81,10 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     RequestBody postBody=null;
     private KeyboardHeightProvider keyProvider;
     SharedPreferences.Editor user;
+
+    GoogleSignInOptions gso;
+    GoogleSignInClient gclient;
+    GoogleSignInAccount account;
     @Override
     public void onPause() {
         super.onPause();
@@ -95,6 +104,11 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        gclient = GoogleSignIn.getClient(this, gso);
+        account = GoogleSignIn.getLastSignedInAccount(this);
 
         if(getSharedPreferences("user", MODE_PRIVATE).getString("email", null)!=null){
             Intent home=new Intent(LoginActivity.this, HomeActivity.class);
@@ -121,6 +135,17 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         bottompadding=findViewById(R.id.bottompadding);
 
         client = new OkHttpClient();
+
+        social_google=findViewById(R.id.social_google);
+        social_google_logo=findViewById(R.id.social_google_logo);
+        social_google.setOnClickListener(view -> {
+            scaleX(social_google_logo,(int)pxtodp(social_google.getWidth()),150,new AccelerateInterpolator());
+            new Handler().postDelayed(() -> {
+                Intent signInIntent = gclient.getSignInIntent();
+                startActivityForResult(signInIntent, 0);
+            },50);
+
+        });
 
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -580,6 +605,26 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     public void verifyFailed(final int iteration){
         new Handler(Looper.getMainLooper()).post(() -> new Handler().postDelayed(() -> verify(iteration+1),(iteration>20)?10000:iteration*500));
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess())
+            {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+                    account = task.getResult(ApiException.class);
+                    assert account != null;
+                    Toast.makeText(this, ""+account.getDisplayName(), Toast.LENGTH_SHORT).show();
+                }
+                catch (Exception e) {
+                    Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+            else {scaleX(social_google_logo,50,100,new AccelerateDecelerateInterpolator());}
+        }
+    }
     public void newPageAnim(final int type)
     {
         //type=0 --->> Connection lost
@@ -777,15 +822,12 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     public Point getNavigationBarSize(Context context) {
         Point appUsableSize = getAppUsableScreenSize(context);
         Point realScreenSize = getRealScreenSize(context);
-        // navigation bar on the right
         if (appUsableSize.x < realScreenSize.x) {
             return new Point(realScreenSize.x - appUsableSize.x, appUsableSize.y);
         }
-        // navigation bar at the bottom
         if (appUsableSize.y < realScreenSize.y) {
             return new Point(appUsableSize.x, realScreenSize.y - appUsableSize.y);
         }
-        // navigation bar is not present
         return new Point();
     }
     public Point getAppUsableScreenSize(Context context) {

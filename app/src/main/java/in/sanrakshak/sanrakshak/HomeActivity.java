@@ -80,7 +80,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    RelativeLayout logo_div,splash_cover,sheet_pane,sheet_back,logo_div_fade,actionbar;
+    RelativeLayout logo_div,splash_cover,sheet_pane,sheet_back,logo_div_fade,actionbar,navbar;
     CardView sheet;
     ImageView ico_splash,menu,done;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
@@ -117,6 +117,9 @@ public class HomeActivity extends AppCompatActivity {
 
         data_div=findViewById(R.id.data_div);
         actionbar=findViewById(R.id.actionbar);
+        navbar=findViewById(R.id.navbar);
+        scaleY(navbar,getHeightStatusNav(1),0,new OvershootInterpolator());
+
 
         page_tag=findViewById(R.id.page_tag);
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
