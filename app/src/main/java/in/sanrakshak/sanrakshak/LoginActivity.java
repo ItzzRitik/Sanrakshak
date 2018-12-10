@@ -64,8 +64,14 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.people.v1.People;
+import com.google.api.services.people.v1.model.Birthday;
+import com.google.api.services.people.v1.model.EmailAddress;
 import com.google.api.services.people.v1.model.Gender;
+import com.google.api.services.people.v1.model.ListConnectionsResponse;
+import com.google.api.services.people.v1.model.Name;
 import com.google.api.services.people.v1.model.Person;
+import com.google.api.services.people.v1.model.Photo;
+import com.google.api.services.people.v1.model.Url;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -756,12 +762,28 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             .build();
                     Person meProfile = null;
                     try {
-                        meProfile = service.people().get("people/me").execute();
-                        List<Gender> genders = meProfile.getGenders();
-                        String gender = null;
-                        if (genders != null && genders.size() > 0) {
-                            gender = genders.get(0).getValue();
+                        Person profile = service.people().get("people/me").execute();
+
+                        if (!profile.isEmpty()) {
+
+                            List<Name> names = profile.getNames();
+                            List<Birthday> birthdays = profile.getBirthdays();
+                            List<Gender> genders = profile.getGenders();
+                            List<Url> urls = profile.getUrls();
+                            List<EmailAddress> emailAddresses = profile.getEmailAddresses();
+                            List<Photo> profileImages = profile.getPhotos();
+
+                            String displayName = names.get(0).getDisplayName();
+                            String birthday = birthdays.get(0).getText();
+                            String gender = genders.get(0).getValue();
+                            String email = emailAddresses.get(0).getValue();
+                            String profileImage = profileImages.get(0).getUrl();
+
+                            Log.i("sign", ""+displayName);
+                            Log.i("sign", ""+birthday);
                             Log.i("sign", ""+gender);
+                            Log.i("sign", ""+email);
+                            Log.i("sign", ""+profileImage);
                         }
                     }
                     catch (IOException e) { Log.i("sign", ""+e);}
