@@ -357,26 +357,8 @@ public class ProfileActivity extends AppCompatActivity {
                         .setApplicationName("Sanrakshak")
                         .build();
                 Person meProfile = null;
-                ListConnectionsResponse response=null;
                 try {
-                    response = service.people().connections()
-                            .list("people/me")
-                            .setPageSize(10)
-                            .set("personFields","genders")
-                            .execute();
-                    List<Person> connections = response.getConnections();
-                    if (connections != null && connections.size() > 0) {
-                        for (Person person : connections) {
-                            List<Gender> names = person.getGenders();
-                            if (names != null && names.size() > 0) {
-                                Log.i("backend_call", "Error"+names.get(0).getValue());
-                            } else {
-                                System.out.println("No names available for connection.");
-                            }
-                        }
-                    }
-
-                    /*meProfile = service.people()
+                    meProfile = service.people()
                             .get("people/me")
                             .set("personFields","genders").execute();
                     List<Gender> genders = meProfile.getGenders();
@@ -385,7 +367,7 @@ public class ProfileActivity extends AppCompatActivity {
                         gender = genders.get(0).getValue();
                         Log.i("backend_call", "Error"+gender);
                     }
-                    Log.i("backend_call", "Error"+genders);*/
+                    Log.i("backend_call", "Error"+genders);
 
                 } catch (IOException e) {
                     Log.i("backend_call", "Error"+e);
