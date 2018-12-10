@@ -1,6 +1,7 @@
 package in.sanrakshak.sanrakshak;
 
 import android.Manifest;
+import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -57,6 +58,15 @@ import android.widget.Toast;
 import com.google.android.cameraview.CameraView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.Scopes;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.people.v1.People;
+import com.google.api.services.people.v1.model.Gender;
+import com.google.api.services.people.v1.model.Person;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -73,7 +83,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -117,6 +129,8 @@ public class ProfileActivity extends AppCompatActivity {
     float CurrentX,CurrentY;
     SharedPreferences.Editor user;
     GoogleSignInAccount account;
+    private static HttpTransport HTTP_TRANSPORT = AndroidHttp.newCompatibleTransport();
+    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     @Override
     public void onBackPressed() {
         if(camOn)
@@ -335,6 +349,25 @@ public class ProfileActivity extends AppCompatActivity {
         if(account!=null){
             f_name.setText(account.getGivenName());
             l_name.setText(account.getFamilyName());
+            new Thread(() -> {
+                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(ProfileActivity.this, Collections.singleton(Scopes.PROFILE));
+                credential.setSelectedAccount(new Account(account.getEmail(), "com.google"));
+                People service = new People.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                        .setApplicationName("Sanrakshak")
+                        .build();
+                Person meProfile = null;
+                try {
+                    meProfile = service.people().get("people/me").execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                List<Gender> genders = Objects.requireNonNull(meProfile).getGenders();
+                String gender = null;
+                if (genders != null && genders.size() > 0) {
+                    gender = genders.get(0).getValue();
+                    Toast.makeText(this, ""+gender, Toast.LENGTH_SHORT).show();
+                }
+            }).start();
             new Thread(() -> {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(Objects.requireNonNull(account.getPhotoUrl()).toString()).openConnection();
