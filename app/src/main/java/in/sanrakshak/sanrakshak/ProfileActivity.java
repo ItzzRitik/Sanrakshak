@@ -66,6 +66,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.people.v1.People;
 import com.google.api.services.people.v1.model.Gender;
+import com.google.api.services.people.v1.model.ListConnectionsResponse;
 import com.google.api.services.people.v1.model.Person;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -356,16 +357,38 @@ public class ProfileActivity extends AppCompatActivity {
                         .setApplicationName("Sanrakshak")
                         .build();
                 Person meProfile = null;
+                ListConnectionsResponse response=null;
                 try {
-                    meProfile = service.people().get("people/me").execute();
+                    response = service.people().connections()
+                            .list("people/me")
+                            .setPageSize(10)
+                            .set("personFields","genders")
+                            .execute();
+                    List<Person> connections = response.getConnections();
+                    if (connections != null && connections.size() > 0) {
+                        for (Person person : connections) {
+                            List<Gender> names = person.getGenders();
+                            if (names != null && names.size() > 0) {
+                                Log.i("backend_call", "Error"+names.get(0).getValue());
+                            } else {
+                                System.out.println("No names available for connection.");
+                            }
+                        }
+                    }
+
+                    /*meProfile = service.people()
+                            .get("people/me")
+                            .set("personFields","genders").execute();
+                    List<Gender> genders = meProfile.getGenders();
+                    String gender = null;
+                    if (genders != null && genders.size() > 0) {
+                        gender = genders.get(0).getValue();
+                        Log.i("backend_call", "Error"+gender);
+                    }
+                    Log.i("backend_call", "Error"+genders);*/
+
                 } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                List<Gender> genders = Objects.requireNonNull(meProfile).getGenders();
-                String gender = null;
-                if (genders != null && genders.size() > 0) {
-                    gender = genders.get(0).getValue();
-                    Toast.makeText(this, ""+gender, Toast.LENGTH_SHORT).show();
+                    Log.i("backend_call", "Error"+e);
                 }
             }).start();
             new Thread(() -> {
