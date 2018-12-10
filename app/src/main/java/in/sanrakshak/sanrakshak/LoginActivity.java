@@ -55,10 +55,6 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 
 import java.io.IOException;
 import java.util.Objects;
