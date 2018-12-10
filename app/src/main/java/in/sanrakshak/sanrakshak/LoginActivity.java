@@ -1,6 +1,5 @@
 package in.sanrakshak.sanrakshak;
 
-import android.accounts.Account;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,7 +8,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -55,23 +53,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.people.v1.People;
-import com.google.api.services.people.v1.model.Birthday;
-import com.google.api.services.people.v1.model.EmailAddress;
-import com.google.api.services.people.v1.model.Gender;
-import com.google.api.services.people.v1.model.ListConnectionsResponse;
-import com.google.api.services.people.v1.model.Name;
-import com.google.api.services.people.v1.model.Person;
-import com.google.api.services.people.v1.model.Photo;
-import com.google.api.services.people.v1.model.Url;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -106,9 +89,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     GoogleSignInOptions gso;
     GoogleSignInClient gclient;
     GoogleSignInAccount account;
-
-    private static HttpTransport HTTP_TRANSPORT = AndroidHttp.newCompatibleTransport();
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     @Override
     public void onPause() {
         super.onPause();
@@ -674,7 +654,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+        if (requestCode == 0) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess())
             {
@@ -746,50 +726,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 }
             }
             else {scaleX(social_google_logo,50,100,new AccelerateDecelerateInterpolator());}
-        }
-        if (requestCode == 0) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                account = task.getResult(ApiException.class);
-                new Thread(() -> {
-                    GoogleAccountCredential credential =
-                            GoogleAccountCredential.usingOAuth2(LoginActivity.this, Collections.singleton(Scopes.PROFILE));
-                    credential.setSelectedAccount(
-                            new Account(account.getEmail(), "com.google"));
-                    People service = new People.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-                            .setApplicationName("Sanrakshak")
-                            .build();
-                    Person meProfile = null;
-                    try {
-                        Person profile = service.people().get("people/me").execute();
-
-                        if (!profile.isEmpty()) {
-
-                            List<Name> names = profile.getNames();
-                            List<Birthday> birthdays = profile.getBirthdays();
-                            List<Gender> genders = profile.getGenders();
-                            List<Url> urls = profile.getUrls();
-                            List<EmailAddress> emailAddresses = profile.getEmailAddresses();
-                            List<Photo> profileImages = profile.getPhotos();
-
-                            String displayName = names.get(0).getDisplayName();
-                            String birthday = birthdays.get(0).getText();
-                            String gender = genders.get(0).getValue();
-                            String email = emailAddresses.get(0).getValue();
-                            String profileImage = profileImages.get(0).getUrl();
-
-                            Log.i("sign", ""+displayName);
-                            Log.i("sign", ""+birthday);
-                            Log.i("sign", ""+gender);
-                            Log.i("sign", ""+email);
-                            Log.i("sign", ""+profileImage);
-                        }
-                    }
-                    catch (IOException e) { Log.i("sign", ""+e);}
-                }).start();
-            }
-            catch (ApiException e) { Log.i("sign", ""+e); }
         }
     }
     public void getCover(String ID){
