@@ -330,7 +330,6 @@ public class ProfileActivity extends AppCompatActivity {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
                             String dateInString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                             Date date = formatter.parse(dateInString);
-                            formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
                             dob.setText(formatter.format(date));
                         } catch (Exception ignored) {}
                     }, 2000,  Calendar.getInstance().get(Calendar.MONTH),  Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
@@ -357,8 +356,12 @@ public class ProfileActivity extends AppCompatActivity {
                         String gender = profile.getGenders().get(0).getValue();
                         String cover = profile.getCoverPhotos().get(0).getUrl();
 
-                        String birthday=date.getDay()+"/"+date.getMonth()+"/"+date.getYear();
-                        dob.setText(birthday);
+                        try {
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
+                            String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
+                            dob.setText(formatter.format(formatter.parse(dateInString)));
+                        } catch (Exception ignored) {}
+
                         Log.i("sign", ""+gender);
                         Log.i("sign", ""+cover);
                     }
