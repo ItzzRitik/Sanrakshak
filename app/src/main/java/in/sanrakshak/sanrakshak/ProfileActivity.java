@@ -1,6 +1,7 @@
 package in.sanrakshak.sanrakshak;
 
 import android.Manifest;
+import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -56,6 +57,12 @@ import android.widget.Toast;
 import com.google.android.cameraview.CameraView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.Scopes;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.people.v1.People;
+import com.google.api.services.people.v1.model.Person;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -72,7 +79,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -334,7 +343,28 @@ public class ProfileActivity extends AppCompatActivity {
             f_name.setText(account.getGivenName());
             l_name.setText(account.getFamilyName());
 
+            new Thread(() -> {
+                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(ProfileActivity.this, Collections.singleton(Scopes.PROFILE));
+                credential.setSelectedAccount(new Account(account.getEmail(), "com.google"));
+                People service = new People.Builder(AndroidHttp.newCompatibleTransport(), JacksonFactory.getDefaultInstance(), credential)
+                        .setApplicationName("Sanrakshak")
+                        .build();
+                try {
+                    Person profile = service.people().get("people/me").setRequestMaskIncludeField("person.genders,person.birthdays,person.coverPhotos").execute();
+                    if (!profile.isEmpty()) {
 
+                        com.google.api.services.people.v1.model.Date date = profile.getBirthdays().get(0).getDate();
+                        String gender = profile.getGenders().get(0).getValue();
+                        String cover = profile.getCoverPhotos().get(0).getUrl();
+
+                        String birthday=date.getDay()+"/"+date.getMonth()+"/"+date.getYear();
+                        dob.setText(birthday);
+                        Log.i("sign", ""+gender);
+                        Log.i("sign", ""+cover);
+                    }
+                }
+                catch (IOException e) { Log.i("sign", ""+e);}
+            }).start();
             new Thread(() -> {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(Objects.requireNonNull(account.getPhotoUrl()).toString()).openConnection();

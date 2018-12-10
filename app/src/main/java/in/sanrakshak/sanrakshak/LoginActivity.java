@@ -55,10 +55,12 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -89,6 +91,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     GoogleSignInOptions gso;
     GoogleSignInClient gclient;
     GoogleSignInAccount account;
+
     @Override
     public void onPause() {
         super.onPause();
@@ -109,7 +112,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(new Scope(Scopes.PROFILE))
+                .requestScopes(new Scope("https://www.googleapis.com/auth/user.birthday.read"),new Scope(Scopes.PLUS_ME))
                 .requestEmail()
                 .build();
         gclient = GoogleSignIn.getClient(this, gso);
@@ -727,28 +730,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             }
             else {scaleX(social_google_logo,50,100,new AccelerateDecelerateInterpolator());}
         }
-    }
-    public void getCover(String ID){
-        Request request = new Request.Builder().url("https://people.googleapis.com/v1/people/"+ID+"?personFields=coverPhotos&key=AIzaSyCmHrrjRt6ryGbnhM6zt4aR7FYornmTWw8").get()
-                .addHeader("Content-Type", "application/json").build();
-        new OkHttpClient().newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.w("coverPic", e.getMessage());
-                call.cancel();
-            }
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                assert response.body() != null;
-                String coverJSON = Objects.requireNonNull(response.body()).string();
-                if (response.isSuccessful())
-                {
-                    int urlIndex=coverJSON.indexOf("\"url\": \"")+8;
-                    final String coverUrl=coverJSON.substring(urlIndex,coverJSON.indexOf("\"",urlIndex));
-
-                }
-            }
-        });
     }
     public void newPageAnim(final int type)
     {
