@@ -59,15 +59,6 @@ import com.google.android.cameraview.CameraView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.Scopes;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.people.v1.People;
-import com.google.api.services.people.v1.model.Gender;
-import com.google.api.services.people.v1.model.ListConnectionsResponse;
-import com.google.api.services.people.v1.model.Person;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -130,8 +121,6 @@ public class ProfileActivity extends AppCompatActivity {
     float CurrentX,CurrentY;
     SharedPreferences.Editor user;
     GoogleSignInAccount account;
-    private static HttpTransport HTTP_TRANSPORT = AndroidHttp.newCompatibleTransport();
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     @Override
     public void onBackPressed() {
         if(camOn)
@@ -350,29 +339,8 @@ public class ProfileActivity extends AppCompatActivity {
         if(account!=null){
             f_name.setText(account.getGivenName());
             l_name.setText(account.getFamilyName());
-            new Thread(() -> {
-                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(ProfileActivity.this, Collections.singleton(Scopes.PROFILE));
-                credential.setSelectedAccount(new Account(account.getEmail(), "com.google"));
-                People service = new People.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-                        .setApplicationName("Sanrakshak")
-                        .build();
-                Person meProfile = null;
-                try {
-                    meProfile = service.people()
-                            .get("people/me")
-                            .set("personFields","genders").execute();
-                    List<Gender> genders = meProfile.getGenders();
-                    String gender = null;
-                    if (genders != null && genders.size() > 0) {
-                        gender = genders.get(0).getValue();
-                        Log.i("backend_call", "Error"+gender);
-                    }
-                    Log.i("backend_call", "Error"+genders);
 
-                } catch (IOException e) {
-                    Log.i("backend_call", "Error"+e);
-                }
-            }).start();
+
             new Thread(() -> {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(Objects.requireNonNull(account.getPhotoUrl()).toString()).openConnection();
