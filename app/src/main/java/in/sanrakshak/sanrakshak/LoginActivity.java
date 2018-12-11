@@ -60,6 +60,7 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.people.v1.People;
+import com.google.api.services.people.v1.model.Date;
 import com.google.api.services.people.v1.model.Person;
 
 import java.io.IOException;
@@ -662,55 +663,10 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             }
                             else
                             {
-                                new Thread(() -> {
-                                    GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(LoginActivity.this, Collections.singleton(Scopes.PROFILE));
-                                    credential.setSelectedAccount(new Account(account.getEmail(), "com.google"));
-                                    People service = new People.Builder(AndroidHttp.newCompatibleTransport(), JacksonFactory.getDefaultInstance(), credential)
-                                            .setApplicationName("Sanrakshak")
-                                            .build();
-                                    try {
-                                        Person profile = service.people().get("people/me").setRequestMaskIncludeField("person.genders,person.birthdays,person.coverPhotos").execute();
-                                        if (!profile.isEmpty()) {
-                                            com.google.api.services.people.v1.model.Date date = profile.getBirthdays().get(0).getDate();
-                                            try {
-                                                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
-                                                String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
-                                                postBody = new FormBody.Builder()
-                                                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail(),"sanrakshak"))
-                                                        .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName(),"sanrakshak"))
-                                                        .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName(),"sanrakshak"))
-                                                        .add("gender",new CryptLib().encryptPlainTextWithRandomIV(profile.getGenders().get(0).getValue(),"sanrakshak"))
-                                                        .add("dob",new CryptLib().encryptPlainTextWithRandomIV(formatter.format(formatter.parse(dateInString)),"sanrakshak"))
-                                                        .add("profile",new CryptLib().encryptPlainTextWithRandomIV(Objects.requireNonNull(account.getPhotoUrl()).toString(),"sanrakshak"))
-                                                        .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl(),"sanrakshak")).build();
-
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                            Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
-                                            client.newCall(request).enqueue(new Callback() {
-                                                @Override
-                                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                                    Log.i("backend_call", "Verification Failed - "+e);
-                                                    call.cancel();
-                                                }
-                                                @Override
-                                                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                                                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
-                                                        new Handler(Looper.getMainLooper()).post(() -> {
-                                                        });
-                                                    }
-                                                    else{
-                                                        new Handler(Looper.getMainLooper()).post(() -> {
-                                                            Toast.makeText(LoginActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                                                        });
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                    catch (IOException e) { Log.i("sign", ""+e);}
-                                }).start();
+                                new Handler(Looper.getMainLooper()).post(() -> {
+                                    newPageAnim(0);
+                                    socialSignUp();
+                                });
                             }
                         }
                     });
@@ -722,9 +678,60 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             else {scaleX(social_google_logo,50,100,new AccelerateDecelerateInterpolator());}
         }
     }
+    public void socialSignUp(){
+        new Thread(() -> {
+            GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(LoginActivity.this, Collections.singleton(Scopes.PROFILE));
+            credential.setSelectedAccount(new Account(account.getEmail(), "com.google"));
+            People service = new People.Builder(AndroidHttp.newCompatibleTransport(), JacksonFactory.getDefaultInstance(), credential)
+                    .setApplicationName("Sanrakshak")
+                    .build();
+            try {
+                Person profile = service.people().get("people/me").setRequestMaskIncludeField("person.genders,person.birthdays,person.coverPhotos").execute();
+                if (!profile.isEmpty()) {
+                    Date date = profile.getBirthdays().get(0).getDate();
+                    appNameSplash.setText(R.string.create_sanrakshak);
+                    try {
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
+                        String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
+                        postBody = new FormBody.Builder()
+                                .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail(),"sanrakshak"))
+                                .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName(),"sanrakshak"))
+                                .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName(),"sanrakshak"))
+                                .add("gender",new CryptLib().encryptPlainTextWithRandomIV(profile.getGenders().get(0).getValue(),"sanrakshak"))
+                                .add("dob",new CryptLib().encryptPlainTextWithRandomIV(formatter.format(formatter.parse(dateInString)),"sanrakshak"))
+                                .add("profile",new CryptLib().encryptPlainTextWithRandomIV(Objects.requireNonNull(account.getPhotoUrl()).toString(),"sanrakshak"))
+                                .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl(),"sanrakshak")).build();
+
+                    } catch (Exception e) { e.printStackTrace(); }
+                    Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
+                    client.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            Log.i("backend_call", "Verification Failed - "+e);
+                            call.cancel();
+                        }
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                            if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                                new Handler(Looper.getMainLooper()).post(() -> {
+
+                                });
+                            }
+                            else{
+                                new Handler(Looper.getMainLooper()).post(() -> {
+                                    Toast.makeText(LoginActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+            catch (IOException e) { Log.i("sign", ""+e);}
+        }).start();
+    }
     public void newPageAnim(final int type)
     {
-        //type=0 --->> Connection lost
+        //type=0 --->> Social SignUp
         //type=1 --->> Verify Account
         //type=2 --->> Open New Page
 
@@ -742,7 +749,16 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             }
             @Override
             public void onAnimationEnd(Animation animation) {
-                if(type==1){
+                String SocialPlatform=(type==0)?"GOOGLE":"FACEBOOK";
+                if(type==0){
+                    appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                    appNameSplash.setText(String.format("%s %s", getString(R.string.fetch_profile), SocialPlatform));
+                    appNameSplash.setVisibility(View.VISIBLE);
+                    proSplash.setVisibility(View.VISIBLE);
+                    verify(0);
+                }
+                else if(type==1){
                     appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
                     appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                     appNameSplash.setText(R.string.email_wait);

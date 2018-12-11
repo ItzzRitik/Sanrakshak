@@ -213,6 +213,7 @@ public class HomeActivity extends AppCompatActivity {
                 splash(true);
             }
             else{
+                appNameSplash.setText(R.string.resources);
                 Log.i("backend_call", "Connecting");
                 try{
                     postBody = new FormBody.Builder()
@@ -237,7 +238,6 @@ public class HomeActivity extends AppCompatActivity {
                             }
                             else{
                                 if(crack.getString("list", null)==null){
-                                    appNameSplash.setText(R.string.resources);
                                     cacheData(true);
                                 }
                                 else{
