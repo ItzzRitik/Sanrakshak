@@ -38,6 +38,7 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnticipateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
@@ -147,7 +148,7 @@ public class HomeActivity extends AppCompatActivity {
         menu.setOnClickListener(v -> {
             if(!menuOpen){
                 menuOpen=true;
-                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setPadding(5,5,5,5);
                     menu.setImageDrawable(getDrawable(R.drawable.close));
@@ -155,7 +156,7 @@ public class HomeActivity extends AppCompatActivity {
             }
             else{
                 menuOpen=false;
-                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setPadding(0,0,0,0);
                     menu.setImageDrawable(getDrawable(R.drawable.menu));
