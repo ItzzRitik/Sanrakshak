@@ -706,8 +706,8 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl()+"","sanrakshak")).build();
 
                         } catch (Exception e) { e.printStackTrace(); }
-                        Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
                         String finalDob = dob;
+                        Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
                         client.newCall(request).enqueue(new Callback() {
                             @Override
                             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -718,6 +718,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                                 if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
                                     new Handler(Looper.getMainLooper()).post(() -> {
+                                        user = getSharedPreferences("user", MODE_PRIVATE).edit();
                                         user.putString("email",account.getEmail());
                                         user.putString("fname",account.getGivenName());
                                         user.putString("lname",account.getFamilyName());
