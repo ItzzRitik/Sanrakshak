@@ -144,7 +144,8 @@ public class HomeActivity extends AppCompatActivity {
 
         menu=findViewById(R.id.menu);
         menu.setOnClickListener(v -> {
-
+            menu.animate().rotationBy(1080).withEndAction(null).setDuration(1100).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+            menu.setImageDrawable(getDrawable(R.drawable.close));
         });
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
