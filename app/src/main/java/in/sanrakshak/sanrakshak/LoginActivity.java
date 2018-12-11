@@ -653,7 +653,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     newPageAnim(2);
                                     new Handler().postDelayed(() -> {
                                         user = getSharedPreferences("user", MODE_PRIVATE).edit();
-                                        user.putString("email", email.getText().toString());
+                                        user.putString("email",account.getEmail());
                                         user.apply();
                                         Intent home=new Intent(LoginActivity.this, HomeActivity.class);
                                         LoginActivity.this.startActivity(home);
@@ -690,20 +690,23 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 if (!profile.isEmpty()) {
                     Date date = profile.getBirthdays().get(0).getDate();
                     appNameSplash.setText(R.string.create_sanrakshak);
+                    String dob="";
                     try {
                         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
                         String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
+                        dob=formatter.format(formatter.parse(dateInString));
                         postBody = new FormBody.Builder()
                                 .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail(),"sanrakshak"))
                                 .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName(),"sanrakshak"))
                                 .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName(),"sanrakshak"))
                                 .add("gender",new CryptLib().encryptPlainTextWithRandomIV(profile.getGenders().get(0).getValue(),"sanrakshak"))
-                                .add("dob",new CryptLib().encryptPlainTextWithRandomIV(formatter.format(formatter.parse(dateInString)),"sanrakshak"))
+                                .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob,"sanrakshak"))
                                 .add("profile",new CryptLib().encryptPlainTextWithRandomIV(Objects.requireNonNull(account.getPhotoUrl()).toString(),"sanrakshak"))
                                 .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl(),"sanrakshak")).build();
 
                     } catch (Exception e) { e.printStackTrace(); }
                     Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
+                    String finalDob = dob;
                     client.newCall(request).enqueue(new Callback() {
                         @Override
                         public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -714,7 +717,18 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                         public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                             if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
                                 new Handler(Looper.getMainLooper()).post(() -> {
-
+                                    user.putString("email",account.getEmail());
+                                    user.putString("fname",account.getGivenName());
+                                    user.putString("lname",account.getFamilyName());
+                                    user.putString("gender",profile.getGenders().get(0).getValue());
+                                    user.putString("dob", finalDob);
+                                    user.putString("profile",Objects.requireNonNull(account.getPhotoUrl()).toString());
+                                    user.putString("cover",profile.getCoverPhotos().get(0).getUrl());
+                                    user.apply();
+                                    Intent home=new Intent(LoginActivity.this, HomeActivity.class);
+                                    LoginActivity.this.startActivity(home);
+                                    finish();
+                                    LoginActivity.this.overridePendingTransition(0, 0);
                                 });
                             }
                             else{
