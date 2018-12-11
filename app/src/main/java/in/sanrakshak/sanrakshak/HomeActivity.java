@@ -144,8 +144,13 @@ public class HomeActivity extends AppCompatActivity {
 
         menu=findViewById(R.id.menu);
         menu.setOnClickListener(v -> {
-            menu.animate().rotationBy(1080).withEndAction(null).setDuration(1100).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-            menu.setImageDrawable(getDrawable(R.drawable.close));
+            if(menu.getDrawable()==getDrawable(R.drawable.menu)){
+                menu.animate().rotationBy(1080).withEndAction(null).setDuration(400).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                new Handler().postDelayed(() -> {
+                    menu.setImageDrawable(getDrawable(R.drawable.close));
+                },200);
+            }
+
         });
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
