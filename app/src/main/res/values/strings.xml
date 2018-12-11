@@ -69,6 +69,7 @@
     <string name="resources">SETTING UP RESOURCES</string>
     <string name="fetch_profile">FETCHING PROFILE FROM</string>
     <string name="create_sanrakshak">CREATING SANRAKSHAK PROFILE</string>
+    <string name="menu">Menu</string>
 </resources>
 
 

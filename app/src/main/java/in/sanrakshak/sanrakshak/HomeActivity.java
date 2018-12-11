@@ -80,7 +80,7 @@ import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane,sheet_back,logo_div_fade,actionbar,navbar;
-    CardView sheet;
+    CardView menupane,sheet;
     ImageView ico_splash,menu,done;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
     Animator animator;
@@ -144,22 +144,27 @@ public class HomeActivity extends AppCompatActivity {
         ico_splash=findViewById(R.id.ico_splash);
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
 
+        menupane=findViewById(R.id.menupane);
         menu=findViewById(R.id.menu);
         menu.setOnClickListener(v -> {
             if(!menuOpen){
                 menuOpen=true;
+                scaleY(menupane,350,400,new OvershootInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
-                    menu.setPadding(5,5,5,5);
+                    menu.setPadding(7,7,7,7);
                     menu.setImageDrawable(getDrawable(R.drawable.close));
+                    page_tag.setText(R.string.menu);
                 },70);
             }
             else{
                 menuOpen=false;
+                scaleY(menupane,0,400,new AnticipateInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setPadding(0,0,0,0);
                     menu.setImageDrawable(getDrawable(R.drawable.menu));
+                    page_tag.setText(R.string.home);
                 },70);
             }
         });
