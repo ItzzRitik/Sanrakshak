@@ -341,7 +341,6 @@ public class ProfileActivity extends AppCompatActivity {
         if(account!=null){
             f_name.setText(account.getGivenName());
             l_name.setText(account.getFamilyName());
-
             new Thread(() -> {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(Objects.requireNonNull(account.getPhotoUrl()).toString()).openConnection();

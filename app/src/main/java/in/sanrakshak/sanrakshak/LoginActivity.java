@@ -671,30 +671,18 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     try {
                                         Person profile = service.people().get("people/me").setRequestMaskIncludeField("person.genders,person.birthdays,person.coverPhotos").execute();
                                         if (!profile.isEmpty()) {
-
                                             com.google.api.services.people.v1.model.Date date = profile.getBirthdays().get(0).getDate();
-                                            String gender = profile.getGenders().get(0).getValue();
-                                            String cover = profile.getCoverPhotos().get(0).getUrl();
-
                                             try {
                                                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
                                                 String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
-                                                Log.i("sign", ""+formatter.format(formatter.parse(dateInString)));
-                                            } catch (Exception ignored) {}
-
-                                            Log.i("sign", ""+gender);
-                                            Log.i("sign", ""+cover);
-
-                                            try {
                                                 postBody = new FormBody.Builder()
                                                         .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail(),"sanrakshak"))
                                                         .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName(),"sanrakshak"))
                                                         .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName(),"sanrakshak"))
-                                                        .add("gender",new CryptLib().encryptPlainTextWithRandomIV(gender_tag.getText().toString(),"sanrakshak"))
-                                                        .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob.getText().toString(),"sanrakshak"))
-                                                        .add("aadhaar",new CryptLib().encryptPlainTextWithRandomIV(aadhaar.getText().toString(),"sanrakshak"))
-                                                        .add("profile",new CryptLib().encryptPlainTextWithRandomIV(dp,"sanrakshak"))
-                                                        .add("cover",new CryptLib().encryptPlainTextWithRandomIV(dp,"sanrakshak")).build();
+                                                        .add("gender",new CryptLib().encryptPlainTextWithRandomIV(profile.getGenders().get(0).getValue(),"sanrakshak"))
+                                                        .add("dob",new CryptLib().encryptPlainTextWithRandomIV(formatter.format(formatter.parse(dateInString)),"sanrakshak"))
+                                                        .add("profile",new CryptLib().encryptPlainTextWithRandomIV(Objects.requireNonNull(account.getPhotoUrl()).toString(),"sanrakshak"))
+                                                        .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl(),"sanrakshak")).build();
 
                                             } catch (Exception e) {
                                                 e.printStackTrace();
