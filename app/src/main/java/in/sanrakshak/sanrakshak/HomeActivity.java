@@ -89,6 +89,7 @@ public class HomeActivity extends AppCompatActivity {
     ToolTipsManager toolTip;
     RecyclerView home;
     double diagonal;
+    Boolean menuOpen=false;
     OkHttpClient client;
     SwipeRefreshLayout refresh;
     ProgressBar proSplash;
@@ -144,13 +145,22 @@ public class HomeActivity extends AppCompatActivity {
 
         menu=findViewById(R.id.menu);
         menu.setOnClickListener(v -> {
-            if(menu.getDrawable()==getDrawable(R.drawable.menu)){
+            if(!menuOpen){
+                menuOpen=true;
                 menu.animate().rotationBy(1080).withEndAction(null).setDuration(400).setInterpolator(new AccelerateDecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
+                    menu.setPadding(2,2,2,2);
                     menu.setImageDrawable(getDrawable(R.drawable.close));
                 },200);
             }
-
+            else{
+                menuOpen=false;
+                menu.animate().rotationBy(1080).withEndAction(null).setDuration(400).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                new Handler().postDelayed(() -> {
+                    menu.setPadding(0,0,0,0);
+                    menu.setImageDrawable(getDrawable(R.drawable.menu));
+                },200);
+            }
         });
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
