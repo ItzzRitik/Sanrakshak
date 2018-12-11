@@ -468,15 +468,22 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
                         new Handler(Looper.getMainLooper()).post(() -> {
+                            user = getSharedPreferences("user", MODE_PRIVATE).edit();
+                            user.putString("email",ProfileActivity.this.getIntent().getStringExtra("email"));
+                            user.putString("fname", f_name.getText().toString());
+                            user.putString("lname",l_name.getText().toString());
+                            user.putString("gender",gender_tag.getText().toString());
+                            user.putString("dob",dob.getText().toString());
+                            user.putString("aadhaar", aadhaar.getText().toString());
+                            user.putString("profile",dp);
+                            user.putString("cover",dp);
+                            user.apply();
                             new Handler().postDelayed(() -> {
                                 loading_profile.setVisibility(View.INVISIBLE);
                                 anim = new AlphaAnimation(1,0);
                                 anim.setDuration(500);anim.setFillAfter(true);
                                 profile_menu_cov.startAnimation(anim);
                                 new Handler().postDelayed(() -> {
-                                    user = getSharedPreferences("user", MODE_PRIVATE).edit();
-                                    user.putString("email",ProfileActivity.this.getIntent().getStringExtra("email"));
-                                    user.apply();
                                     Intent home=new Intent(ProfileActivity.this,HomeActivity.class);
                                     ProfileActivity.this.startActivity(home);
                                     ProfileActivity.this.overridePendingTransition(0,R.anim.fade_out);
