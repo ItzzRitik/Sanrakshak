@@ -691,11 +691,10 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     Date date = profile.getBirthdays().get(0).getDate();
                     new Handler(Looper.getMainLooper()).post(() -> {
                         appNameSplash.setText(R.string.create_sanrakshak);
-                        String dob="";
                         try {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
                             String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
-                            dob=formatter.format(formatter.parse(dateInString));
+                            final String dob=formatter.format(formatter.parse(dateInString));
                             postBody = new FormBody.Builder()
                                     .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail()+"","sanrakshak"))
                                     .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName()+"","sanrakshak"))
@@ -704,42 +703,40 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob+"","sanrakshak"))
                                     .add("profile",new CryptLib().encryptPlainTextWithRandomIV(Objects.requireNonNull(account.getPhotoUrl())+"","sanrakshak"))
                                     .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl()+"","sanrakshak")).build();
-
+                            Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
+                            client.newCall(request).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    Log.i("backend_call", "Verification Failed - "+e);
+                                    call.cancel();
+                                }
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                                        new Handler(Looper.getMainLooper()).post(() -> {
+                                            user = getSharedPreferences("user", MODE_PRIVATE).edit();
+                                            user.putString("email",account.getEmail());
+                                            user.putString("fname",account.getGivenName());
+                                            user.putString("lname",account.getFamilyName());
+                                            user.putString("gender",profile.getGenders().get(0).getValue());
+                                            user.putString("dob", dob);
+                                            user.putString("profile",Objects.requireNonNull(account.getPhotoUrl()).toString());
+                                            user.putString("cover",profile.getCoverPhotos().get(0).getUrl());
+                                            user.apply();
+                                            Intent home=new Intent(LoginActivity.this, HomeActivity.class);
+                                            LoginActivity.this.startActivity(home);
+                                            finish();
+                                            LoginActivity.this.overridePendingTransition(0, 0);
+                                        });
+                                    }
+                                    else{
+                                        new Handler(Looper.getMainLooper()).post(() -> {
+                                            Toast.makeText(LoginActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                                        });
+                                    }
+                                }
+                            });
                         } catch (Exception e) { e.printStackTrace(); }
-                        String finalDob = dob;
-                        Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
-                        client.newCall(request).enqueue(new Callback() {
-                            @Override
-                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                Log.i("backend_call", "Verification Failed - "+e);
-                                call.cancel();
-                            }
-                            @Override
-                            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                                if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
-                                    new Handler(Looper.getMainLooper()).post(() -> {
-                                        user = getSharedPreferences("user", MODE_PRIVATE).edit();
-                                        user.putString("email",account.getEmail());
-                                        user.putString("fname",account.getGivenName());
-                                        user.putString("lname",account.getFamilyName());
-                                        user.putString("gender",profile.getGenders().get(0).getValue());
-                                        user.putString("dob", finalDob);
-                                        user.putString("profile",Objects.requireNonNull(account.getPhotoUrl()).toString());
-                                        user.putString("cover",profile.getCoverPhotos().get(0).getUrl());
-                                        user.apply();
-                                        Intent home=new Intent(LoginActivity.this, HomeActivity.class);
-                                        LoginActivity.this.startActivity(home);
-                                        finish();
-                                        LoginActivity.this.overridePendingTransition(0, 0);
-                                    });
-                                }
-                                else{
-                                    new Handler(Looper.getMainLooper()).post(() -> {
-                                        Toast.makeText(LoginActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                                    });
-                                }
-                            }
-                        });
                     });
                 }
             }
