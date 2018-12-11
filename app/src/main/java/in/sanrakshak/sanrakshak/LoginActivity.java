@@ -703,6 +703,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob+"","sanrakshak"))
                                     .add("profile",new CryptLib().encryptPlainTextWithRandomIV(Objects.requireNonNull(account.getPhotoUrl())+"","sanrakshak"))
                                     .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl()+"","sanrakshak")).build();
+                            Log.i("backend_call", "Form Body - "+postBody.toString());
                             Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
                             client.newCall(request).enqueue(new Callback() {
                                 @Override
