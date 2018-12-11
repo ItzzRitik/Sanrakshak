@@ -147,19 +147,19 @@ public class HomeActivity extends AppCompatActivity {
         menu.setOnClickListener(v -> {
             if(!menuOpen){
                 menuOpen=true;
-                menu.animate().rotationBy(720).withEndAction(null).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new AccelerateDecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
-                    menu.setPadding(2,2,2,2);
+                    menu.setPadding(5,5,5,5);
                     menu.setImageDrawable(getDrawable(R.drawable.close));
-                },100);
+                },70);
             }
             else{
                 menuOpen=false;
-                menu.animate().rotationBy(720).withEndAction(null).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new AccelerateDecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setPadding(0,0,0,0);
                     menu.setImageDrawable(getDrawable(R.drawable.menu));
-                },100);
+                },70);
             }
         });
         done=findViewById(R.id.done);
