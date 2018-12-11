@@ -697,13 +697,13 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
                             dob=formatter.format(formatter.parse(dateInString));
                             postBody = new FormBody.Builder()
-                                    .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail(),"sanrakshak"))
-                                    .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName(),"sanrakshak"))
-                                    .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName(),"sanrakshak"))
-                                    .add("gender",new CryptLib().encryptPlainTextWithRandomIV(profile.getGenders().get(0).getValue(),"sanrakshak"))
-                                    .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob,"sanrakshak"))
-                                    .add("profile",new CryptLib().encryptPlainTextWithRandomIV(Objects.requireNonNull(account.getPhotoUrl()).toString(),"sanrakshak"))
-                                    .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl(),"sanrakshak")).build();
+                                    .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail()+"","sanrakshak"))
+                                    .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName()+"","sanrakshak"))
+                                    .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName()+"","sanrakshak"))
+                                    .add("gender",new CryptLib().encryptPlainTextWithRandomIV(profile.getGenders().get(0).getValue()+"","sanrakshak"))
+                                    .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob+"","sanrakshak"))
+                                    .add("profile",new CryptLib().encryptPlainTextWithRandomIV(Objects.requireNonNull(account.getPhotoUrl())+"","sanrakshak"))
+                                    .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl()+"","sanrakshak")).build();
 
                         } catch (Exception e) { e.printStackTrace(); }
                         Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
