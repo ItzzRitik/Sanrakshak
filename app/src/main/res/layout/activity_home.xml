@@ -131,7 +131,7 @@
                             <com.mikhaellopez.circularimageview.CircularImageView
                                 android:layout_width="90dp"
                                 android:layout_height="90dp"
-                                android:id="@+id/profile"
+                                android:id="@+id/menu_profile"
                                 android:layout_alignParentStart="true"
                                 android:layout_marginStart="30dp"
                                 android:src="@drawable/user_profile"
@@ -149,13 +149,13 @@
                 android:elevation="10dp"
                 android:background="@drawable/tint_actionbar">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="51dp"
+                    android:layout_height="51dp"
                     android:id="@+id/menu"
                     android:src="@drawable/menu"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:padding="12.5dp"
+                    android:padding="13dp"
                     android:layout_marginStart="15.5dp"
                     android:clickable="true"
                     android:focusable="true"

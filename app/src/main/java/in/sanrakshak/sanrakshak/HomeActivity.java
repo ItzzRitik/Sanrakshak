@@ -11,6 +11,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
@@ -21,6 +22,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,12 +50,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.tomergoldst.tooltips.ToolTipsManager;
 
 import org.json.JSONArray;
@@ -83,6 +91,7 @@ public class HomeActivity extends AppCompatActivity {
     CardView menupane,sheet;
     ImageView ico_splash,menu,done;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
+    CircularImageView menu_profile;
     Animator animator;
     CardView data_div;
     ObjectAnimator startAnim;
@@ -152,13 +161,15 @@ public class HomeActivity extends AppCompatActivity {
                 scaleY(menupane,0,400,new AnticipateInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
-                    menu.setPadding(0,0,0,0);
                     menu.setImageDrawable(getDrawable(R.drawable.menu));
+                    menu.setPadding(dptopx(13),dptopx(13),dptopx(13),dptopx(13));
                     page_tag.setText(R.string.home);
+                    backoverlay.setVisibility(View.GONE);
                 },280);
             }
             backoverlay.setVisibility(View.GONE);
         });
+
         menupane=findViewById(R.id.menupane);
         menu=findViewById(R.id.menu);
         menu.setOnClickListener(v -> {
@@ -167,8 +178,8 @@ public class HomeActivity extends AppCompatActivity {
                 scaleY(menupane,350,400,new OvershootInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
-                    menu.setPadding(7,7,7,7);
-                    menu.setBackgroundResource(R.drawable.close);
+                    menu.setImageDrawable(getDrawable(R.drawable.close));
+                    menu.setPadding(dptopx(15),dptopx(15),dptopx(15),dptopx(15));
                     page_tag.setText(R.string.menu);
                     backoverlay.setVisibility(View.VISIBLE);
                 },70);
@@ -178,13 +189,16 @@ public class HomeActivity extends AppCompatActivity {
                 scaleY(menupane,0,400,new AnticipateInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
-                    menu.setPadding(0,0,0,0);
-                    menu.setBackgroundResource(R.drawable.menu);
+                    menu.setImageDrawable(getDrawable(R.drawable.menu));
+                    menu.setPadding(dptopx(13),dptopx(13),dptopx(13),dptopx(13));
                     page_tag.setText(R.string.home);
                     backoverlay.setVisibility(View.GONE);
                 },280);
             }
         });
+        menu_profile=findViewById(R.id.menu_profile);
+
+
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
             gclient.signOut();
@@ -317,11 +331,30 @@ public class HomeActivity extends AppCompatActivity {
                             user_edit.putString("lname",pO.getString("lname"));
                             user_edit.putString("gender", pO.getString("gender"));
                             user_edit.putString("dob", pO.getString("dob"));
-                            user_edit.putString("aadhaar", pO.getString("aadhaar"));
+                            //user_edit.putString("aadhaar", pO.getString("aadhaar"));
                             user_edit.putString("profile",pO.getString("profile"));
                             user_edit.putString("cover",pO.getString("cover"));
                             user_edit.apply();
+                            Log.w("JSON", pO.toString());
                         }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Glide.with(home).load(user.getString("profile",null))
+                                    .apply(new RequestOptions()
+                                            .centerCrop()
+                                            .override(Target.SIZE_ORIGINAL))
+                                    .listener(new RequestListener<Drawable>() {
+                                        @Override
+                                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                            return false;
+                                        }
+                                        @Override
+                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+
+                                            return false;
+                                        }
+                                    })
+                                    .into(menu_profile);
+                        });
                     }
                     catch (JSONException e) {
                         Log.w("error", e.toString());
