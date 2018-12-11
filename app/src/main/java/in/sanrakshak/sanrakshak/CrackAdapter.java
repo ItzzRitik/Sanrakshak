@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -163,18 +164,17 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     }
     private void startMap(@NonNull final MyViewHolder holder, Uri address){
         holder.navtrigger.performClick();
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, address);
-
-        mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(home.getPackageManager()) != null) {
-            home.startActivity(mapIntent);
-            home.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-        }
-        else{
-            home.showSheet("Google Maps Required",
-                    "In order to use navigation feature, Google maps should to be installed on this device.","DOWNLOAD",200);
-
-        }
+        new Handler().postDelayed(() -> {
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, address);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(home.getPackageManager()) != null) {
+                home.startActivity(mapIntent);
+                home.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            }
+            else{
+                home.showSheet("Google Maps Required", "In order to use navigation feature, Google maps should to be installed on this device.","DOWNLOAD",200);
+            }
+        },speed);
     }
     @Override
     public int getItemCount() {
