@@ -771,7 +771,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     appNameSplash.setText(String.format("%s %s", getString(R.string.fetch_profile), SocialPlatform));
                     appNameSplash.setVisibility(View.VISIBLE);
                     proSplash.setVisibility(View.VISIBLE);
-                    verify(0);
                 }
                 else if(type==1){
                     appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
