@@ -79,7 +79,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    RelativeLayout logo_div,splash_cover,sheet_pane,sheet_back,logo_div_fade,actionbar,navbar;
+    RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar;
     CardView menupane,sheet;
     ImageView ico_splash,menu,done;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
@@ -144,6 +144,21 @@ public class HomeActivity extends AppCompatActivity {
         ico_splash=findViewById(R.id.ico_splash);
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
 
+        backoverlay=findViewById(R.id.backoverlay);
+        backoverlay.setOnClickListener(view -> {
+            scaleY(sheet,0,400,new AnticipateInterpolator());
+            if(menuOpen){
+                menuOpen=false;
+                scaleY(menupane,0,400,new AnticipateInterpolator());
+                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
+                new Handler().postDelayed(() -> {
+                    menu.setPadding(0,0,0,0);
+                    menu.setImageDrawable(getDrawable(R.drawable.menu));
+                    page_tag.setText(R.string.home);
+                },280);
+            }
+            backoverlay.setVisibility(View.GONE);
+        });
         menupane=findViewById(R.id.menupane);
         menu=findViewById(R.id.menu);
         menu.setOnClickListener(v -> {
@@ -153,8 +168,9 @@ public class HomeActivity extends AppCompatActivity {
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setPadding(7,7,7,7);
-                    menu.setImageDrawable(getDrawable(R.drawable.close));
+                    menu.setBackgroundResource(R.drawable.close);
                     page_tag.setText(R.string.menu);
+                    backoverlay.setVisibility(View.VISIBLE);
                 },70);
             }
             else{
@@ -163,10 +179,9 @@ public class HomeActivity extends AppCompatActivity {
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setPadding(0,0,0,0);
-                    menu.setImageDrawable(getDrawable(R.drawable.menu));
-                },70);
-                new Handler().postDelayed(() -> {
+                    menu.setBackgroundResource(R.drawable.menu);
                     page_tag.setText(R.string.home);
+                    backoverlay.setVisibility(View.GONE);
                 },280);
             }
         });
@@ -196,7 +211,6 @@ public class HomeActivity extends AppCompatActivity {
         home.setItemAnimator(new DefaultItemAnimator());
 
         sheet=findViewById(R.id.sheet);
-        sheet_back=findViewById(R.id.sheet_back);
         sheet_pane=findViewById(R.id.sheet_pane);
         sheet_pane.setPadding(dptopx(20),dptopx(20),dptopx(20),dptopx(20)+getHeightStatusNav(1));
         sheet_title=findViewById(R.id.sheet_title);
@@ -219,11 +233,7 @@ public class HomeActivity extends AppCompatActivity {
             }
             return true;
         });
-        sheet_back=findViewById(R.id.sheet_back);
-        sheet_back.setOnClickListener(view -> {
-            scaleY(sheet,0,400,new AnticipateInterpolator());
-            sheet_back.setVisibility(View.GONE);
-        });
+
         user = getSharedPreferences("user", MODE_PRIVATE);
         user_edit = user.edit();
         crack = getSharedPreferences("crack", MODE_PRIVATE);
@@ -571,7 +581,7 @@ public class HomeActivity extends AppCompatActivity {
         sheet_title.setText(title);
         sheet_msg.setText(msg);
         sheet_action.setText(action);
-        sheet_back.setVisibility(View.VISIBLE);
+        backoverlay.setVisibility(View.VISIBLE);
         scaleY(sheet,size,500,new OvershootInterpolator());
     }
     public int getHeightStatusNav(int viewid) {
