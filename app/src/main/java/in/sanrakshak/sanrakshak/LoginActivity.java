@@ -1,5 +1,6 @@
 package in.sanrakshak.sanrakshak;
 
+import android.accounts.Account;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -55,8 +56,16 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.people.v1.People;
+import com.google.api.services.people.v1.model.Person;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -281,7 +290,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         email_reset=findViewById(R.id.email_reset);
         email_reset.setOnClickListener(v -> {
             showKeyboard(v,false);
-            if(account!=null){gclient.signOut();}
             new Handler().postDelayed(() -> {
                 scaleY(social_div,80,300,new AccelerateDecelerateInterpolator());
                 scaleY(login_div,48,300,new AccelerateDecelerateInterpolator());
@@ -542,7 +550,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 postBody = new FormBody.Builder()
                         .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak"))
                         .add("pass",new CryptLib().encryptPlainTextWithRandomIV(pass.getText().toString(),"sanrakshak"))
-                        .add("verified",(account==null?0:1)+"").build();
+                        .add("verified","0").build();
             }
             catch (Exception e){Log.e("encrypt","Error while encryption");}
             Request request = new Request.Builder().url("http://3.16.4.70:8080/signup").post(postBody).build();
@@ -558,53 +566,14 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     if(response.body().string().equals("1") && response.isSuccessful()){
                         Log.i("sign","Account Creation Successful");
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            if(account==null){
-                                try{
-                                    postBody = new FormBody.Builder()
-                                            .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
+                            try{
+                                postBody = new FormBody.Builder()
+                                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(email.getText().toString(),"sanrakshak")).build();
 
-                                }
-                                catch (Exception e){Log.e("encrypt","Error while encryption");return;}
-                                newPageAnim(1);
-                                nextLoading(false);
                             }
-                            else{
-                                try {
-                                    postBody = new FormBody.Builder()
-                                            .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail(),"sanrakshak"))
-                                            .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName(),"sanrakshak"))
-                                            .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName(),"sanrakshak"))
-                                            .add("profile",new CryptLib().encryptPlainTextWithRandomIV(account.getPhotoUrl().toString(),"sanrakshak")).build();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                Request request = new Request.Builder().url("http://3.16.4.70:8080/profile").post(postBody).build();
-                                client.newCall(request).enqueue(new Callback() {
-                                    @Override
-                                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                        call.cancel();
-                                    }
-                                    @Override
-                                    public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                                        if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
-                                            new Handler(Looper.getMainLooper()).post(() -> {
-                                                newPageAnim(2);
-                                                new Handler().postDelayed(() -> {
-                                                    Intent profile = new Intent(LoginActivity.this, ProfileActivity.class);
-                                                    profile.putExtra("email",email.getText().toString());
-                                                    LoginActivity.this.startActivity(profile);
-                                                    finish();
-                                                    LoginActivity.this.overridePendingTransition(0, 0); },1500);
-                                            });
-                                        }
-                                        else{
-                                            new Handler(Looper.getMainLooper()).post(() -> {
-                                                Toast.makeText(LoginActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                                            });
-                                        }
-                                    }
-                                });
-                            }
+                            catch (Exception e){Log.e("encrypt","Error while encryption");return;}
+                            newPageAnim(1);
+                            nextLoading(false);
                         });
                     }
                     else{
@@ -693,29 +662,67 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             }
                             else
                             {
-                                //If Doesn't exist then ask signup
-                                new Handler(Looper.getMainLooper()).post(() -> {
-                                    scaleX(social_google_logo,50,100,new AccelerateDecelerateInterpolator());
-                                    email.setText(account.getEmail());email.setEnabled(false);
-                                    scaleY(social_div,0,300,new AccelerateDecelerateInterpolator());
-                                    login_div.setPadding(0,0,0,0);
-                                    nextPad(8,4);
-                                    nextLoading(false);
+                                new Thread(() -> {
+                                    GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(LoginActivity.this, Collections.singleton(Scopes.PROFILE));
+                                    credential.setSelectedAccount(new Account(account.getEmail(), "com.google"));
+                                    People service = new People.Builder(AndroidHttp.newCompatibleTransport(), JacksonFactory.getDefaultInstance(), credential)
+                                            .setApplicationName("Sanrakshak")
+                                            .build();
+                                    try {
+                                        Person profile = service.people().get("people/me").setRequestMaskIncludeField("person.genders,person.birthdays,person.coverPhotos").execute();
+                                        if (!profile.isEmpty()) {
 
-                                    //Ask SignUp Details
-                                    pass.setVisibility(View.VISIBLE);
-                                    con_pass.setVisibility(View.VISIBLE);
-                                    email_reset.setVisibility(View.VISIBLE);
-                                    pass.requestFocus();
-                                    pass.setEnabled(true);
-                                    pass.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-                                    setButtonEnabled(false);
-                                    forget_create.setTextSize(14);
-                                    forget_create.setText(getResources().getString(R.string.login_create));
-                                    scaleY(forget_pass,30,300,new OvershootInterpolator());
-                                    scaleY(login_div,148,300,new AccelerateDecelerateInterpolator());
-                                    log=2;
-                                });
+                                            com.google.api.services.people.v1.model.Date date = profile.getBirthdays().get(0).getDate();
+                                            String gender = profile.getGenders().get(0).getValue();
+                                            String cover = profile.getCoverPhotos().get(0).getUrl();
+
+                                            try {
+                                                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
+                                                String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
+                                                Log.i("sign", ""+formatter.format(formatter.parse(dateInString)));
+                                            } catch (Exception ignored) {}
+
+                                            Log.i("sign", ""+gender);
+                                            Log.i("sign", ""+cover);
+
+                                            try {
+                                                postBody = new FormBody.Builder()
+                                                        .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail(),"sanrakshak"))
+                                                        .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName(),"sanrakshak"))
+                                                        .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName(),"sanrakshak"))
+                                                        .add("gender",new CryptLib().encryptPlainTextWithRandomIV(gender_tag.getText().toString(),"sanrakshak"))
+                                                        .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob.getText().toString(),"sanrakshak"))
+                                                        .add("aadhaar",new CryptLib().encryptPlainTextWithRandomIV(aadhaar.getText().toString(),"sanrakshak"))
+                                                        .add("profile",new CryptLib().encryptPlainTextWithRandomIV(dp,"sanrakshak"))
+                                                        .add("cover",new CryptLib().encryptPlainTextWithRandomIV(dp,"sanrakshak")).build();
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            Request request = new Request.Builder().url("http://3.16.4.70:8080/social").post(postBody).build();
+                                            client.newCall(request).enqueue(new Callback() {
+                                                @Override
+                                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                                    Log.i("backend_call", "Verification Failed - "+e);
+                                                    call.cancel();
+                                                }
+                                                @Override
+                                                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                                                    if(Integer.parseInt(Objects.requireNonNull(response.body()).string())==1 && response.isSuccessful()){
+                                                        new Handler(Looper.getMainLooper()).post(() -> {
+                                                        });
+                                                    }
+                                                    else{
+                                                        new Handler(Looper.getMainLooper()).post(() -> {
+                                                            Toast.makeText(LoginActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                    catch (IOException e) { Log.i("sign", ""+e);}
+                                }).start();
                             }
                         }
                     });

@@ -343,32 +343,6 @@ public class ProfileActivity extends AppCompatActivity {
             l_name.setText(account.getFamilyName());
 
             new Thread(() -> {
-                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(ProfileActivity.this, Collections.singleton(Scopes.PROFILE));
-                credential.setSelectedAccount(new Account(account.getEmail(), "com.google"));
-                People service = new People.Builder(AndroidHttp.newCompatibleTransport(), JacksonFactory.getDefaultInstance(), credential)
-                        .setApplicationName("Sanrakshak")
-                        .build();
-                try {
-                    Person profile = service.people().get("people/me").setRequestMaskIncludeField("person.genders,person.birthdays,person.coverPhotos").execute();
-                    if (!profile.isEmpty()) {
-
-                        com.google.api.services.people.v1.model.Date date = profile.getBirthdays().get(0).getDate();
-                        String gender = profile.getGenders().get(0).getValue();
-                        String cover = profile.getCoverPhotos().get(0).getUrl();
-
-                        try {
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
-                            String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
-                            dob.setText(formatter.format(formatter.parse(dateInString)));
-                        } catch (Exception ignored) {}
-
-                        Log.i("sign", ""+gender);
-                        Log.i("sign", ""+cover);
-                    }
-                }
-                catch (IOException e) { Log.i("sign", ""+e);}
-            }).start();
-            new Thread(() -> {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(Objects.requireNonNull(account.getPhotoUrl()).toString()).openConnection();
                     connection.setDoInput(true);connection.connect();
@@ -477,7 +451,9 @@ public class ProfileActivity extends AppCompatActivity {
                         .add("gender",new CryptLib().encryptPlainTextWithRandomIV(gender_tag.getText().toString(),"sanrakshak"))
                         .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob.getText().toString(),"sanrakshak"))
                         .add("aadhaar",new CryptLib().encryptPlainTextWithRandomIV(aadhaar.getText().toString(),"sanrakshak"))
-                        .add("profile",new CryptLib().encryptPlainTextWithRandomIV(dp,"sanrakshak")).build();
+                        .add("profile",new CryptLib().encryptPlainTextWithRandomIV(dp,"sanrakshak"))
+                        .add("cover",new CryptLib().encryptPlainTextWithRandomIV(dp,"sanrakshak")).build();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
