@@ -785,7 +785,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             public void onAnimationRepeat(Animation animation) { }
         });
         logo_div.startAnimation(anim);
-
     }
     public void nextLoading(Boolean loading)
     {

@@ -278,11 +278,14 @@ public class HomeActivity extends AppCompatActivity {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject pO = postsArray.getJSONObject(i);
+                            user_edit = getSharedPreferences("user", MODE_PRIVATE).edit();
                             user_edit.putString("fname", pO.getString("fname"));
-                            user_edit.putString("lname", pO.getString("lname"));
+                            user_edit.putString("lname",pO.getString("lname"));
                             user_edit.putString("gender", pO.getString("gender"));
                             user_edit.putString("dob", pO.getString("dob"));
                             user_edit.putString("aadhaar", pO.getString("aadhaar"));
+                            user_edit.putString("profile",pO.getString("profile"));
+                            user_edit.putString("cover",pO.getString("cover"));
                             user_edit.apply();
                         }
                     }
