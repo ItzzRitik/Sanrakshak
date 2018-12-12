@@ -281,15 +281,16 @@ public class HomeActivity extends AppCompatActivity {
                 menu_profile_Card.setEnabled(false);
                 scaleY(menupane,350,500,new OvershootInterpolator());
                 menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
-                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(300);anims.setFillAfter(true);
-                menu_profile_edit.startAnimation(anims);
+                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(300);menu_profile_edit.startAnimation(anims);
                 new Handler().postDelayed(() -> {
                     menu.setImageDrawable(getDrawable(R.drawable.close));
                     menu.setPadding(dptopx(15),dptopx(15),dptopx(15),dptopx(15));
                     done.setImageDrawable(getDrawable(R.drawable.logout));
                     page_tag.setText(R.string.menu);
                 },200);
-                new Handler().postDelayed(() -> menu_profile_edit.setVisibility(View.GONE),300);
+                new Handler().postDelayed(() ->{
+                    menu_profile_edit.setVisibility(View.GONE);
+                } ,300);
                 new Handler().postDelayed(() -> {
                     page_tag.setEnabled(true);
                     menu_profile_Card.setEnabled(true);
@@ -310,7 +311,7 @@ public class HomeActivity extends AppCompatActivity {
                     menu.setPadding(dptopx(13),dptopx(13),dptopx(13),dptopx(13));
                     done.setImageDrawable(getDrawable(R.drawable.tick));
                     page_tag.setText(R.string.profile);
-                    AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(300);anims.setFillAfter(true);
+                    AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(300);
                     menu_profile_edit.setVisibility(View.VISIBLE);menu_profile_edit.startAnimation(anims);
                 },200);
                 new Handler().postDelayed(() -> {
@@ -321,7 +322,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         menu_profile_edit=findViewById(R.id.menu_profile_edit);
-        AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(0);anims.setFillAfter(true);menu_profile_edit.startAnimation(anims);
+        AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(0);menu_profile_edit.startAnimation(anims);
         dp_cover=findViewById(R.id.dp_cover);
         profile=findViewById(R.id.profile);
 
