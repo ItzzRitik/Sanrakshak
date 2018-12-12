@@ -176,7 +176,7 @@ public class HomeActivity extends AppCompatActivity {
         page_tag=findViewById(R.id.page_tag);
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
         page_tag.setOnClickListener(v -> {
-            if(!menuOpen){
+            if(!menuOpen && !profileOpen){
                 menuOpen=true;
                 page_tag.setEnabled(false);
                 scaleY(menupane,350,400,new OvershootInterpolator());
@@ -189,7 +189,7 @@ public class HomeActivity extends AppCompatActivity {
                 },70);
                 new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
             }
-            else{
+            else if(menuOpen && !profileOpen){
                 menuOpen=false;
                 page_tag.setEnabled(false);
                 scaleY(menupane,0,400,new AnticipateInterpolator());
@@ -202,6 +202,16 @@ public class HomeActivity extends AppCompatActivity {
                 },280);
                 new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
             }
+            if(profileOpen){
+                profileOpen=false;
+                page_tag.setEnabled(false);
+                scaleY(menupane,350,500,new OvershootInterpolator());
+                menu.animate().rotationBy(-1080).withEndAction(null).setDuration(450).setInterpolator(new DecelerateInterpolator()).start();
+                new Handler().postDelayed(() -> {
+                    page_tag.setText(R.string.menu);
+                },70);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
+            }
         });
         menu_profile=findViewById(R.id.menu_profile);
         menu_profile_Card=findViewById(R.id.menu_profile_Card);
@@ -209,8 +219,8 @@ public class HomeActivity extends AppCompatActivity {
             if(!profileOpen){
                 profileOpen=true;
                 page_tag.setEnabled(false);
-                scaleY(menupane,pxtodp(splash_cover.getHeight()),500,new DecelerateInterpolator());
-                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
+                scaleY(menupane,pxtodp(splash_cover.getHeight()),500,new AnticipateInterpolator());
+                menu.animate().rotationBy(1080).withEndAction(null).setDuration(450).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     page_tag.setText(R.string.profile);
                 },70);
