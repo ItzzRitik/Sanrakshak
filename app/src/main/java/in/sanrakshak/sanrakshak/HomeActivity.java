@@ -287,7 +287,7 @@ public class HomeActivity extends AppCompatActivity {
                 new Handler().postDelayed(() -> {
                     menu.setImageDrawable(getDrawable(R.drawable.close));
                     menu.setPadding(dptopx(15),dptopx(15),dptopx(15),dptopx(15));
-                    done.setImageDrawable(getDrawable(R.drawable.logout));
+                    done.setImageDrawable(getDrawable(R.drawable.search));
                     page_tag.setText(R.string.menu);
                 },200);
                 new Handler().postDelayed(() ->{
