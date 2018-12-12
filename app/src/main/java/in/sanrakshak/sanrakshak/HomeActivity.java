@@ -277,6 +277,7 @@ public class HomeActivity extends AppCompatActivity {
                 },400);
             }
             if(profileOpen){
+                profileSetUp();
                 profileOpen=false;
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
@@ -302,6 +303,7 @@ public class HomeActivity extends AppCompatActivity {
         menu_profile_Card=findViewById(R.id.menu_profile_Card);
         menu_profile_Card.setOnClickListener(view -> {
             if(!profileOpen){
+                profileSetUp();
                 profileOpen=true;
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
@@ -600,13 +602,13 @@ public class HomeActivity extends AppCompatActivity {
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject pO = postsArray.getJSONObject(i);
                             user_edit = getSharedPreferences("user", MODE_PRIVATE).edit();
-                            user_edit.putString("fname", pO.getString("fname"));
-                            user_edit.putString("lname",pO.getString("lname"));
-                            user_edit.putString("gender", pO.getString("gender"));
-                            user_edit.putString("dob", pO.getString("dob"));
-                            //user_edit.putString("aadhaar", pO.getString("aadhaar"));
-                            user_edit.putString("profile",pO.getString("profile"));
-                            user_edit.putString("cover",pO.getString("cover"));
+                            user_edit.putString("fname", pO.optString("fname"));
+                            user_edit.putString("lname",pO.optString("lname"));
+                            user_edit.putString("gender", pO.optString("gender"));
+                            user_edit.putString("dob", pO.optString("dob"));
+                            user_edit.putString("aadhaar", pO.optString("aadhaar"));
+                            user_edit.putString("profile",pO.optString("profile"));
+                            user_edit.putString("cover",pO.optString("cover"));
                             user_edit.apply();
                             Log.w("JSON", pO.toString());
                         }
