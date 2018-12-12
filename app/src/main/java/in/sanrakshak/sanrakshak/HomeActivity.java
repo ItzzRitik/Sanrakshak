@@ -166,9 +166,9 @@ public class HomeActivity extends AppCompatActivity {
         menupane=findViewById(R.id.menupane);
         menu=findViewById(R.id.menu);
 
-        menu_fname=findViewById(R.id.menu_name);
+        menu_fname=findViewById(R.id.menu_fname);
         menu_fname.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2_bold.otf"));
-        menu_lname=findViewById(R.id.menu_name);
+        menu_lname=findViewById(R.id.menu_lname);
         menu_lname.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2_bold.otf"));
         menu_email=findViewById(R.id.menu_email);
         menu_email.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
