@@ -159,6 +159,7 @@ public class HomeActivity extends AppCompatActivity {
             scaleY(sheet,0,400,new AnticipateInterpolator());
             if(menuOpen){
                 menuOpen=false;
+                menu.setEnabled(false);
                 scaleY(menupane,0,400,new AnticipateInterpolator());
                 menu.animate().rotationBy(-720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
@@ -167,6 +168,7 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.home);
                     backoverlay.setVisibility(View.GONE);
                 },280);
+                new Handler().postDelayed(() -> menu.setEnabled(true),350);
             }
             backoverlay.setVisibility(View.GONE);
         });
@@ -176,6 +178,7 @@ public class HomeActivity extends AppCompatActivity {
         menu.setOnClickListener(v -> {
             if(!menuOpen){
                 menuOpen=true;
+                menu.setEnabled(false);
                 scaleY(menupane,350,400,new OvershootInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
@@ -184,9 +187,11 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.menu);
                     backoverlay.setVisibility(View.VISIBLE);
                 },70);
+                new Handler().postDelayed(() -> menu.setEnabled(true),350);
             }
             else{
                 menuOpen=false;
+                menu.setEnabled(false);
                 scaleY(menupane,0,400,new AnticipateInterpolator());
                 menu.animate().rotationBy(-720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
@@ -195,6 +200,7 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.home);
                     backoverlay.setVisibility(View.GONE);
                 },280);
+                new Handler().postDelayed(() -> menu.setEnabled(true),350);
             }
         });
         menu_profile=findViewById(R.id.menu_profile);
@@ -447,7 +453,12 @@ public class HomeActivity extends AppCompatActivity {
                 Runnable runnable = () -> {
                     AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
                     actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
-                    menu.animate().rotationBy(1080).withEndAction(null).setDuration(1100).setInterpolator(new AccelerateDecelerateInterpolator()).start();                    };
+                    menu.setEnabled(false);
+                    menu.animate().rotationBy(1080).withEndAction(null).setDuration(1100).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                    new Handler().postDelayed(() -> {
+                        menu.setEnabled(true);
+                    },1100);
+                };
                 runnable.run();
 
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
