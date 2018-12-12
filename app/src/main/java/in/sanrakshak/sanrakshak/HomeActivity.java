@@ -213,6 +213,9 @@ public class HomeActivity extends AppCompatActivity {
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(300);anims.setFillAfter(true);
                 menu_profile_edit.startAnimation(anims);
                 new Handler().postDelayed(() -> {
+                    menu.setImageDrawable(getDrawable(R.drawable.close));
+                    menu.setPadding(dptopx(15),dptopx(15),dptopx(15),dptopx(15));
+                    done.setImageDrawable(getDrawable(R.drawable.logout));
                     page_tag.setText(R.string.menu);
                 },200);
                 new Handler().postDelayed(() -> menu_profile_edit.setVisibility(View.GONE),300);
@@ -226,8 +229,11 @@ public class HomeActivity extends AppCompatActivity {
                 profileOpen=true;
                 page_tag.setEnabled(false);
                 scaleY(menupane,pxtodp(splash_cover.getHeight()),500,new AnticipateInterpolator());
-                menu.animate().rotationBy(1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
+                    menu.setImageDrawable(getDrawable(R.drawable.back));
+                    menu.setPadding(dptopx(13),dptopx(13),dptopx(13),dptopx(13));
+                    done.setImageDrawable(getDrawable(R.drawable.tick));
                     page_tag.setText(R.string.profile);
                     AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(300);anims.setFillAfter(true);
                     menu_profile_edit.setVisibility(View.VISIBLE);menu_profile_edit.startAnimation(anims);
@@ -243,12 +249,8 @@ public class HomeActivity extends AppCompatActivity {
 
         gender=findViewById(R.id.gender);
         gender.addSwitchObserver((switchView, isChecked) -> {
-            if(isChecked){
-                gender_tag.setText(R.string.male);
-            }
-            else{
-                gender_tag.setText(R.string.female);
-            }
+            if(isChecked){ gender_tag.setText(R.string.male); }
+            else{ gender_tag.setText(R.string.female); }
         });
 
         gender_tag=findViewById(R.id.gender_tag);
