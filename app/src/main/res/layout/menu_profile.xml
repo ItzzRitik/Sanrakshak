@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="200dp"
             android:layout_alignParentTop="true"
             android:id="@+id/dp_cover"
             android:scaleType="centerCrop"
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/profile_pane"
-            android:background="@drawable/profile_background">
+            android:background="@drawable/profile_edit_background">
             <RelativeLayout
                 android:layout_width="150dp"
                 android:layout_height="150dp"
