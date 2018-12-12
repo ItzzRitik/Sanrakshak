@@ -56,6 +56,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.rm.rmswitch.RMSwitch;
 import com.tomergoldst.tooltips.ToolTipsManager;
 
 import org.json.JSONArray;
@@ -87,6 +88,7 @@ public class HomeActivity extends AppCompatActivity {
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
     TextView gender_tag,f_name,l_name,dob,aadhaar;
     CircularImageView menu_profile,profile;
+    RMSwitch gender;
     Animator animator;
     CardView data_div;
     ObjectAnimator startAnim;
@@ -238,6 +240,16 @@ public class HomeActivity extends AppCompatActivity {
         AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(0);anims.setFillAfter(true);menu_profile_edit.startAnimation(anims);
         dp_cover=findViewById(R.id.dp_cover);
         profile=findViewById(R.id.profile);
+
+        gender=findViewById(R.id.gender);
+        gender.addSwitchObserver((switchView, isChecked) -> {
+            if(isChecked){
+                gender_tag.setText(R.string.male);
+            }
+            else{
+                gender_tag.setText(R.string.female);
+            }
+        });
 
         gender_tag=findViewById(R.id.gender_tag);
         gender_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/above.ttf"));
