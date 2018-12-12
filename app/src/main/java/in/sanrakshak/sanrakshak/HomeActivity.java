@@ -83,9 +83,9 @@ import okhttp3.Response;
 public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar,menu_profile_edit;
     CardView menupane,sheet,menu_profile_Card;
-    ImageView ico_splash,menu,done,menu_cover;
+    ImageView ico_splash,menu,done,menu_cover,dp_cover;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
-    CircularImageView menu_profile;
+    CircularImageView menu_profile,profile;
     Animator animator;
     CardView data_div;
     ObjectAnimator startAnim;
@@ -207,9 +207,12 @@ public class HomeActivity extends AppCompatActivity {
                 page_tag.setEnabled(false);
                 scaleY(menupane,350,500,new OvershootInterpolator());
                 menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(300);anims.setFillAfter(true);
+                menu_profile_edit.startAnimation(anims);
                 new Handler().postDelayed(() -> {
                     page_tag.setText(R.string.menu);
                 },200);
+                new Handler().postDelayed(() -> menu_profile_edit.setVisibility(View.GONE),300);
                 new Handler().postDelayed(() -> page_tag.setEnabled(true),500);
             }
         });
@@ -229,8 +232,11 @@ public class HomeActivity extends AppCompatActivity {
                 new Handler().postDelayed(() -> page_tag.setEnabled(true),500);
             }
         });
-        menu_profile_edit=findViewById(R.id.menu_profile_edit);
 
+        menu_profile_edit=findViewById(R.id.menu_profile_edit);
+        AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(0);anims.setFillAfter(true);menu_profile_edit.startAnimation(anims);
+        dp_cover=findViewById(R.id.dp_cover);
+        profile=findViewById(R.id.profile);
 
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
