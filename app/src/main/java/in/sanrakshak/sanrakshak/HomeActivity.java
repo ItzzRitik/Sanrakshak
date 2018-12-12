@@ -378,7 +378,9 @@ public class HomeActivity extends AppCompatActivity {
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
                             Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(menu_profile);
+                            Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(profile);
                             Glide.with(home).load(user.getString("cover",null)).apply(new RequestOptions().centerCrop()).into(menu_cover);
+                            Glide.with(home).load(user.getString("cover",null)).apply(new RequestOptions().centerCrop()).into(dp_cover);
                             menu_fname.setText(user.getString("fname",""));
                             menu_lname.setText(user.getString("lname",""));
                             menu_email.setText(user.getString("email",""));
