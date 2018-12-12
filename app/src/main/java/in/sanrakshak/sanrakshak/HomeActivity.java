@@ -610,21 +610,7 @@ public class HomeActivity extends AppCompatActivity {
                             user_edit.apply();
                             Log.w("JSON", pO.toString());
                         }
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(menu_profile);
-                            Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(profile);
-                            Glide.with(home).load(user.getString("cover",null)).apply(new RequestOptions().centerCrop()).into(menu_cover);
-                            Glide.with(home).load(user.getString("cover",null)).apply(new RequestOptions().centerCrop()).into(dp_cover);
-                            menu_fname.setText(user.getString("fname",""));
-                            menu_lname.setText(user.getString("lname",""));
-                            menu_email.setText(user.getString("email",""));
-                            f_name.setText(user.getString("fname",""));
-                            l_name.setText(user.getString("lname",""));
-                            dob.setText(user.getString("dob",""));
-                            if(Objects.requireNonNull(user.getString("gender", "")).toLowerCase().equals("female")){
-                                gender.performClick();
-                            }
-                        });
+                        new Handler(Looper.getMainLooper()).post(() -> profileSetUp());
                     }
                     catch (JSONException e) {
                         Log.w("error", e.toString());
@@ -635,6 +621,19 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    public void profileSetUp(){
+        Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(menu_profile);
+        Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(profile);
+        Glide.with(home).load(user.getString("cover",null)).apply(new RequestOptions().centerCrop()).into(menu_cover);
+        Glide.with(home).load(user.getString("cover",null)).apply(new RequestOptions().centerCrop()).into(dp_cover);
+        menu_fname.setText(user.getString("fname",""));
+        menu_lname.setText(user.getString("lname",""));
+        menu_email.setText(user.getString("email",""));
+        f_name.setText(user.getString("fname",""));
+        l_name.setText(user.getString("lname",""));
+        dob.setText(user.getString("dob",""));
+        if(Objects.requireNonNull(user.getString("gender", "")).toLowerCase().equals("female")){ gender.performClick(); }
     }
     public void getCrackList(boolean splash){
         try{
