@@ -109,7 +109,7 @@ import static android.R.attr.maxWidth;
 
 public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar,menu_profile_edit;
-    RelativeLayout camera_pane,permission_camera,galary;
+    RelativeLayout camera_pane,permission_camera,galary,click_pane;
     Button allow_camera;
     CardView menupane,sheet,menu_profile_Card;
     ProgressBar proSplash,loading_profile;
@@ -361,6 +361,10 @@ public class HomeActivity extends AppCompatActivity {
             dd.show();
         });
 
+        click_pane=findViewById(R.id.click_pane);
+        click_pane.getLayoutParams().height = dptopx(140) + getHeightStatusNav(1);
+
+        cameraView=findViewById(R.id.cam);
         camera_pane=findViewById(R.id.camera_pane);
         loading_profile= findViewById(R.id.loading_profile);
         loading_profile.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.progress), PorterDuff.Mode.MULTIPLY);
