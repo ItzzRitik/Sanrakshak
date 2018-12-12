@@ -1,5 +1,6 @@
 package in.sanrakshak.sanrakshak;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -7,9 +8,14 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -21,7 +27,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,10 +42,13 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -50,6 +61,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.cameraview.CameraView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -58,7 +70,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.rm.rmswitch.RMSwitch;
+import com.tomergoldst.tooltips.ToolTip;
 import com.tomergoldst.tooltips.ToolTipsManager;
+import com.yalantis.ucrop.UCrop;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,25 +99,33 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static android.R.attr.maxHeight;
+import static android.R.attr.maxWidth;
+
 public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar,menu_profile_edit;
+    RelativeLayout camera_pane,permission_camera;
     CardView menupane,sheet,menu_profile_Card;
-    ImageView ico_splash,menu,done,menu_cover,dp_cover,dob_chooser;
+    ProgressBar proSplash,loading_profile;
+    ImageView ico_splash,menu,done,menu_cover,dp_cover,dob_chooser,click;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
     TextView gender_tag,f_name,l_name,dob,aadhaar;
     CircularImageView menu_profile,profile;
+    CameraView cameraView;
+    UCrop.Options options;
     RMSwitch gender;
     Animator animator;
     CardView data_div;
+    String profile_url="",profile_path="";
+    Bitmap profile_dp=null;
     ObjectAnimator startAnim;
     Point screenSize;
     ToolTipsManager toolTip;
     RecyclerView home;
     double diagonal;
-    Boolean menuOpen=false,profileOpen=false;
+    Boolean menuOpen=false,profileOpen=false,profile_lp=false,camOn=false,galaryOn=false,isDP_added=false;
     OkHttpClient client;
     SwipeRefreshLayout refresh;
-    ProgressBar proSplash;
     RequestBody postBody=null;
     SharedPreferences user,crack;
     SharedPreferences.Editor user_edit,crack_edit;
@@ -112,6 +134,36 @@ public class HomeActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient gclient;
     GoogleSignInAccount account;
+    @Override
+    public void onBackPressed() {
+        if(camOn)
+        {
+            closeCam();
+            return;
+        }
+        super.onBackPressed();
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(camera_pane.getVisibility()== View.VISIBLE)
+        {
+            click.setVisibility(View.GONE);
+            if(cameraView.isCameraOpened()){cameraView.stop();}
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(camera_pane.getVisibility()== View.VISIBLE)
+        {
+            if(checkPerm() && !cameraView.isCameraOpened()){cameraView.start();cameraListener();}
+            new Handler().postDelayed(() -> {
+                click.setVisibility(View.VISIBLE);
+                Animation anim = AnimationUtils.loadAnimation(HomeActivity.this, R.anim.click_grow);click.startAnimation(anim);
+            },500);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -302,6 +354,60 @@ public class HomeActivity extends AppCompatActivity {
                     }, 2000,  Calendar.getInstance().get(Calendar.MONTH),  Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
             dd.show();
         });
+
+        click=findViewById(R.id.click);
+        permission_camera=findViewById(R.id.permission_camera);
+        camera_pane=findViewById(R.id.camera_pane);
+        loading_profile= findViewById(R.id.loading_profile);
+        loading_profile.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.progress), PorterDuff.Mode.MULTIPLY);
+        profile=findViewById(R.id.profile);
+        profile.setOnClickListener(v -> {
+            setLightTheme(false,false);
+            if(profile_lp) {profile_lp=false;}
+            else
+            {
+                vibrate(20);
+                camera_pane.setVisibility(View.VISIBLE);
+                permission_camera.setVisibility(View.VISIBLE);
+                camOn=true;
+                final Animator animator = ViewAnimationUtils.createCircularReveal(camera_pane,dptopx(92),dptopx(248),profile.getWidth()/2, (float)diagonal);
+                animator.setInterpolator(new AccelerateDecelerateInterpolator());animator.setDuration(500);animator.start();
+                if (checkPerm()) {
+                    permission_camera.setVisibility(View.GONE);if(!cameraView.isCameraOpened()){cameraView.start();
+                        cameraListener();
+                    }
+                }
+                new Handler().postDelayed(() -> {
+                    click.setVisibility(View.VISIBLE);
+                    click.startAnimation(AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.click_grow));
+                },500);
+                if(checkPerm())
+                {
+                    new Handler().postDelayed(() -> {
+                        ToolTip.Builder builder = new ToolTip.Builder(ProfileActivity.this, click,camera_pane, getString(R.string.open_galary), ToolTip.POSITION_ABOVE);
+                        builder.setBackgroundColor(getResources().getColor(R.color.profile));
+                        builder.setTextColor(getResources().getColor(R.color.gender_back));
+                        builder.setGravity(ToolTip.GRAVITY_CENTER);
+                        builder.setTextSize(15);
+                        toolTip.show(builder.build());
+                    },1300);
+                    new Handler().postDelayed(() -> toolTip.findAndDismiss(click),4000);
+                }
+            }
+        });
+        profile.setOnLongClickListener(view -> {
+            vibrate(35);
+            return false;
+        });
+
+        options=new UCrop.Options();
+        options.setCircleDimmedLayer(true);
+        options.setShowCropFrame(false);
+        options.setCropGridColumnCount(0);
+        options.setCropGridRowCount(0);
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.colorAccentDark));
+        options.setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccentDark));
+        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.colorAccent));
 
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
@@ -633,6 +739,58 @@ public class HomeActivity extends AppCompatActivity {
         catch (Exception e){Log.e("signature","Error occured - "+e);}
         return "";
     }
+    public void cameraListener(){
+        cameraView.setOnFocusLockedListener(() -> {
+        });
+        cameraView.setOnPictureTakenListener((result, rotationDegrees) -> {
+            Log.e("Camera", "onPictureTaken: " );
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            result= Bitmap.createBitmap(result, 0, 0, result.getWidth(), result.getHeight(), matrix, true);
+            vibrate(20);
+            profile_path = MediaStore.Images.Media.insertImage(HomeActivity.this.getContentResolver(), result, "Title", null);
+            UCrop.of(Uri.parse(profile_path),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
+                    .withMaxResultSize(maxWidth, maxHeight).start(HomeActivity.this);
+        });
+        cameraView.setOnTurnCameraFailListener(e ->
+                Toast.makeText(HomeActivity.this, "Switch Camera Failed. Does you device has a front camera?",
+                        Toast.LENGTH_SHORT).show());
+        cameraView.setOnCameraErrorListener(e -> Toast.makeText(HomeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+    public void closeCam()
+    {
+        Animation anim = AnimationUtils.loadAnimation(HomeActivity.this, R.anim.click_shrink);click.startAnimation(anim);
+        animator = ViewAnimationUtils.createCircularReveal(camera_pane,dptopx(92),dptopx(248), (float) diagonal,profile.getWidth()/2);
+        animator.setInterpolator(new DecelerateInterpolator());animator.setDuration(500);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                camOn=false;
+                click.setVisibility(View.GONE);
+                setLightTheme(true,true);
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                camera_pane.setVisibility(View.GONE);
+                click.setVisibility(View.GONE);
+            }
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+        new Handler().postDelayed(() -> animator.start(),300);
+
+    }
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        try (Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null)) {
+            assert cursor != null;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+    }
     public int getIndex(String element,String arr[]){
         for(int i=0;i<arr.length;i++){
             if(arr[i].contains(element)){
@@ -647,6 +805,10 @@ public class HomeActivity extends AppCompatActivity {
             else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
             refresh.setRefreshing(true);
         });
+    }
+    public boolean checkPerm(){
+        return (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
     protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
