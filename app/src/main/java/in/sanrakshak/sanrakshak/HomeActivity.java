@@ -209,10 +209,10 @@ public class HomeActivity extends AppCompatActivity {
             if(!profileOpen){
                 profileOpen=true;
                 page_tag.setEnabled(false);
-                scaleY(menupane,pxtodp(splash_cover.getHeight()),700,new DecelerateInterpolator());
+                scaleY(menupane,pxtodp(splash_cover.getHeight()),500,new DecelerateInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
-                    page_tag.setText(R.string.edit_profile);
+                    page_tag.setText(R.string.profile);
                 },70);
                 new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
             }
