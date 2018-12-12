@@ -160,7 +160,7 @@ public class HomeActivity extends AppCompatActivity {
             if(menuOpen){
                 menuOpen=false;
                 scaleY(menupane,0,400,new AnticipateInterpolator());
-                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
+                menu.animate().rotationBy(0).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setImageDrawable(getDrawable(R.drawable.menu));
                     menu.setPadding(dptopx(13),dptopx(13),dptopx(13),dptopx(13));
@@ -188,7 +188,7 @@ public class HomeActivity extends AppCompatActivity {
             else{
                 menuOpen=false;
                 scaleY(menupane,0,400,new AnticipateInterpolator());
-                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
+                menu.animate().rotationBy(0).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setImageDrawable(getDrawable(R.drawable.menu));
                     menu.setPadding(dptopx(13),dptopx(13),dptopx(13),dptopx(13));
