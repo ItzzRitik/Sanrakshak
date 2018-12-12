@@ -85,6 +85,7 @@ public class HomeActivity extends AppCompatActivity {
     CardView menupane,sheet,menu_profile_Card;
     ImageView ico_splash,menu,done,menu_cover,dp_cover;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
+    TextView gender_tag,f_name,l_name,dob,aadhaar;
     CircularImageView menu_profile,profile;
     Animator animator;
     CardView data_div;
@@ -237,6 +238,21 @@ public class HomeActivity extends AppCompatActivity {
         AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(0);anims.setFillAfter(true);menu_profile_edit.startAnimation(anims);
         dp_cover=findViewById(R.id.dp_cover);
         profile=findViewById(R.id.profile);
+
+        gender_tag=findViewById(R.id.gender_tag);
+        gender_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/above.ttf"));
+
+        f_name=findViewById(R.id.f_name);
+        f_name.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+
+        l_name=findViewById(R.id.l_name);
+        l_name.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+
+        dob=findViewById(R.id.dob);
+        dob.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+
+        aadhaar=findViewById(R.id.aadhaar);
+        aadhaar.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
 
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
