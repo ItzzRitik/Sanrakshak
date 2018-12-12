@@ -245,6 +245,7 @@ public class HomeActivity extends AppCompatActivity {
                 menuOpen=true;
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
+                menu_profile_edit.setVisibility(View.GONE);
                 scaleY(menupane,350,400,new OvershootInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
@@ -843,6 +844,34 @@ public class HomeActivity extends AppCompatActivity {
         });
         new Handler().postDelayed(() -> animator.start(),300);
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultcode, Intent intent) {
+        super.onActivityResult(requestCode, resultcode, intent);
+        if (requestCode == 1 && resultcode == RESULT_OK) {
+            UCrop.of(Objects.requireNonNull(intent.getData()),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
+                    .withMaxResultSize(maxWidth, maxHeight).start(HomeActivity.this);
+        }
+        if (requestCode == UCrop.REQUEST_CROP) {
+            if(resultcode == RESULT_OK)
+            {
+                try {
+                    final Uri resultUri = UCrop.getOutput(intent);
+                    Bitmap bitmap= MediaStore.Images.Media.getBitmap(HomeActivity.this.getContentResolver(), resultUri);
+                    profile.setImageBitmap(bitmap);dp_cover.setImageBitmap(bitmap);profile_dp=bitmap;isDP_added=true;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    }
+                    getWindow().setStatusBarColor(Color.WHITE);
+                    closeCam();
+                    new File(getRealPathFromURI(HomeActivity.this,Uri.parse(profile_path))).delete();
+                }
+                catch (Exception ignored){}
+            }
+            else if (resultcode == UCrop.RESULT_ERROR) {
+                new File(getRealPathFromURI(HomeActivity.this,Uri.parse(profile_path))).delete();
+            }
+        }
     }
     public String getRealPathFromURI(Context context, Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
