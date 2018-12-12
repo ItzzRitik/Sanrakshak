@@ -433,6 +433,9 @@ public class HomeActivity extends AppCompatActivity {
                             menu_fname.setText(user.getString("fname",""));
                             menu_lname.setText(user.getString("lname",""));
                             menu_email.setText(user.getString("email",""));
+                            f_name.setText(user.getString("fname",""));
+                            l_name.setText(user.getString("lname",""));
+                            dob.setText(user.getString("dob",""));
                         });
                     }
                     catch (JSONException e) {
