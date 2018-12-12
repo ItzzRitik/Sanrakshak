@@ -82,7 +82,7 @@ import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar;
-    CardView menupane,sheet;
+    CardView menupane,sheet,menu_profile_Card;
     ImageView ico_splash,menu,done,menu_cover;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
     CircularImageView menu_profile;
@@ -93,7 +93,7 @@ public class HomeActivity extends AppCompatActivity {
     ToolTipsManager toolTip;
     RecyclerView home;
     double diagonal;
-    Boolean menuOpen=false;
+    Boolean menuOpen=false,profileOpen=false;
     OkHttpClient client;
     SwipeRefreshLayout refresh;
     ProgressBar proSplash;
@@ -204,6 +204,19 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         menu_profile=findViewById(R.id.menu_profile);
+        menu_profile_Card=findViewById(R.id.menu_profile_Card);
+        menu_profile_Card.setOnClickListener(view -> {
+            if(!profileOpen){
+                profileOpen=true;
+                page_tag.setEnabled(false);
+                scaleY(menupane,pxtodp(splash_cover.getHeight()),700,new DecelerateInterpolator());
+                menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
+                new Handler().postDelayed(() -> {
+                    page_tag.setText(R.string.edit_profile);
+                },70);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
+            }
+        });
 
 
         done=findViewById(R.id.done);

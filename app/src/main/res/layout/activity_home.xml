@@ -130,6 +130,7 @@
                             android:layout_height="150dp"
                             android:layout_margin="20dp"
                             android:layout_alignParentTop="true"
+                            android:id="@+id/menu_profile_Card"
                             app:cardElevation="7dp"
                             app:cardCornerRadius="5dp">
                             <RelativeLayout
