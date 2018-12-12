@@ -165,7 +165,7 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.home);
                     backoverlay.setVisibility(View.GONE);
                 },280);
-                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),400);
             }
             backoverlay.setVisibility(View.GONE);
         });
@@ -194,7 +194,7 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.menu);
                     backoverlay.setVisibility(View.VISIBLE);
                 },70);
-                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),400);
             }
             else if(menuOpen && !profileOpen){
                 menuOpen=false;
@@ -207,11 +207,12 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.home);
                     backoverlay.setVisibility(View.GONE);
                 },280);
-                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),400);
             }
             if(profileOpen){
                 profileOpen=false;
                 page_tag.setEnabled(false);
+                menu_profile_Card.setEnabled(false);
                 scaleY(menupane,350,500,new OvershootInterpolator());
                 menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(300);anims.setFillAfter(true);
@@ -223,7 +224,10 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.menu);
                 },200);
                 new Handler().postDelayed(() -> menu_profile_edit.setVisibility(View.GONE),300);
-                new Handler().postDelayed(() -> page_tag.setEnabled(true),500);
+                new Handler().postDelayed(() -> {
+                    page_tag.setEnabled(true);
+                    menu_profile_Card.setEnabled(true);
+                },500);
             }
         });
         menu_profile=findViewById(R.id.menu_profile);
@@ -232,6 +236,7 @@ public class HomeActivity extends AppCompatActivity {
             if(!profileOpen){
                 profileOpen=true;
                 page_tag.setEnabled(false);
+                menu_profile_Card.setEnabled(false);
                 scaleY(menupane,pxtodp(splash_cover.getHeight()),500,new AnticipateInterpolator());
                 menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
@@ -242,7 +247,10 @@ public class HomeActivity extends AppCompatActivity {
                     AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(300);anims.setFillAfter(true);
                     menu_profile_edit.setVisibility(View.VISIBLE);menu_profile_edit.startAnimation(anims);
                 },200);
-                new Handler().postDelayed(() -> page_tag.setEnabled(true),500);
+                new Handler().postDelayed(() -> {
+                    page_tag.setEnabled(true);
+                    menu_profile_Card.setEnabled(true);
+                    },500);
             }
         });
 
