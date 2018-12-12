@@ -139,6 +139,10 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:id="@+id/menu_cover"/>
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="#9c000000"/>
                                 <com.mikhaellopez.circularimageview.CircularImageView
                                     android:layout_width="95dp"
                                     android:layout_height="95dp"
@@ -154,6 +158,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_toEndOf="@+id/menu_profile"
                                     android:layout_alignParentTop="true"
+                                    android:textColor="@color/colorPrimary"
                                     android:text="Ritik Srivastava"
                                     android:layout_marginTop="50dp"/>
                             </RelativeLayout>

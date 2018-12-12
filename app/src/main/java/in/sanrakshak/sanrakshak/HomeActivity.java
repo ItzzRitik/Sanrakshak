@@ -452,10 +452,10 @@ public class HomeActivity extends AppCompatActivity {
                 Runnable runnable = () -> {
                     AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(1000);
                     actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
-                    menu.setEnabled(false);
+                    page_tag.setEnabled(false);
                     menu.animate().rotationBy(1080).withEndAction(null).setDuration(1100).setInterpolator(new AccelerateDecelerateInterpolator()).start();
                     new Handler().postDelayed(() -> {
-                        menu.setEnabled(true);
+                        page_tag.setEnabled(true);
                     },1100);
                 };
                 runnable.run();
