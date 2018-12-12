@@ -304,5 +304,14 @@
                     android:layout_marginEnd="15dp"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/camera_pane"
+            android:background="#000"
+            android:visibility="gone"
+            android:layout_centerInParent="true">
+            <include layout="@layout/activity_camera"/>
+        </RelativeLayout>
     </RelativeLayout>
 </FrameLayout>

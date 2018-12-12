@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -29,6 +30,7 @@ import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +48,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -53,6 +56,7 @@ import android.view.animation.AnticipateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -78,6 +82,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -104,10 +109,11 @@ import static android.R.attr.maxWidth;
 
 public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar,menu_profile_edit;
-    RelativeLayout camera_pane,permission_camera;
+    RelativeLayout camera_pane,permission_camera,galary;
+    Button allow_camera;
     CardView menupane,sheet,menu_profile_Card;
     ProgressBar proSplash,loading_profile;
-    ImageView ico_splash,menu,done,menu_cover,dp_cover,dob_chooser,click;
+    ImageView ico_splash,menu,done,menu_cover,dp_cover,dob_chooser,click,camera_flip,flash;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
     TextView gender_tag,f_name,l_name,dob,aadhaar;
     CircularImageView menu_profile,profile;
@@ -355,8 +361,6 @@ public class HomeActivity extends AppCompatActivity {
             dd.show();
         });
 
-        click=findViewById(R.id.click);
-        permission_camera=findViewById(R.id.permission_camera);
         camera_pane=findViewById(R.id.camera_pane);
         loading_profile= findViewById(R.id.loading_profile);
         loading_profile.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.progress), PorterDuff.Mode.MULTIPLY);
@@ -379,12 +383,12 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 new Handler().postDelayed(() -> {
                     click.setVisibility(View.VISIBLE);
-                    click.startAnimation(AnimationUtils.loadAnimation(ProfileActivity.this, R.anim.click_grow));
+                    click.startAnimation(AnimationUtils.loadAnimation(HomeActivity.this, R.anim.click_grow));
                 },500);
                 if(checkPerm())
                 {
                     new Handler().postDelayed(() -> {
-                        ToolTip.Builder builder = new ToolTip.Builder(ProfileActivity.this, click,camera_pane, getString(R.string.open_galary), ToolTip.POSITION_ABOVE);
+                        ToolTip.Builder builder = new ToolTip.Builder(HomeActivity.this, click,camera_pane, getString(R.string.open_galary), ToolTip.POSITION_ABOVE);
                         builder.setBackgroundColor(getResources().getColor(R.color.profile));
                         builder.setTextColor(getResources().getColor(R.color.gender_back));
                         builder.setGravity(ToolTip.GRAVITY_CENTER);
@@ -408,6 +412,59 @@ public class HomeActivity extends AppCompatActivity {
         options.setToolbarColor(ContextCompat.getColor(this, R.color.colorAccentDark));
         options.setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccentDark));
         options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.colorAccent));
+
+        profile_url=new File(new ContextWrapper(getApplicationContext()).getDir("imageDir", Context.MODE_PRIVATE),"profile.jpg").getAbsolutePath();
+
+        click=findViewById(R.id.click);
+        permission_camera=findViewById(R.id.permission_camera);
+        allow_camera =findViewById(R.id.allow_camera);
+        allow_camera.setOnClickListener(view -> {
+            vibrate(20);
+            ActivityCompat.requestPermissions(HomeActivity.this,
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        });
+
+        galary=findViewById(R.id.galary);
+        flash=findViewById(R.id.flash);
+        flash.setOnClickListener(view -> {
+            vibrate(20);
+            if(cameraView.getFlash()!=CameraView.FLASH_ON) {
+                cameraView.setFlash(CameraView.FLASH_ON);
+                flash.setImageResource(R.drawable.flash_on);
+            }
+            else {
+                cameraView.setFlash(CameraView.FLASH_OFF);
+                flash.setImageResource(R.drawable.flash_off);
+            }
+            Toast.makeText(HomeActivity.this, cameraView.getFlash()+"", Toast.LENGTH_SHORT).show();
+        });
+        camera_flip=findViewById(R.id.camera_flip);
+        camera_flip.setOnClickListener(view -> {
+            vibrate(20);
+            cameraView.switchCamera();
+        });
+        click=findViewById(R.id.click);
+        click.setOnClickListener(view -> {
+            if(cameraView.isCameraOpened()){
+                cameraView.takePicture();
+            }
+        });
+        click.setOnLongClickListener(v -> {
+            int cx=screenSize.x/2;
+            int cy=screenSize.y-((int)(click.getY()));
+            galaryOn=true;
+            animator = ViewAnimationUtils.createCircularReveal(galary,cx,cy,0,(float) diagonal);
+            animator.setInterpolator(new AccelerateInterpolator());animator.setDuration(300);galary.setVisibility(View.VISIBLE);
+            galary.startAnimation(AnimationUtils.loadAnimation(HomeActivity.this, R.anim.fade_out));
+            animator.start();
+            Intent intent = new Intent();
+            intent.setType("image/*");intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            overridePendingTransition(R.anim.fade_in,0);
+            vibrate(35);
+            cameraView.stop();
+            return false;
+        });
 
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
