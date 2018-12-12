@@ -436,6 +436,9 @@ public class HomeActivity extends AppCompatActivity {
                             f_name.setText(user.getString("fname",""));
                             l_name.setText(user.getString("lname",""));
                             dob.setText(user.getString("dob",""));
+                            if(Objects.requireNonNull(user.getString("gender", "")).toLowerCase().equals("female")){
+                                gender.performClick();
+                            }
                         });
                     }
                     catch (JSONException e) {
