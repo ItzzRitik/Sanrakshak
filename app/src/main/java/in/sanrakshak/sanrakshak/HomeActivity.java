@@ -3,6 +3,7 @@ package in.sanrakshak.sanrakshak;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,7 +66,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -84,7 +88,7 @@ import okhttp3.Response;
 public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar,menu_profile_edit;
     CardView menupane,sheet,menu_profile_Card;
-    ImageView ico_splash,menu,done,menu_cover,dp_cover;
+    ImageView ico_splash,menu,done,menu_cover,dp_cover,dob_chooser;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
     TextView gender_tag,f_name,l_name,dob,aadhaar;
     CircularImageView menu_profile,profile;
@@ -267,6 +271,21 @@ public class HomeActivity extends AppCompatActivity {
 
         aadhaar=findViewById(R.id.aadhaar);
         aadhaar.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+
+        dob_chooser=findViewById(R.id.dob_chooser);
+        dob_chooser.setOnClickListener(v -> {
+            vibrate(20);
+            DatePickerDialog dd = new DatePickerDialog(HomeActivity.this,
+                    (view, year, monthOfYear, dayOfMonth) -> {
+                        try {
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
+                            String dateInString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                            Date date = formatter.parse(dateInString);
+                            dob.setText(formatter.format(date));
+                        } catch (Exception ignored) {}
+                    }, 2000,  Calendar.getInstance().get(Calendar.MONTH),  Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+            dd.show();
+        });
 
         done=findViewById(R.id.done);
         done.setOnClickListener(v -> {
