@@ -11,7 +11,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
@@ -22,7 +21,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -50,11 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -90,7 +84,7 @@ public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar;
     CardView menupane,sheet;
     ImageView ico_splash,menu,done,menu_cover;
-    TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
+    TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
     CircularImageView menu_profile;
     Animator animator;
     CardView data_div;
@@ -171,6 +165,13 @@ public class HomeActivity extends AppCompatActivity {
         menu_cover=findViewById(R.id.menu_cover);
         menupane=findViewById(R.id.menupane);
         menu=findViewById(R.id.menu);
+
+        menu_fname=findViewById(R.id.menu_name);
+        menu_fname.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2_bold.otf"));
+        menu_lname=findViewById(R.id.menu_name);
+        menu_lname.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2_bold.otf"));
+        menu_email=findViewById(R.id.menu_email);
+        menu_email.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
 
         page_tag=findViewById(R.id.page_tag);
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
@@ -346,6 +347,9 @@ public class HomeActivity extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(() -> {
                             Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(menu_profile);
                             Glide.with(home).load(user.getString("cover",null)).apply(new RequestOptions().centerCrop()).into(menu_cover);
+                            menu_fname.setText(user.getString("fname",""));
+                            menu_lname.setText(user.getString("lname",""));
+                            menu_email.setText(user.getString("email",""));
                         });
                     }
                     catch (JSONException e) {

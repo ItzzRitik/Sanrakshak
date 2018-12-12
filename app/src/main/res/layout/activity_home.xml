@@ -159,16 +159,30 @@
                                     android:layout_toEndOf="@+id/menu_profile"
                                     android:layout_alignParentTop="true"
                                     android:textColor="@color/colorPrimary"
-                                    android:id="@+id/menu_name"
-                                    android:layout_marginTop="50dp"/>
+                                    android:id="@+id/menu_fname"
+                                    android:layout_marginTop="35dp"
+                                    android:layout_marginStart="10dp"
+                                    android:lines="2"
+                                    android:textSize="25sp"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_toEndOf="@+id/menu_profile"
-                                    android:layout_alignParentTop="true"
                                     android:textColor="@color/colorPrimary"
-                                    android:id="@+id/menu_id"
-                                    android:layout_marginTop="50dp"/>
+                                    android:id="@+id/menu_lname"
+                                    android:layout_below="@+id/menu_fname"
+                                    android:layout_marginStart="10dp"
+                                    android:lines="2"
+                                    android:textSize="25sp"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toEndOf="@+id/menu_profile"
+                                    android:textColor="@color/colorPrimary"
+                                    android:id="@+id/menu_email"
+                                    android:layout_below="@+id/menu_lname"
+                                    android:layout_marginStart="10dp"
+                                    android:textSize="16sp"/>
                             </RelativeLayout>
                         </android.support.v7.widget.CardView>
                     </RelativeLayout>
