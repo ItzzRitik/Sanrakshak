@@ -81,7 +81,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar;
+    RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar,menu_profile_edit;
     CardView menupane,sheet,menu_profile_Card;
     ImageView ico_splash,menu,done,menu_cover;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
@@ -223,10 +223,13 @@ public class HomeActivity extends AppCompatActivity {
                 menu.animate().rotationBy(1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     page_tag.setText(R.string.profile);
+                    AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(300);anims.setFillAfter(true);
+                    menu_profile_edit.setVisibility(View.VISIBLE);menu_profile_edit.startAnimation(anims);
                 },200);
                 new Handler().postDelayed(() -> page_tag.setEnabled(true),500);
             }
         });
+        menu_profile_edit=findViewById(R.id.menu_profile_edit);
 
 
         done=findViewById(R.id.done);
