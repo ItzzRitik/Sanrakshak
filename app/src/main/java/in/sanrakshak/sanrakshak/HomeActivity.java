@@ -206,11 +206,11 @@ public class HomeActivity extends AppCompatActivity {
                 profileOpen=false;
                 page_tag.setEnabled(false);
                 scaleY(menupane,350,500,new OvershootInterpolator());
-                menu.animate().rotationBy(-1080).withEndAction(null).setDuration(450).setInterpolator(new DecelerateInterpolator()).start();
+                menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     page_tag.setText(R.string.menu);
-                },70);
-                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
+                },200);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),500);
             }
         });
         menu_profile=findViewById(R.id.menu_profile);
@@ -220,11 +220,11 @@ public class HomeActivity extends AppCompatActivity {
                 profileOpen=true;
                 page_tag.setEnabled(false);
                 scaleY(menupane,pxtodp(splash_cover.getHeight()),500,new AnticipateInterpolator());
-                menu.animate().rotationBy(1080).withEndAction(null).setDuration(450).setInterpolator(new DecelerateInterpolator()).start();
+                menu.animate().rotationBy(1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     page_tag.setText(R.string.profile);
-                },70);
-                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
+                },200);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),500);
             }
         });
 
