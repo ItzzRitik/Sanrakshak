@@ -123,21 +123,35 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="120dp"
+                        android:layout_marginTop="80dp"
                         android:layout_alignParentBottom="true">
-                        <RelativeLayout
+                        <android.support.v7.widget.CardView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <com.mikhaellopez.circularimageview.CircularImageView
-                                android:layout_width="90dp"
-                                android:layout_height="90dp"
-                                android:id="@+id/menu_profile"
-                                android:layout_alignParentStart="true"
-                                android:layout_marginStart="30dp"
-                                android:src="@drawable/user_profile"
-                                app:civ_border_width="0dp"
-                                app:civ_shadow="false"/>
-                        </RelativeLayout>
+                            android:layout_height="150dp"
+                            android:layout_margin="20dp"
+                            android:layout_alignParentTop="true"
+                            app:cardElevation="5dp"
+                            app:cardCornerRadius="5dp">
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                                <com.mikhaellopez.circularimageview.CircularImageView
+                                    android:layout_width="90dp"
+                                    android:layout_height="90dp"
+                                    android:id="@+id/menu_profile"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_margin="30dp"
+                                    android:src="@drawable/user_profile"
+                                    app:civ_border_width="3dp"
+                                    app:civ_shadow="false"/>
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginEnd="20dp"
+                                    android:id="@+id/menu_cover"/>
+                            </RelativeLayout>
+                        </android.support.v7.widget.CardView>
                     </RelativeLayout>
                 </RelativeLayout>
             </android.support.v7.widget.CardView>

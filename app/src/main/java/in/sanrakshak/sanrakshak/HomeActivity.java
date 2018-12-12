@@ -89,7 +89,7 @@ import okhttp3.Response;
 public class HomeActivity extends AppCompatActivity {
     RelativeLayout logo_div,splash_cover,sheet_pane,backoverlay,logo_div_fade,actionbar,navbar;
     CardView menupane,sheet;
-    ImageView ico_splash,menu,done;
+    ImageView ico_splash,menu,done,menu_cover;
     TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action;
     CircularImageView menu_profile;
     Animator animator;
@@ -153,6 +153,7 @@ public class HomeActivity extends AppCompatActivity {
         ico_splash=findViewById(R.id.ico_splash);
         ico_splash.setScaleType(ImageView.ScaleType.CENTER);
 
+
         backoverlay=findViewById(R.id.backoverlay);
         backoverlay.setOnClickListener(view -> {
             scaleY(sheet,0,400,new AnticipateInterpolator());
@@ -169,7 +170,7 @@ public class HomeActivity extends AppCompatActivity {
             }
             backoverlay.setVisibility(View.GONE);
         });
-
+        menu_cover=findViewById(R.id.menu_cover);
         menupane=findViewById(R.id.menupane);
         menu=findViewById(R.id.menu);
         menu.setOnClickListener(v -> {
@@ -338,22 +339,8 @@ public class HomeActivity extends AppCompatActivity {
                             Log.w("JSON", pO.toString());
                         }
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            Glide.with(home).load(user.getString("profile",null))
-                                    .apply(new RequestOptions()
-                                            .centerCrop()
-                                            .override(Target.SIZE_ORIGINAL))
-                                    .listener(new RequestListener<Drawable>() {
-                                        @Override
-                                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                            return false;
-                                        }
-                                        @Override
-                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-
-                                            return false;
-                                        }
-                                    })
-                                    .into(menu_profile);
+                            Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(menu_profile);
+                            Glide.with(home).load(user.getString("cover",null)).apply(new RequestOptions().centerCrop()).into(menu_cover);
                         });
                     }
                     catch (JSONException e) {
