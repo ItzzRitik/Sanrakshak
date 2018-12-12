@@ -161,18 +161,6 @@
                 android:id="@+id/actionbar"
                 android:elevation="10dp"
                 android:background="@drawable/tint_actionbar">
-                <ImageView
-                    android:layout_width="51dp"
-                    android:layout_height="51dp"
-                    android:id="@+id/menu"
-                    android:src="@drawable/menu"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:padding="13dp"
-                    android:layout_marginStart="15.5dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    style="@style/SelectableItemBackgroundBorderless"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -184,9 +172,20 @@
                     android:paddingEnd="85dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:background="#ddd"
                     android:textSize="28sp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:textColor="@color/profile"/>
+                <ImageView
+                    android:layout_width="51dp"
+                    android:layout_height="51dp"
+                    android:id="@+id/menu"
+                    android:src="@drawable/menu"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:padding="13dp"
+                    android:layout_marginStart="15.5dp"
+                    style="@style/SelectableItemBackgroundBorderless"/>
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"

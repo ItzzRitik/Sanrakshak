@@ -139,10 +139,6 @@ public class HomeActivity extends AppCompatActivity {
         navbar=findViewById(R.id.navbar);
         scaleY(navbar,getHeightStatusNav(1),0,new OvershootInterpolator());
 
-
-        page_tag=findViewById(R.id.page_tag);
-        page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
-
         appNameSplash=findViewById(R.id.appNameSplash);
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
         setMargins(appNameSplash,0,0,0,dptopx(30) + getHeightStatusNav(1));
@@ -159,7 +155,7 @@ public class HomeActivity extends AppCompatActivity {
             scaleY(sheet,0,400,new AnticipateInterpolator());
             if(menuOpen){
                 menuOpen=false;
-                menu.setEnabled(false);
+                page_tag.setEnabled(false);
                 scaleY(menupane,0,400,new AnticipateInterpolator());
                 menu.animate().rotationBy(-720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
@@ -168,17 +164,20 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.home);
                     backoverlay.setVisibility(View.GONE);
                 },280);
-                new Handler().postDelayed(() -> menu.setEnabled(true),350);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
             }
             backoverlay.setVisibility(View.GONE);
         });
         menu_cover=findViewById(R.id.menu_cover);
         menupane=findViewById(R.id.menupane);
         menu=findViewById(R.id.menu);
-        menu.setOnClickListener(v -> {
+
+        page_tag=findViewById(R.id.page_tag);
+        page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+        page_tag.setOnClickListener(v -> {
             if(!menuOpen){
                 menuOpen=true;
-                menu.setEnabled(false);
+                page_tag.setEnabled(false);
                 scaleY(menupane,350,400,new OvershootInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
@@ -187,11 +186,11 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.menu);
                     backoverlay.setVisibility(View.VISIBLE);
                 },70);
-                new Handler().postDelayed(() -> menu.setEnabled(true),350);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
             }
             else{
                 menuOpen=false;
-                menu.setEnabled(false);
+                page_tag.setEnabled(false);
                 scaleY(menupane,0,400,new AnticipateInterpolator());
                 menu.animate().rotationBy(-720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
@@ -200,7 +199,7 @@ public class HomeActivity extends AppCompatActivity {
                     page_tag.setText(R.string.home);
                     backoverlay.setVisibility(View.GONE);
                 },280);
-                new Handler().postDelayed(() -> menu.setEnabled(true),350);
+                new Handler().postDelayed(() -> page_tag.setEnabled(true),350);
             }
         });
         menu_profile=findViewById(R.id.menu_profile);
