@@ -595,31 +595,31 @@ public class HomeActivity extends AppCompatActivity {
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                if(response.code()==503) {}
-                else if (response.isSuccessful()){
-                    try {
-                        JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
-                        for (int i = 0; i < postsArray.length(); i++) {
-                            JSONObject pO = postsArray.getJSONObject(i);
-                            user_edit = getSharedPreferences("user", MODE_PRIVATE).edit();
-                            user_edit.putString("fname", pO.optString("fname"));
-                            user_edit.putString("lname",pO.optString("lname"));
-                            user_edit.putString("gender", pO.optString("gender"));
-                            user_edit.putString("dob", pO.optString("dob"));
-                            user_edit.putString("aadhaar", pO.optString("aadhaar"));
-                            user_edit.putString("profile",pO.optString("profile"));
-                            user_edit.putString("cover",pO.optString("cover"));
-                            user_edit.apply();
-                            Log.w("JSON", pO.toString());
+                if (response.code() != 503) {
+                    if (response.isSuccessful()){
+                        try {
+                            JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                            for (int i = 0; i < postsArray.length(); i++) {
+                                JSONObject pO = postsArray.getJSONObject(i);
+                                user_edit = getSharedPreferences("user", MODE_PRIVATE).edit();
+                                user_edit.putString("fname", pO.optString("fname"));
+                                user_edit.putString("lname",pO.optString("lname"));
+                                user_edit.putString("gender", pO.optString("gender"));
+                                user_edit.putString("dob", pO.optString("dob"));
+                                user_edit.putString("aadhaar", pO.optString("aadhaar"));
+                                user_edit.putString("profile",pO.optString("profile"));
+                                user_edit.putString("cover",pO.optString("cover"));
+                                user_edit.apply();
+                            }
+                            new Handler(Looper.getMainLooper()).post(() -> profileSetUp());
                         }
-                        new Handler(Looper.getMainLooper()).post(() -> profileSetUp());
+                        catch (JSONException e) {
+                            Log.w("error", e.toString());
+                        }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            getCrackList(splash);
+                        });
                     }
-                    catch (JSONException e) {
-                        Log.w("error", e.toString());
-                    }
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        getCrackList(splash);
-                    });
                 }
             }
         });
@@ -668,9 +668,8 @@ public class HomeActivity extends AppCompatActivity {
                         cracks = new ArrayList<>();
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject obj = postsArray.getJSONObject(i);
-                            double lat=Double.parseDouble(obj.getString("x"));
-                            double lng=Double.parseDouble(obj.getString("y"));
-                            //data_div.getWidth()*7/17
+                            double lat=Double.parseDouble(obj.optString("x"));
+                            double lng=Double.parseDouble(obj.optString("y"));
                             cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
                                     obj.getString("y"),obj.getString("date"),getMapURL(lat,lng,16,data_div.getWidth())));
                         }

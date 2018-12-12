@@ -236,7 +236,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="25dp"
-                    android:src="@drawable/logout"
+                    android:src="@drawable/search"
                     android:clickable="true"
                     android:focusable="true"
                     style="@style/SelectableItemBackgroundBorderless"/>
