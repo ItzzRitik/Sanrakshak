@@ -308,7 +308,7 @@ public class HomeActivity extends AppCompatActivity {
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
                 scaleY(menupane,pxtodp(splash_cover.getHeight()),500,new AnticipateInterpolator());
-                menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                menu.animate().rotationBy(1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setImageDrawable(getDrawable(R.drawable.back));
                     menu.setPadding(dptopx(13),dptopx(13),dptopx(13),dptopx(13));
