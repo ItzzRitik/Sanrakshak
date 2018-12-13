@@ -326,8 +326,23 @@ public class HomeActivity extends AppCompatActivity {
 
         menu_profile_edit=findViewById(R.id.menu_profile_edit);
         AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(0);menu_profile_edit.startAnimation(anims);
+
         dp_cover=findViewById(R.id.dp_cover);
-        profile=findViewById(R.id.profile);
+        dp_cover.setOnClickListener(view -> {
+            int cx=screenSize.x/2;
+            int cy=screenSize.y-((int)(click.getY()));
+            galaryOn=true;
+            animator = ViewAnimationUtils.createCircularReveal(galary,cx,cy,0,(float) diagonal);
+            animator.setInterpolator(new AccelerateInterpolator());animator.setDuration(300);galary.setVisibility(View.VISIBLE);
+            galary.startAnimation(AnimationUtils.loadAnimation(HomeActivity.this, R.anim.fade_out));
+            animator.start();
+            Intent intent = new Intent();
+            intent.setType("image/*");intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 2);
+            overridePendingTransition(R.anim.fade_in,0);
+            vibrate(35);
+            cameraView.stop();
+        });
 
         gender=findViewById(R.id.gender);
         gender.addSwitchObserver((switchView, isChecked) -> {
@@ -829,6 +844,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onAnimationStart(Animator animation) {
                 camOn=false;
+                cameraView.stop();
                 click.setVisibility(View.GONE);
                 setLightTheme(true,true);
             }
@@ -879,6 +895,9 @@ public class HomeActivity extends AppCompatActivity {
         if (requestCode == 1 && resultcode == RESULT_OK) {
             UCrop.of(Objects.requireNonNull(intent.getData()),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
                     .withMaxResultSize(maxWidth, maxHeight).start(HomeActivity.this);
+        }
+        if (requestCode == 2 && resultcode == RESULT_OK) {
+            Glide.with(home).load(intent.getData()).into(dp_cover);
         }
         if (requestCode == UCrop.REQUEST_CROP) {
             if(resultcode == RESULT_OK)
