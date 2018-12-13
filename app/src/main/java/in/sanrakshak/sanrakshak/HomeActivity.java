@@ -846,6 +846,34 @@ public class HomeActivity extends AppCompatActivity {
 
     }
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    if(checkPerm())
+                    {
+                        permission_camera.setVisibility(View.GONE);
+                        new Handler().postDelayed(() -> {
+                            ToolTip.Builder builder = new ToolTip.Builder(HomeActivity.this, click,camera_pane, getString(R.string.open_galary), ToolTip.POSITION_ABOVE);
+                            builder.setBackgroundColor(getResources().getColor(R.color.profile));
+                            builder.setTextColor(getResources().getColor(R.color.gender_back));
+                            builder.setGravity(ToolTip.GRAVITY_CENTER);
+                            builder.setTextSize(15);
+                            toolTip.show(builder.build());
+                            cameraView.setVisibility(View.GONE);
+                            cameraView.setVisibility(View.VISIBLE);
+                            if(!cameraView.isCameraOpened()){
+                                cameraView.start();cameraListener();
+                            }
+                        },1300);
+                        new Handler().postDelayed(() -> toolTip.findAndDismiss(click),4000);
+                    }
+                }
+            }
+        }
+    }
+    @Override
     protected void onActivityResult(int requestCode, int resultcode, Intent intent) {
         super.onActivityResult(requestCode, resultcode, intent);
         if (requestCode == 1 && resultcode == RESULT_OK) {
@@ -864,12 +892,12 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     getWindow().setStatusBarColor(Color.WHITE);
                     closeCam();
-                    new File(getRealPathFromURI(HomeActivity.this,Uri.parse(profile_path))).delete();
+                    Log.i("Camera", "Delete File : "+new File(getRealPathFromURI(HomeActivity.this,Uri.parse(profile_path))).delete() );
                 }
                 catch (Exception ignored){}
             }
             else if (resultcode == UCrop.RESULT_ERROR) {
-                new File(getRealPathFromURI(HomeActivity.this,Uri.parse(profile_path))).delete();
+                Log.i("Camera", "Delete File : "+new File(getRealPathFromURI(HomeActivity.this,Uri.parse(profile_path))).delete() );
             }
         }
     }

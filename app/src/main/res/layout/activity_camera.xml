@@ -41,7 +41,8 @@
                 android:padding="10dp"
                 android:contentDescription="@string/click"
                 android:visibility="gone"
-                android:id="@+id/click"/>
+                android:id="@+id/click"
+                style="@style/SelectableItemBackgroundBorderless"/>
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -50,7 +51,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="-120dp"
                 android:contentDescription="@string/flash"
-                android:id="@+id/flash"/>
+                android:id="@+id/flash"
+                style="@style/SelectableItemBackgroundBorderless"/>
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -60,7 +62,8 @@
                 android:padding="10dp"
                 android:layout_marginEnd="-112dp"
                 android:contentDescription="@string/camera_flip"
-                android:id="@+id/camera_flip"/>
+                android:id="@+id/camera_flip"
+                style="@style/SelectableItemBackgroundBorderless"/>
         </RelativeLayout>
     </RelativeLayout>
     <RelativeLayout
