@@ -39,6 +39,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -679,12 +680,12 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 else if (response.isSuccessful()){
                     try {
+                        cracks = new ArrayList<>();
                         JSONObject postsObj = new JSONObject(Objects.requireNonNull(response.body()).string());
                         postsObj = new JSONObject(postsObj.optString("m2m:cin"));
                         postsObj = new JSONObject(postsObj.optString("con"));
                         postsObj = new JSONObject(postsObj.optString("payloads_ul"));
-                        String base64=postsObj.optString("dataFrame");
-                        cracks = new ArrayList<>();
+                        String data = new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8");
 
                         /*
                         for (int i = 0; i < postsArray.length(); i++) {
