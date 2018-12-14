@@ -198,6 +198,7 @@
                                     app:dotWidth="16dp"
                                     app:drawDot="true"
                                     app:enableProgressAnimation="true"
+                                    app:progressStrokeWidth="6dp"
                                     app:progressBackgroundStrokeWidth="2dp"
                                     app:progressColor="@color/colorPrimary"/>
                                 <TextView
