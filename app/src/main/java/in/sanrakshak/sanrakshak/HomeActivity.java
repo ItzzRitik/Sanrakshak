@@ -689,6 +689,7 @@ public class HomeActivity extends AppCompatActivity {
                         double lat=Double.parseDouble(data[1]);
                         double lng=Double.parseDouble(data[2]);
                         if(lat!=0 && lng!=0){
+                            if(!splash)
                             cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
                                     data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
                         }
