@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -144,7 +143,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     public void onAnimationStart(Animation animation) {}
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        holder.intensity.setProgress(Double.parseDouble(item.getIntensity())*30,100);expand=0;
+                        holder.intensity.setProgress(Double.parseDouble(item.getIntensity())*100,100);expand=0;
                     }
                     @Override
                     public void onAnimationRepeat(Animation animation) {}

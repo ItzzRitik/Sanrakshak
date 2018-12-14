@@ -179,6 +179,7 @@
                                     android:gravity="center"
                                     android:id="@+id/intensity_tag"
                                     android:layout_below="@+id/intensity"
+                                    android:layout_marginTop="3dp"
                                     android:textColor="@color/colorPrimary"
                                     android:text="@string/intensity"/>
                             </RelativeLayout>
@@ -205,6 +206,7 @@
                                     android:gravity="center"
                                     android:id="@+id/time_tag"
                                     android:layout_below="@+id/time"
+                                    android:layout_marginTop="3dp"
                                     android:textColor="@color/colorPrimary"
                                     android:text="@string/timeleft"/>
                             </RelativeLayout>
