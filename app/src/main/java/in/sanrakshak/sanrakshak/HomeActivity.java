@@ -93,6 +93,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -192,7 +193,9 @@ public class HomeActivity extends AppCompatActivity {
         logo_div=findViewById(R.id.logo_div);
         logo_div_fade=findViewById(R.id.logo_div_fade);
         toolTip = new ToolTipsManager();
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .build();
 
         data_div=findViewById(R.id.data_div);
         actionbar=findViewById(R.id.actionbar);
@@ -654,12 +657,13 @@ public class HomeActivity extends AppCompatActivity {
         if(Objects.requireNonNull(user.getString("gender", "")).toLowerCase().equals("female")){ gender.performClick(); }
     }
     public void getCrackList(boolean splash){
-        Request request = new Request.Builder().url("http://168.87.87.213:8080/davc/m2m/HPE_IoT/70b3d57ed00130d6/default/latest/").get()
+        Request request = new Request.Builder().url("http://168.87.87.213:8080/davc/m2m/HPE_IoT/70b3d57ed00130d6/default?ty=4&lim=5").get()
                 .addHeader("Authorization","Basic Qzk3MUQwMUMyLTIwNmVlNDQ0OlRlc3RAMTIz")
                 .addHeader("Content-Type","application/vnd.onem2m-res+json;ty=4")
                 .addHeader("X-M2M-Origin","C971D01C2-206ee444")
                 .addHeader("X-M2M-RI","9900001")
-                .addHeader("Accept","application/vnd.onem2m-res+json;").build();
+                .addHeader("Accept","application/vnd.onem2m-res+json;")
+                .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -691,7 +695,7 @@ public class HomeActivity extends AppCompatActivity {
                             double lat=Double.parseDouble(data[1]);
                             double lng=Double.parseDouble(data[2]);
                             if(lat!=0 && lng!=0){
-                                if(!splash)
+                                //if(!splash)
                                     cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
                                             data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
                             }
