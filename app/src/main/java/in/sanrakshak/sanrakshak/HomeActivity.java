@@ -194,7 +194,9 @@ public class HomeActivity extends AppCompatActivity {
         logo_div_fade=findViewById(R.id.logo_div_fade);
         toolTip = new ToolTipsManager();
         client = new OkHttpClient.Builder()
-                .connectTimeout(20, TimeUnit.SECONDS)
+                .connectTimeout(40, TimeUnit.SECONDS)
+                .writeTimeout(40, TimeUnit.SECONDS)
+                .readTimeout(40, TimeUnit.SECONDS)
                 .build();
 
         data_div=findViewById(R.id.data_div);
