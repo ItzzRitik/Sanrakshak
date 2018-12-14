@@ -662,7 +662,7 @@ public class HomeActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.i("backend_call", "Failed - "+e);
+                Log.i("lora", "Failed - "+e);
                 call.cancel();
                 new Handler(Looper.getMainLooper()).post(() -> {
                     Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
@@ -679,9 +679,17 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 else if (response.isSuccessful()){
                     try {
-                        JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                        JSONObject postsObj = new JSONObject(Objects.requireNonNull(response.body()).string());
+                        JSONArray postsArray = new JSONArray(postsObj.optString("m2m:cin"));
                         cracks = new ArrayList<>();
-                        Log.w("error123212321", " - "+postsArray.toString());
+                        for (int i = 0; i < postsArray.length(); i++) {
+                            JSONObject obj = postsArray.getJSONObject(i);
+                            double lat = Double.parseDouble(obj.optString("x"));
+                            double lng = Double.parseDouble(obj.optString("y"));
+                            cracks.add(new Cracks("" + lat, "" + lng, getPlaceName(lat, lng, 0), getPlaceName(lat, lng, 1),
+                                    obj.getString("y"), obj.getString("date"), getMapURL(lat, lng, 16, data_div.getWidth())));
+                        }
+                        Log.w("error123212321", " - "+postsArray);
 
                         /*
                         for (int i = 0; i < postsArray.length(); i++) {
