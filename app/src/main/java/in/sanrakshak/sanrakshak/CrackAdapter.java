@@ -34,6 +34,7 @@ import com.bumptech.glide.request.target.Target;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -107,13 +108,10 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.date.setText(item.getDate());holder.date_details.setText(item.getDate());
 
         try {
-            Date date = new SimpleDateFormat("dd/MM/yyyy",Locale.US).parse((item.getDate().split(", "))[0]);
-            long time=date.getTime();
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
-            Toast.makeText(home, ""+formatter.format(new Date()), Toast.LENGTH_SHORT).show();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+            int date1=Integer.parseInt((item.getDate()).split("/")[0])+7;
+            int date2=Integer.parseInt(new SimpleDateFormat("dd",Locale.US).format(new Date()));
+            holder.time.setProgress(((date1-date2))/7,7);
+        } catch (Exception e) { }
 
         Glide.with(home).load(item.getPreview())
                 .apply(new RequestOptions()
