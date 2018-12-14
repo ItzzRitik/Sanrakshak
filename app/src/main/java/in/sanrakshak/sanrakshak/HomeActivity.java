@@ -685,16 +685,15 @@ public class HomeActivity extends AppCompatActivity {
                         postsObj = new JSONObject(postsObj.optString("m2m:cin"));
                         postsObj = new JSONObject(postsObj.optString("con"));
                         postsObj = new JSONObject(postsObj.optString("payloads_ul"));
-                        String data = new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8");
-
-                        /*
-                        for (int i = 0; i < postsArray.length(); i++) {
-                            JSONObject obj = postsArray.getJSONObject(i);
-                            double lat=Double.parseDouble(obj.optString("x"));
-                            double lng=Double.parseDouble(obj.optString("y"));
-                            cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                    obj.getString("y"),obj.getString("date"),getMapURL(lat,lng,16,data_div.getWidth())));
+                        String data[] = (new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8")).split("-");
+                        for(String dat:data){
+                            Log.w("error123212321", dat);
                         }
+                        double lat=Double.parseDouble(data[1]);
+                        double lng=Double.parseDouble(data[2]);
+                        cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
+
                         crack_edit.putString("list", new Gson().toJson(cracks));
                         crack_edit.apply();
                         new Handler(Looper.getMainLooper()).post(() -> {
@@ -703,7 +702,7 @@ public class HomeActivity extends AppCompatActivity {
                             refresh.setRefreshing(false);
                             if(splash)splash(false);
                             else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
-                        });*/
+                        });
                     }
                     catch (JSONException e) {
                         Log.w("error123212321", " Error - "+e.toString());
