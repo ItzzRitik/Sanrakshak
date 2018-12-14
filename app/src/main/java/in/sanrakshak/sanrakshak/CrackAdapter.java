@@ -110,8 +110,11 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         try {
             int date1=Integer.parseInt((item.getDate()).split("/")[0])+7;
             int date2=Integer.parseInt(new SimpleDateFormat("dd",Locale.US).format(new Date()));
-            holder.time.setProgress(((date1-date2))/7,7);
-        } catch (Exception e) { }
+            holder.time.setProgress(((date1-date2)),7);
+        }
+        catch (Exception e) {
+            Toast.makeText(home, "Error", Toast.LENGTH_SHORT).show();
+        }
 
         Glide.with(home).load(item.getPreview())
                 .apply(new RequestOptions()
