@@ -653,12 +653,12 @@ public class HomeActivity extends AppCompatActivity {
         if(Objects.requireNonNull(user.getString("gender", "")).toLowerCase().equals("female")){ gender.performClick(); }
     }
     public void getCrackList(boolean splash){
-        try{
-            String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
-            postBody = new FormBody.Builder().add("email",enc).build();
-        }
-        catch (Exception e){Log.e("encrypt","Error while encryption");}
-        Request request = new Request.Builder().url("http://3.16.4.70:8080/getcrack").post(postBody).build();
+        Request request = new Request.Builder().url("http://168.87.87.213:8080/davc/m2m/HPE_IoT/70b3d57ed00130d6/default/latest/").get()
+                .addHeader("Authorization","Basic Qzk3MUQwMUMyLTIwNmVlNDQ0OlRlc3RAMTIz")
+                .addHeader("Content-Type","application/vnd.onem2m-res+json;ty=4")
+                .addHeader("X-M2M-Origin","C971D01C2-206ee444")
+                .addHeader("X-M2M-RI","9900001")
+                .addHeader("Accept","application/vnd.onem2m-res+json;").build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
