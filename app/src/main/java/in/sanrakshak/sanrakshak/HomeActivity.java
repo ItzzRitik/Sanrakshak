@@ -681,6 +681,9 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         cracks = new ArrayList<>();
+
+
+                        /*
                         for (int i = 0; i < postsArray.length(); i++) {
                             JSONObject obj = postsArray.getJSONObject(i);
                             double lat=Double.parseDouble(obj.optString("x"));
@@ -696,7 +699,7 @@ public class HomeActivity extends AppCompatActivity {
                             refresh.setRefreshing(false);
                             if(splash)splash(false);
                             else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
-                        });
+                        });*/
                     }
                     catch (JSONException e) {
                         Log.w("error", e.toString());
