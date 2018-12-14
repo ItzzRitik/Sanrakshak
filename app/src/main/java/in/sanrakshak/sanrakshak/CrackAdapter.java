@@ -33,6 +33,8 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.List;
 
+import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator;
+
 public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder> {
     private List<Cracks> cracks;
     private HomeActivity home;
@@ -46,6 +48,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         ImageView preview,locate,navigate;
         RelativeLayout navtrigger,cardItem,cardthumb;
         ProgressBar glidepro;
+        CircularProgressIndicator intensity,time;
         CardView root_view;
         MyViewHolder(View view) {
             super(view);
@@ -70,6 +73,8 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             glidepro = view.findViewById(R.id.glidepro);
             root_view = view.findViewById(R.id.root_view);
             cardthumb = view.findViewById(R.id.cardthumb);
+            intensity = view.findViewById(R.id.intensity);
+            time = view.findViewById(R.id.time);
         }
     }
     CrackAdapter(HomeActivity home, List<Cracks> cracks) {
