@@ -71,6 +71,8 @@
     <string name="create_sanrakshak">CREATING SANRAKSHAK PROFILE</string>
     <string name="menu">Menu</string>
     <string name="profile">Profile</string>
+    <string name="intensity">Intensity</string>
+    <string name="timeleft">Time Left</string>
 </resources>
 
 

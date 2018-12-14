@@ -95,6 +95,8 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.name.setText(item.getName());holder.name_details.setText(item.getName());
         holder.city.setText(item.getCity());holder.city_details.setText(item.getCity());
         holder.date.setText(item.getDate());holder.date_details.setText(item.getDate());
+        holder.intensity.setProgress(Double.parseDouble(item.getIntensity())*30,100);
+        //holder.intensity.setCurrentProgress();
         Glide.with(home).load(item.getPreview())
                 .apply(new RequestOptions()
                         .centerCrop()

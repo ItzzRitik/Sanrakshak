@@ -156,32 +156,51 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:paddingTop="10dp">
-                            <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
-                                android:id="@+id/intensity"
+                            <RelativeLayout
                                 android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:layout_gravity="center"
-                                android:layout_alignParentStart="true"
-                                app:direction="clockwise"
-                                app:dotColor="@color/colorPrimary"
-                                app:dotWidth="16dp"
-                                app:drawDot="true"
-                                app:enableProgressAnimation="true"
-                                app:progressBackgroundStrokeWidth="3dp"
-                                app:progressColor="@color/colorPrimary"/>
-                            <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
-                                android:id="@+id/time"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true">
+                                <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                                    android:id="@+id/intensity"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:layout_gravity="center"
+                                    app:direction="clockwise"
+                                    app:dotColor="@color/colorPrimary"
+                                    app:dotWidth="16dp"
+                                    app:drawDot="true"
+                                    app:enableProgressAnimation="true"
+                                    app:progressBackgroundStrokeWidth="3dp"
+                                    app:progressColor="@color/colorPrimary"/>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/intensity"/>
+                            </RelativeLayout>
+
+                            <RelativeLayout
                                 android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:layout_gravity="center"
-                                android:layout_alignParentEnd="true"
-                                app:direction="clockwise"
-                                app:dotColor="@color/colorPrimary"
-                                app:dotWidth="16dp"
-                                app:drawDot="true"
-                                app:enableProgressAnimation="true"
-                                app:progressBackgroundStrokeWidth="3dp"
-                                app:progressColor="@color/colorPrimary"/>
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true">
+                                <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                                    android:id="@+id/time"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:layout_gravity="center"
+                                    app:direction="clockwise"
+                                    app:dotColor="@color/colorPrimary"
+                                    app:dotWidth="16dp"
+                                    app:drawDot="true"
+                                    app:enableProgressAnimation="true"
+                                    app:progressBackgroundStrokeWidth="3dp"
+                                    app:progressColor="@color/colorPrimary"/>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/timeleft"/>
+                            </RelativeLayout>
                         </RelativeLayout>
                     </RelativeLayout>
                 </RelativeLayout>
