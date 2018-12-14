@@ -95,7 +95,6 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.name.setText(item.getName());holder.name_details.setText(item.getName());
         holder.city.setText(item.getCity());holder.city_details.setText(item.getCity());
         holder.date.setText(item.getDate());holder.date_details.setText(item.getDate());
-        holder.intensity.setProgress(Double.parseDouble(item.getIntensity())*30,100);
         //holder.intensity.setCurrentProgress();
         Glide.with(home).load(item.getPreview())
                 .apply(new RequestOptions()
@@ -139,7 +138,9 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     @Override
                     public void onAnimationStart(Animation animation) {}
                     @Override
-                    public void onAnimationEnd(Animation animation) {expand=0;}
+                    public void onAnimationEnd(Animation animation) {
+                        holder.intensity.setProgress(Double.parseDouble(item.getIntensity())*30,100);expand=0;
+                    }
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
                 });holder.navtrigger.startAnimation(anims);
@@ -148,7 +149,6 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.navtrigger.setOnClickListener(view -> {
             if(expand==0){
                 expand=-1;
-
                 holder.name.setVisibility(View.VISIBLE);
                 holder.city.setVisibility(View.VISIBLE);
                 holder.date.setVisibility(View.VISIBLE);
@@ -162,7 +162,8 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     @Override
                     public void onAnimationStart(Animation animation) {}
                     @Override
-                    public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);holder.preview.requestFocus();expand=1;}
+                    public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);
+                    holder.preview.requestFocus();holder.intensity.setProgress(0,100);expand=1;}
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
                 });holder.navtrigger.startAnimation(anims);
