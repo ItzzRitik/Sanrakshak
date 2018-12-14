@@ -680,16 +680,13 @@ public class HomeActivity extends AppCompatActivity {
                 else if (response.isSuccessful()){
                     try {
                         JSONObject postsObj = new JSONObject(Objects.requireNonNull(response.body()).string());
-                        JSONArray postsArray = new JSONArray(postsObj.optString("m2m:cin"));
+                        postsObj = new JSONObject(postsObj.optString("m2m:cin"));
                         cracks = new ArrayList<>();
-                        for (int i = 0; i < postsArray.length(); i++) {
-                            JSONObject obj = postsArray.getJSONObject(i);
-                            double lat = Double.parseDouble(obj.optString("x"));
-                            double lng = Double.parseDouble(obj.optString("y"));
-                            cracks.add(new Cracks("" + lat, "" + lng, getPlaceName(lat, lng, 0), getPlaceName(lat, lng, 1),
-                                    obj.getString("y"), obj.getString("date"), getMapURL(lat, lng, 16, data_div.getWidth())));
-                        }
-                        Log.w("error123212321", " - "+postsArray);
+                        //for (int i = 0; i < postsArray.length(); i++) {
+                            //postsObj = postsArray.getJSONObject(i);
+                            //postsObj = new JSONObject(postsObj.optString("con"));
+                        //}
+                        Log.w("error123212321", " - "+postsObj);
 
                         /*
                         for (int i = 0; i < postsArray.length(); i++) {
@@ -710,7 +707,7 @@ public class HomeActivity extends AppCompatActivity {
                         });*/
                     }
                     catch (JSONException e) {
-                        Log.w("error", e.toString());
+                        Log.w("error123212321", " Error - "+e.toString());
                     }
                 }
                 else{
