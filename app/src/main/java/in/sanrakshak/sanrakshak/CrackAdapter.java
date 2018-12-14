@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -30,7 +31,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator;
 
@@ -99,7 +105,16 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.name.setText(item.getName());holder.name_details.setText(item.getName());
         holder.city.setText(item.getCity());holder.city_details.setText(item.getCity());
         holder.date.setText(item.getDate());holder.date_details.setText(item.getDate());
-        //holder.intensity.setCurrentProgress();
+
+        try {
+            Date date = new SimpleDateFormat("dd/MM/yyyy",Locale.US).parse((item.getDate().split(", "))[0]);
+            long time=date.getTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
+            Toast.makeText(home, ""+formatter.format(new Date()), Toast.LENGTH_SHORT).show();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         Glide.with(home).load(item.getPreview())
                 .apply(new RequestOptions()
                         .centerCrop()
@@ -143,7 +158,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     public void onAnimationStart(Animation animation) {}
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        holder.intensity.setProgress(Double.parseDouble(item.getIntensity())*100,100);expand=0;
+                        holder.intensity.setProgress(Double.parseDouble(item.getIntensity()),100);expand=0;
                     }
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
