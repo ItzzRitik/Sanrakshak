@@ -692,6 +692,12 @@ public class HomeActivity extends AppCompatActivity {
                             cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
                                     data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
                         }
+                        else{
+                            lat=12.8753911;
+                            lng=80.096729;
+                            cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                    "0.5","Yahan Pe Date Hai",getMapURL(lat,lng,16,data_div.getWidth())));
+                        }
 
                         crack_edit.putString("list", new Gson().toJson(cracks));
                         crack_edit.apply();
