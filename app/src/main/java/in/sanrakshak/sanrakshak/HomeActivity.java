@@ -681,7 +681,7 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
                         cracks = new ArrayList<>();
-
+                        Log.w("error123212321", " - "+postsArray.toString());
 
                         /*
                         for (int i = 0; i < postsArray.length(); i++) {
