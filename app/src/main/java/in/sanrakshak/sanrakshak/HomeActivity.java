@@ -686,13 +686,12 @@ public class HomeActivity extends AppCompatActivity {
                         postsObj = new JSONObject(postsObj.optString("con"));
                         postsObj = new JSONObject(postsObj.optString("payloads_ul"));
                         String data[] = (new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8")).split("-");
-                        for(String dat:data){
-                            Log.w("error123212321", dat);
-                        }
                         double lat=Double.parseDouble(data[1]);
                         double lng=Double.parseDouble(data[2]);
-                        cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
+                        if(lat!=0 && lng!=0){
+                            cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                    data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
+                        }
 
                         crack_edit.putString("list", new Gson().toJson(cracks));
                         crack_edit.apply();
