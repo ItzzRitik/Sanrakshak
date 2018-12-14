@@ -681,23 +681,26 @@ public class HomeActivity extends AppCompatActivity {
                 else if (response.isSuccessful()){
                     try {
                         cracks = new ArrayList<>();
-                        JSONObject postsObj = new JSONObject(Objects.requireNonNull(response.body()).string());
-                        postsObj = new JSONObject(postsObj.optString("m2m:cin"));
-                        postsObj = new JSONObject(postsObj.optString("con"));
-                        postsObj = new JSONObject(postsObj.optString("payloads_ul"));
-                        String data[] = (new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8")).split("-");
-                        double lat=Double.parseDouble(data[1]);
-                        double lng=Double.parseDouble(data[2]);
-                        if(lat!=0 && lng!=0){
-                            if(!splash)
-                            cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                    data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
-                        }
-                        else{
-                            lat=28.6558256;
-                            lng=77.2319582;
-                            cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                    "0.65","15/12/2018, 1:13:37 AM",getMapURL(lat,lng,16,data_div.getWidth())));
+                        JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                        for (int i = 0; i < postsArray.length(); i++) {
+                            JSONObject postsObj = postsArray.getJSONObject(i);
+                            postsObj = new JSONObject(postsObj.optString("m2m:cin"));
+                            postsObj = new JSONObject(postsObj.optString("con"));
+                            postsObj = new JSONObject(postsObj.optString("payloads_ul"));
+                            String data[] = (new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8")).split("-");
+                            double lat=Double.parseDouble(data[1]);
+                            double lng=Double.parseDouble(data[2]);
+                            if(lat!=0 && lng!=0){
+                                if(!splash)
+                                    cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                            data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
+                            }
+                            else{
+                                lat=28.6558256;
+                                lng=77.2319582;
+                                cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                        "0.65","15/12/2018, 1:13:37 AM",getMapURL(lat,lng,16,data_div.getWidth())));
+                            }
                         }
 
                         crack_edit.putString("list", new Gson().toJson(cracks));

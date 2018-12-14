@@ -688,8 +688,12 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             try {
                 Person profile = service.people().get("people/me").setRequestMaskIncludeField("person.genders,person.birthdays,person.coverPhotos").execute();
                 if (!profile.isEmpty()) {
-                    Date date = profile.getBirthdays().get(0).getDate();
                     new Handler(Looper.getMainLooper()).post(() -> {
+                        Date date=null;
+                        try{
+                            date = profile.getBirthdays().get(0).getDate();
+                        }
+                        catch (Exception ignored){}
                         appNameSplash.setText(R.string.create_sanrakshak);
                         try {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
