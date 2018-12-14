@@ -177,6 +177,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
+                                    android:id="@+id/intensity_tag"
                                     android:layout_below="@+id/intensity"
                                     android:textColor="@color/colorPrimary"
                                     android:text="@string/intensity"/>
@@ -202,6 +203,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
+                                    android:id="@+id/time_tag"
                                     android:layout_below="@+id/time"
                                     android:textColor="@color/colorPrimary"
                                     android:text="@string/timeleft"/>

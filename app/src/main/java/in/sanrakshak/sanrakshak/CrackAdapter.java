@@ -44,7 +44,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     private Interpolator interpolator;
     private int speed;
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name,city,date,name_details,city_details,date_details;
+        TextView name,city,date,name_details,city_details,date_details,intensity_tag,time_tag;
         ImageView preview,locate,navigate;
         RelativeLayout navtrigger,cardItem,cardthumb;
         ProgressBar glidepro;
@@ -64,6 +64,11 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             date = view.findViewById(R.id.date);date_details = view.findViewById(R.id.date_details);
             date.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
             date_details.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
+
+            intensity_tag = view.findViewById(R.id.intensity_tag);
+            intensity_tag.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
+            time_tag = view.findViewById(R.id.time_tag);
+            time_tag.setTypeface(Typeface.createFromAsset(home.getAssets(), "fonts/exo2.ttf"));
 
             preview = view.findViewById(R.id.thumbnail);
             navtrigger = view.findViewById(R.id.navtrigger);
