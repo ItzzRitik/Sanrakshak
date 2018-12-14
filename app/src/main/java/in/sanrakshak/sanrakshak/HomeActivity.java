@@ -693,8 +693,8 @@ public class HomeActivity extends AppCompatActivity {
                                     data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
                         }
                         else{
-                            lat=12.8753911;
-                            lng=80.096729;
+                            lat=28.6558256;
+                            lng=77.2319582;
                             cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
                                     "0.5","Yahan Pe Date Hai",getMapURL(lat,lng,16,data_div.getWidth())));
                         }
