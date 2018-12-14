@@ -681,12 +681,14 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         JSONObject postsObj = new JSONObject(Objects.requireNonNull(response.body()).string());
                         postsObj = new JSONObject(postsObj.optString("m2m:cin"));
-                        JSONArray postsArray = new JSONArray(postsObj);
+                        postsObj = new JSONObject(postsObj.optString("payloads_ul"));
+                        //postsObj = new JSONObject(postsObj.optString("dataFrame"));
+                        //JSONArray postsArray = new JSONArray(postsObj.toString());
                         cracks = new ArrayList<>();
-                        for (int i = 0; i < postsArray.length(); i++) {
-                            postsObj = postsArray.getJSONObject(i);
-                            postsObj = new JSONObject(postsObj.optString("con"));
-                        }
+//                        for (int i = 0; i < postsArray.length(); i++) {
+//                            postsObj = postsArray.getJSONObject(i);
+//                            postsObj = new JSONObject(postsObj.optString("con"));
+//                        }
                         Log.w("error123212321", " - "+postsObj);
 
                         /*
