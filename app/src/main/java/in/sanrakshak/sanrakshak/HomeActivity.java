@@ -194,7 +194,7 @@ public class HomeActivity extends AppCompatActivity {
         logo_div_fade=findViewById(R.id.logo_div_fade);
         toolTip = new ToolTipsManager();
         client = new OkHttpClient.Builder().connectTimeout(40, TimeUnit.SECONDS).writeTimeout(40, TimeUnit.SECONDS)
-                .readTimeout(2, TimeUnit.SECONDS)
+                .readTimeout(40, TimeUnit.SECONDS)
                 .build();
 
         data_div=findViewById(R.id.data_div);
@@ -656,6 +656,7 @@ public class HomeActivity extends AppCompatActivity {
         dob.setText(user.getString("dob",""));
         if(Objects.requireNonNull(user.getString("gender", "")).toLowerCase().equals("female")){ gender.performClick(); }
     }
+    /*
     public void getCrackList(boolean splash){
         Request request = new Request.Builder().url("http://168.87.87.213:8080/davc/m2m/HPE_IoT/70b3d57ed00130d6/default?ty=4&lim=5").get()
                 .addHeader("Authorization","Basic Qzk3MUQwMUMyLTIwNmVlNDQ0OlRlc3RAMTIz")
@@ -674,8 +675,8 @@ public class HomeActivity extends AppCompatActivity {
                     refresh.setRefreshing(false);
 
                     cracks = new ArrayList<>();
-                    double lat=12.8777153;
-                    double lng=80.085043;
+                    double lat=12.8444055;
+                    double lng=80.1529255;
                     cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
                             "35","15/12/2018",getMapURL(lat,lng,16,data_div.getWidth())));
                     crack_edit.putString("list", new Gson().toJson(cracks));
@@ -734,6 +735,63 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     catch (JSONException e) {
                         Log.w("error123212321", " Error - "+e.toString());
+                    }
+                }
+                else{
+                    new Handler(Looper.getMainLooper()).post(() -> loadCache());
+                }
+            }
+        });
+    }*/
+    public void getCrackList(boolean splash){
+        try{
+            String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
+            postBody = new FormBody.Builder().add("email",enc).build();
+        }
+        catch (Exception e){Log.e("encrypt","Error while encryption");}
+        Request request = new Request.Builder().url("http://3.16.4.70:8080/getcrack").post(postBody).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.i("backend_call", "Failed - "+e);
+                call.cancel();
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
+                    refresh.setRefreshing(false);
+                });
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                if(response.code()==503) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
+                        refresh.setRefreshing(false);
+                    });
+                }
+                else if (response.isSuccessful()){
+                    try {
+                        JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                        cracks = new ArrayList<>();
+                        for (int i = 0; i < postsArray.length(); i++) {
+                            JSONObject obj = postsArray.getJSONObject(i);
+                            double lat=Double.parseDouble(obj.getString("x"));
+                            double lng=Double.parseDouble(obj.getString("y"));
+                            //data_div.getWidth()*7/17
+                            cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                    obj.getString("y"),obj.getString("date"),getMapURL(lat,lng,16,data_div.getWidth())));
+                        }
+                        crack_edit.putString("list", new Gson().toJson(cracks));
+                        crack_edit.apply();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            home.setAdapter(null);
+                            home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                            refresh.setRefreshing(false);
+                            if(splash)splash(false);
+                            else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                    catch (JSONException e) {
+                        Log.w("error", e.toString());
                     }
                 }
                 else{
