@@ -183,8 +183,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     @Override
                     public void onAnimationStart(Animation animation) {}
                     @Override
-                    public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);
-                    holder.preview.requestFocus();holder.intensity.setProgress(0,100);expand=1;}
+                    public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);expand=1;}
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
                 });holder.navtrigger.startAnimation(anims);
