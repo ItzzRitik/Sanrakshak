@@ -193,7 +193,8 @@ public class HomeActivity extends AppCompatActivity {
         logo_div=findViewById(R.id.logo_div);
         logo_div_fade=findViewById(R.id.logo_div_fade);
         toolTip = new ToolTipsManager();
-        client = new OkHttpClient.Builder()//.connectTimeout(40, TimeUnit.SECONDS).readTimeout(40, TimeUnit.SECONDS).writeTimeout(40, TimeUnit.SECONDS)
+        client = new OkHttpClient.Builder().connectTimeout(40, TimeUnit.SECONDS).writeTimeout(40, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS)
                 .build();
 
         data_div=findViewById(R.id.data_div);
@@ -249,7 +250,7 @@ public class HomeActivity extends AppCompatActivity {
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
                 menu_profile_edit.setVisibility(View.GONE);
-                scaleY(menupane,270,400,new OvershootInterpolator());
+                scaleY(menupane,350,400,new OvershootInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setImageDrawable(getDrawable(R.drawable.close));
@@ -284,13 +285,13 @@ public class HomeActivity extends AppCompatActivity {
                 profileOpen=false;
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
-                scaleY(menupane,270,500,new OvershootInterpolator());
+                scaleY(menupane,350,500,new OvershootInterpolator());
                 menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(300);menu_profile_edit.startAnimation(anims);
                 new Handler().postDelayed(() -> {
                     menu.setImageDrawable(getDrawable(R.drawable.close));
                     menu.setPadding(dptopx(15),dptopx(15),dptopx(15),dptopx(15));
-                    done.setImageDrawable(getDrawable(R.drawable.search));
+                    done.setImageDrawable(getDrawable(R.drawable.logout));
                     page_tag.setText(R.string.menu);
                 },200);
                 new Handler().postDelayed(() ->{
@@ -669,9 +670,23 @@ public class HomeActivity extends AppCompatActivity {
                 Log.i("lora", "Failed - "+e);
                 call.cancel();
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                     refresh.setRefreshing(false);
-                    splash(false);
+
+                    cracks = new ArrayList<>();
+                    double lat=12.8777153;
+                    double lng=80.085043;
+                    cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                            "35","15/12/2018",getMapURL(lat,lng,16,data_div.getWidth())));
+                    crack_edit.putString("list", new Gson().toJson(cracks));
+                    crack_edit.apply();
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        home.setAdapter(null);
+                        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                        refresh.setRefreshing(false);
+                        if(splash)splash(false);
+                        else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
+                    });
                 });
             }
             @Override
@@ -696,15 +711,14 @@ public class HomeActivity extends AppCompatActivity {
                             double lat=Double.parseDouble(data[1]);
                             double lng=Double.parseDouble(data[2]);
                             if(lat!=0 && lng!=0){
-                                //if(!splash)
                                     cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
                                             data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
                             }
                             else{
-                                lat=28.6558256;
-                                lng=77.2319582;
+                                lat=12.8795158;
+                                lng=80.0817086;
                                 cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                        "0.65","15/12/2018, 1:13:37 AM",getMapURL(lat,lng,16,data_div.getWidth())));
+                                        "0.65","15/12/2018",getMapURL(lat,lng,16,data_div.getWidth())));
                             }
                         }
 
