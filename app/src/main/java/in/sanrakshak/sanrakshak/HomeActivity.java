@@ -778,7 +778,7 @@ public class HomeActivity extends AppCompatActivity {
                             double lng=Double.parseDouble(obj.getString("y"));
                             //data_div.getWidth()*7/17
                             cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                    obj.getString("y"),obj.getString("date"),getMapURL(lat,lng,16,data_div.getWidth())));
+                                    obj.getString("intensity"),obj.getString("date"),getMapURL(lat,lng,16,data_div.getWidth())));
                         }
                         crack_edit.putString("list", new Gson().toJson(cracks));
                         crack_edit.apply();
