@@ -284,7 +284,7 @@ public class HomeActivity extends AppCompatActivity {
                 profileOpen=false;
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
-                scaleY(menupane,350,500,new OvershootInterpolator());
+                scaleY(menupane,300,500,new OvershootInterpolator());
                 menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(300);menu_profile_edit.startAnimation(anims);
                 new Handler().postDelayed(() -> {
