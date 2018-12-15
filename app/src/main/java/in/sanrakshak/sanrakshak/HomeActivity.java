@@ -193,8 +193,8 @@ public class HomeActivity extends AppCompatActivity {
         logo_div=findViewById(R.id.logo_div);
         logo_div_fade=findViewById(R.id.logo_div_fade);
         toolTip = new ToolTipsManager();
-        client = new OkHttpClient.Builder().connectTimeout(40, TimeUnit.SECONDS).writeTimeout(40, TimeUnit.SECONDS)
-                .readTimeout(40, TimeUnit.SECONDS).build();
+        client = new OkHttpClient.Builder()//.connectTimeout(40, TimeUnit.SECONDS).readTimeout(40, TimeUnit.SECONDS).writeTimeout(40, TimeUnit.SECONDS)
+                .build();
 
         data_div=findViewById(R.id.data_div);
         actionbar=findViewById(R.id.actionbar);
@@ -249,7 +249,7 @@ public class HomeActivity extends AppCompatActivity {
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
                 menu_profile_edit.setVisibility(View.GONE);
-                scaleY(menupane,350,400,new OvershootInterpolator());
+                scaleY(menupane,270,400,new OvershootInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setImageDrawable(getDrawable(R.drawable.close));
@@ -284,7 +284,7 @@ public class HomeActivity extends AppCompatActivity {
                 profileOpen=false;
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
-                scaleY(menupane,300,500,new OvershootInterpolator());
+                scaleY(menupane,270,500,new OvershootInterpolator());
                 menu.animate().rotationBy(-1080).withEndAction(null).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(300);menu_profile_edit.startAnimation(anims);
                 new Handler().postDelayed(() -> {
@@ -671,6 +671,7 @@ public class HomeActivity extends AppCompatActivity {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                     refresh.setRefreshing(false);
+                    splash(false);
                 });
             }
             @Override
@@ -679,6 +680,7 @@ public class HomeActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                         refresh.setRefreshing(false);
+                        splash(false);
                     });
                 }
                 else if (response.isSuccessful()){
