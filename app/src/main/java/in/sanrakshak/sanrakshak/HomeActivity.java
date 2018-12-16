@@ -674,7 +674,7 @@ public class HomeActivity extends AppCompatActivity {
                     call.cancel();
                     new Handler(Looper.getMainLooper()).post(() -> {
                         refresh.setRefreshing(false);
-                        Toast.makeText(HomeActivity.this, getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomeActivity.this, "AWS "+getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
                     });
                 }
                 @Override
@@ -684,7 +684,8 @@ public class HomeActivity extends AppCompatActivity {
                         call.cancel();
                         new Handler(Looper.getMainLooper()).post(() -> {
                             refresh.setRefreshing(false);
-                            Toast.makeText(HomeActivity.this, getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
+                            if(splash)splash(false);
+                            Toast.makeText(HomeActivity.this, "LoRa "+getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
                         });
                     }
                     else if (response.isSuccessful()){
