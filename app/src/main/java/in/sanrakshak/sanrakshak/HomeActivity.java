@@ -332,6 +332,11 @@ public class HomeActivity extends AppCompatActivity {
         menu_profile_edit=findViewById(R.id.menu_profile_edit);
         AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(0);menu_profile_edit.startAnimation(anims);
         server=findViewById(R.id.server);
+        server.addSwitchObserver((switchView, isChecked) -> {
+            home.setAdapter(null);
+            listRefresh();
+            backoverlay.performClick();
+        });
 
         dp_cover=findViewById(R.id.dp_cover);
         dp_cover.setOnClickListener(view -> {
@@ -674,7 +679,8 @@ public class HomeActivity extends AppCompatActivity {
                     call.cancel();
                     new Handler(Looper.getMainLooper()).post(() -> {
                         refresh.setRefreshing(false);
-                        Toast.makeText(HomeActivity.this, "AWS "+getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
+                        if(splash)splash(false);
+                        Toast.makeText(HomeActivity.this, "LoRa "+getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
                     });
                 }
                 @Override
