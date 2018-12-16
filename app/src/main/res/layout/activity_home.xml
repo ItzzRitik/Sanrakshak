@@ -183,17 +183,21 @@
                         </RelativeLayout>
                     </android.support.v7.widget.CardView>
                     <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_width="200dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/menu_profile_Card"
+                        android:layout_centerHorizontal="true">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
                             android:text="AWS"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
                             android:text="LoRa"/>
                         <com.rm.rmswitch.RMSwitch
                             android:id="@+id/server"
@@ -209,9 +213,9 @@
                             app:switchBkgCheckedColor="@color/gender_back"
                             app:switchBkgNotCheckedColor="@color/gender_back"
                             app:switchToggleCheckedColor="@color/gender_male"
-                            app:switchToggleCheckedImage="@drawable/male"
-                            app:switchToggleNotCheckedColor="@color/gender_female"
-                            app:switchToggleNotCheckedImage="@drawable/female"/>
+                            app:switchToggleCheckedImage="@drawable/lora"
+                            app:switchToggleNotCheckedColor="@color/aws"
+                            app:switchToggleNotCheckedImage="@drawable/aws"/>
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_width="match_parent"
