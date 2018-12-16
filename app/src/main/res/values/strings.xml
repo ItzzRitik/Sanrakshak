@@ -73,6 +73,8 @@
     <string name="profile">Profile</string>
     <string name="intensity">Intensity</string>
     <string name="timeleft">Days Left</string>
+    <string name="aws">AWS</string>
+    <string name="lora">LoRa</string>
 </resources>
 
 
