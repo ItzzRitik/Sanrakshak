@@ -159,7 +159,6 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     public void onAnimationStart(Animation animation) {}
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        Toast.makeText(home, ""+item.getIntensity(), Toast.LENGTH_SHORT).show();
                         holder.intensity.setProgress(Double.parseDouble(item.getIntensity()),100);expand=0;
                     }
                     @Override
