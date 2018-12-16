@@ -612,40 +612,48 @@ public class HomeActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.i("backend_call", "Connection Failed - "+e);
+                Log.i("lora", "Failed - "+e);
                 call.cancel();
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                     refresh.setRefreshing(false);
+                    if(splash)splash(false);
+                    Toast.makeText(HomeActivity.this, "AWS "+getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
                 });
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                if (response.code() != 503) {
-                    if (response.isSuccessful()){
-                        try {
-                            JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
-                            for (int i = 0; i < postsArray.length(); i++) {
-                                JSONObject pO = postsArray.getJSONObject(i);
-                                user_edit = getSharedPreferences("user", MODE_PRIVATE).edit();
-                                user_edit.putString("fname", pO.optString("fname"));
-                                user_edit.putString("lname",pO.optString("lname"));
-                                user_edit.putString("gender", pO.optString("gender"));
-                                user_edit.putString("dob", pO.optString("dob"));
-                                user_edit.putString("aadhaar", pO.optString("aadhaar"));
-                                user_edit.putString("profile",pO.optString("profile"));
-                                user_edit.putString("cover",pO.optString("cover"));
-                                user_edit.apply();
-                            }
-                            new Handler(Looper.getMainLooper()).post(() -> profileSetUp());
+                if(response.code()==503) {
+                    Log.i("lora", "Failed - "+response);
+                    call.cancel();
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        refresh.setRefreshing(false);
+                        if(splash)splash(false);
+                        Toast.makeText(HomeActivity.this, "LoRa "+getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
+                    });
+                }
+                else if (response.isSuccessful()){
+                    try {
+                        JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                        for (int i = 0; i < postsArray.length(); i++) {
+                            JSONObject pO = postsArray.getJSONObject(i);
+                            user_edit = getSharedPreferences("user", MODE_PRIVATE).edit();
+                            user_edit.putString("fname", pO.optString("fname"));
+                            user_edit.putString("lname",pO.optString("lname"));
+                            user_edit.putString("gender", pO.optString("gender"));
+                            user_edit.putString("dob", pO.optString("dob"));
+                            user_edit.putString("aadhaar", pO.optString("aadhaar"));
+                            user_edit.putString("profile",pO.optString("profile"));
+                            user_edit.putString("cover",pO.optString("cover"));
+                            user_edit.apply();
                         }
-                        catch (JSONException e) {
-                            Log.w("error", e.toString());
-                        }
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            getCrackList(splash);
-                        });
+                        new Handler(Looper.getMainLooper()).post(() -> profileSetUp());
                     }
+                    catch (JSONException e) {
+                        Log.w("error", e.toString());
+                    }
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        getCrackList(splash);
+                    });
                 }
             }
         });
