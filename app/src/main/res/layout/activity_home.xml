@@ -212,7 +212,7 @@
                             app:switchDesign="slim"
                             app:switchBkgCheckedColor="@color/gender_back"
                             app:switchBkgNotCheckedColor="@color/gender_back"
-                            app:switchToggleCheckedColor="@color/gender_male"
+                            app:switchToggleCheckedColor="@color/colorAccent"
                             app:switchToggleCheckedImage="@drawable/lora"
                             app:switchToggleNotCheckedColor="@color/aws"
                             app:switchToggleNotCheckedImage="@drawable/aws"/>
