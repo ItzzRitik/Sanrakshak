@@ -121,7 +121,7 @@ public class HomeActivity extends AppCompatActivity {
     CircularImageView menu_profile,profile;
     CameraView cameraView;
     UCrop.Options options;
-    RMSwitch gender;
+    RMSwitch gender,server;
     Animator animator;
     CardView data_div;
     String profile_url="",profile_path="";
