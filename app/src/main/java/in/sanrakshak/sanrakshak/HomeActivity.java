@@ -193,8 +193,9 @@ public class HomeActivity extends AppCompatActivity {
         logo_div=findViewById(R.id.logo_div);
         logo_div_fade=findViewById(R.id.logo_div_fade);
         toolTip = new ToolTipsManager();
-        client = new OkHttpClient.Builder().connectTimeout(40, TimeUnit.SECONDS).writeTimeout(40, TimeUnit.SECONDS)
-                .readTimeout(40, TimeUnit.SECONDS)
+        client = new OkHttpClient.Builder()
+                //.connectTimeout(40, TimeUnit.SECONDS).writeTimeout(40, TimeUnit.SECONDS)
+                //.readTimeout(40, TimeUnit.SECONDS)
                 .build();
 
         data_div=findViewById(R.id.data_div);
@@ -673,30 +674,17 @@ public class HomeActivity extends AppCompatActivity {
                     call.cancel();
                     new Handler(Looper.getMainLooper()).post(() -> {
                         refresh.setRefreshing(false);
-
-                        cracks = new ArrayList<>();
-                        double lat=12.8444055;
-                        double lng=80.1529255;
-                        cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                "35","15/12/2018",getMapURL(lat,lng,16,data_div.getWidth())));
-                        crack_edit.putString("list", new Gson().toJson(cracks));
-                        crack_edit.apply();
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            home.setAdapter(null);
-                            home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-                            refresh.setRefreshing(false);
-                            if(splash)splash(false);
-                            else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
-                        });
+                        Toast.makeText(HomeActivity.this, getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
                     });
                 }
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
                     if(response.code()==503) {
+                        Log.i("lora", "Failed - "+response);
+                        call.cancel();
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                             refresh.setRefreshing(false);
-                            splash(false);
+                            Toast.makeText(HomeActivity.this, getString(R.string.unreachable), Toast.LENGTH_SHORT).show();
                         });
                     }
                     else if (response.isSuccessful()){
