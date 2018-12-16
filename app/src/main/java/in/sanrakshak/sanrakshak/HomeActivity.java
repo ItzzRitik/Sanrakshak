@@ -330,6 +330,7 @@ public class HomeActivity extends AppCompatActivity {
 
         menu_profile_edit=findViewById(R.id.menu_profile_edit);
         AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(0);menu_profile_edit.startAnimation(anims);
+        server=findViewById(R.id.server);
 
         dp_cover=findViewById(R.id.dp_cover);
         dp_cover.setOnClickListener(view -> {
@@ -656,149 +657,149 @@ public class HomeActivity extends AppCompatActivity {
         dob.setText(user.getString("dob",""));
         if(Objects.requireNonNull(user.getString("gender", "")).toLowerCase().equals("female")){ gender.performClick(); }
     }
-    /*
     public void getCrackList(boolean splash){
-        Request request = new Request.Builder().url("http://168.87.87.213:8080/davc/m2m/HPE_IoT/70b3d57ed00130d6/default?ty=4&lim=5").get()
-                .addHeader("Authorization","Basic Qzk3MUQwMUMyLTIwNmVlNDQ0OlRlc3RAMTIz")
-                .addHeader("Content-Type","application/vnd.onem2m-res+json;ty=4")
-                .addHeader("X-M2M-Origin","C971D01C2-206ee444")
-                .addHeader("X-M2M-RI","9900001")
-                .addHeader("Accept","application/vnd.onem2m-res+json;")
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.i("lora", "Failed - "+e);
-                call.cancel();
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    //Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
-                    refresh.setRefreshing(false);
+        if(server.isChecked()){
+            Request request = new Request.Builder().url("http://168.87.87.213:8080/davc/m2m/HPE_IoT/70b3d57ed00130d6/default?ty=4&lim=5").get()
+                    .addHeader("Authorization","Basic Qzk3MUQwMUMyLTIwNmVlNDQ0OlRlc3RAMTIz")
+                    .addHeader("Content-Type","application/vnd.onem2m-res+json;ty=4")
+                    .addHeader("X-M2M-Origin","C971D01C2-206ee444")
+                    .addHeader("X-M2M-RI","9900001")
+                    .addHeader("Accept","application/vnd.onem2m-res+json;")
+                    .build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("lora", "Failed - "+e);
+                    call.cancel();
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        refresh.setRefreshing(false);
 
-                    cracks = new ArrayList<>();
-                    double lat=12.8444055;
-                    double lng=80.1529255;
-                    cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                            "35","15/12/2018",getMapURL(lat,lng,16,data_div.getWidth())));
-                    crack_edit.putString("list", new Gson().toJson(cracks));
-                    crack_edit.apply();
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        home.setAdapter(null);
-                        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-                        refresh.setRefreshing(false);
-                        if(splash)splash(false);
-                        else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
-                    });
-                });
-            }
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                if(response.code()==503) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
-                        refresh.setRefreshing(false);
-                        splash(false);
+                        cracks = new ArrayList<>();
+                        double lat=12.8444055;
+                        double lng=80.1529255;
+                        cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                "35","15/12/2018",getMapURL(lat,lng,16,data_div.getWidth())));
+                        crack_edit.putString("list", new Gson().toJson(cracks));
+                        crack_edit.apply();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            home.setAdapter(null);
+                            home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                            refresh.setRefreshing(false);
+                            if(splash)splash(false);
+                            else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
+                        });
                     });
                 }
-                else if (response.isSuccessful()){
-                    try {
-                        cracks = new ArrayList<>();
-                        JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
-                        for (int i = 0; i < postsArray.length(); i++) {
-                            JSONObject postsObj = postsArray.getJSONObject(i);
-                            postsObj = new JSONObject(postsObj.optString("m2m:cin"));
-                            postsObj = new JSONObject(postsObj.optString("con"));
-                            postsObj = new JSONObject(postsObj.optString("payloads_ul"));
-                            String data[] = (new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8")).split("-");
-                            double lat=Double.parseDouble(data[1]);
-                            double lng=Double.parseDouble(data[2]);
-                            if(lat!=0 && lng!=0){
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                    if(response.code()==503) {
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
+                            refresh.setRefreshing(false);
+                            splash(false);
+                        });
+                    }
+                    else if (response.isSuccessful()){
+                        try {
+                            cracks = new ArrayList<>();
+                            JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                            for (int i = 0; i < postsArray.length(); i++) {
+                                JSONObject postsObj = postsArray.getJSONObject(i);
+                                postsObj = new JSONObject(postsObj.optString("m2m:cin"));
+                                postsObj = new JSONObject(postsObj.optString("con"));
+                                postsObj = new JSONObject(postsObj.optString("payloads_ul"));
+                                String data[] = (new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8")).split("-");
+                                double lat=Double.parseDouble(data[1]);
+                                double lng=Double.parseDouble(data[2]);
+                                if(lat!=0 && lng!=0){
                                     cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
                                             data[3],data[4],getMapURL(lat,lng,16,data_div.getWidth())));
+                                }
+                                else{
+                                    lat=12.8795158;
+                                    lng=80.0817086;
+                                    cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                            "0.65","15/12/2018",getMapURL(lat,lng,16,data_div.getWidth())));
+                                }
                             }
-                            else{
-                                lat=12.8795158;
-                                lng=80.0817086;
-                                cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                        "0.65","15/12/2018",getMapURL(lat,lng,16,data_div.getWidth())));
-                            }
-                        }
 
-                        crack_edit.putString("list", new Gson().toJson(cracks));
-                        crack_edit.apply();
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            home.setAdapter(null);
-                            home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
-                            refresh.setRefreshing(false);
-                            if(splash)splash(false);
-                            else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
-                        });
+                            crack_edit.putString("list", new Gson().toJson(cracks));
+                            crack_edit.apply();
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                home.setAdapter(null);
+                                home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                                refresh.setRefreshing(false);
+                                if(splash)splash(false);
+                                else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                        catch (JSONException e) {
+                            Log.w("error123212321", " Error - "+e.toString());
+                        }
                     }
-                    catch (JSONException e) {
-                        Log.w("error123212321", " Error - "+e.toString());
+                    else{
+                        new Handler(Looper.getMainLooper()).post(() -> loadCache());
                     }
                 }
-                else{
-                    new Handler(Looper.getMainLooper()).post(() -> loadCache());
-                }
-            }
-        });
-    }*/
-    public void getCrackList(boolean splash){
-        try{
-            String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
-            postBody = new FormBody.Builder().add("email",enc).build();
+            });
         }
-        catch (Exception e){Log.e("encrypt","Error while encryption");}
-        Request request = new Request.Builder().url("http://3.16.4.70:8080/getcrack").post(postBody).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.i("backend_call", "Failed - "+e);
-                call.cancel();
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
-                    refresh.setRefreshing(false);
-                });
+        else{
+            try{
+                String enc=new CryptLib().encryptPlainTextWithRandomIV(user.getString("email", "ritik.space@gmail.com"),"sanrakshak");
+                postBody = new FormBody.Builder().add("email",enc).build();
             }
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
-                if(response.code()==503) {
+            catch (Exception e){Log.e("encrypt","Error while encryption");}
+            Request request = new Request.Builder().url("http://3.16.4.70:8080/getcrack").post(postBody).build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("backend_call", "Failed - "+e);
+                    call.cancel();
                     new Handler(Looper.getMainLooper()).post(() -> {
                         Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                         refresh.setRefreshing(false);
                     });
                 }
-                else if (response.isSuccessful()){
-                    try {
-                        JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
-                        cracks = new ArrayList<>();
-                        for (int i = 0; i < postsArray.length(); i++) {
-                            JSONObject obj = postsArray.getJSONObject(i);
-                            double lat=Double.parseDouble(obj.getString("x"));
-                            double lng=Double.parseDouble(obj.getString("y"));
-                            //data_div.getWidth()*7/17
-                            cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
-                                    obj.getString("intensity"),obj.getString("date"),getMapURL(lat,lng,16,data_div.getWidth())));
-                        }
-                        crack_edit.putString("list", new Gson().toJson(cracks));
-                        crack_edit.apply();
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                    if(response.code()==503) {
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            home.setAdapter(null);
-                            home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                            Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();
                             refresh.setRefreshing(false);
-                            if(splash)splash(false);
-                            else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
                         });
                     }
-                    catch (JSONException e) {
-                        Log.w("error", e.toString());
+                    else if (response.isSuccessful()){
+                        try {
+                            JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                            cracks = new ArrayList<>();
+                            for (int i = 0; i < postsArray.length(); i++) {
+                                JSONObject obj = postsArray.getJSONObject(i);
+                                double lat=Double.parseDouble(obj.getString("x"));
+                                double lng=Double.parseDouble(obj.getString("y"));
+                                //data_div.getWidth()*7/17
+                                cracks.add(new Cracks(""+lat,""+lng,getPlaceName(lat,lng,0),getPlaceName(lat,lng,1),
+                                        obj.getString("intensity"),obj.getString("date"),getMapURL(lat,lng,16,data_div.getWidth())));
+                            }
+                            crack_edit.putString("list", new Gson().toJson(cracks));
+                            crack_edit.apply();
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                home.setAdapter(null);
+                                home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                                refresh.setRefreshing(false);
+                                if(splash)splash(false);
+                                else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                        catch (JSONException e) {
+                            Log.w("error", e.toString());
+                        }
+                    }
+                    else{
+                        new Handler(Looper.getMainLooper()).post(() -> loadCache());
                     }
                 }
-                else{
-                    new Handler(Looper.getMainLooper()).post(() -> loadCache());
-                }
-            }
-        });
+            });
+        }
     }
     public void splash(final boolean loadOnline){
         loadCache();
