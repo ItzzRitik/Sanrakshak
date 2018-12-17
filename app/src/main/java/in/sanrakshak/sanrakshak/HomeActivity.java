@@ -736,9 +736,7 @@ public class HomeActivity extends AppCompatActivity {
                                 else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
                             });
                         }
-                        catch (JSONException e) {
-                            Log.w("error123212321", " Error - "+e.toString());
-                        }
+                        catch (JSONException e) { }
                     }
                     else{
                         new Handler(Looper.getMainLooper()).post(() -> loadCache());
