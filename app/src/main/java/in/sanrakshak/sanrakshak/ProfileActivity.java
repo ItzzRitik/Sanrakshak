@@ -445,10 +445,8 @@ public class ProfileActivity extends AppCompatActivity {
                         .add("profile",new CryptLib().encryptPlainTextWithRandomIV(dp,"sanrakshak"))
                         .add("cover",new CryptLib().encryptPlainTextWithRandomIV(dp,"sanrakshak")).build();
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Request request = new Request.Builder().url("http://3.16.4.70:8080/profile").post(postBody).build();
+            } catch (Exception e) { e.printStackTrace(); }
+            Request request = new Request.Builder().url("https://sanrakshak.herokuapp.com/profile").post(postBody).build();
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {

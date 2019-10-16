@@ -570,7 +570,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 }
                 catch (Exception e){Log.e("encrypt","Error while encryption");}
-                Request request = new Request.Builder().url("http://3.16.4.70:8080/connect").post(postBody).build();
+                Request request = new Request.Builder().url("https://sanrakshak.herokuapp.com/connect").post(postBody).build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -608,7 +608,7 @@ public class HomeActivity extends AppCompatActivity {
             postBody = new FormBody.Builder().add("email",enc).build();
         }
         catch (Exception e){Log.e("encrypt","Error while encryption");}
-        Request request = new Request.Builder().url("http://3.16.4.70:8080/getprofile").post(postBody).build();
+        Request request = new Request.Builder().url("https://sanrakshak.herokuapp.com/getprofile").post(postBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -750,7 +750,7 @@ public class HomeActivity extends AppCompatActivity {
                 postBody = new FormBody.Builder().add("email",enc).build();
             }
             catch (Exception e){Log.e("encrypt","Error while encryption");}
-            Request request = new Request.Builder().url("http://3.16.4.70:8080/getcrack").post(postBody).build();
+            Request request = new Request.Builder().url("https://sanrakshak.herokuapp.com/getcrack").post(postBody).build();
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -772,6 +772,7 @@ public class HomeActivity extends AppCompatActivity {
                     else if (response.isSuccessful()){
                         try {
                             JSONArray postsArray = new JSONArray(Objects.requireNonNull(response.body()).string());
+                            Log.i("encrypt111", postsArray.toString(4));
                             cracks = new ArrayList<>();
                             for (int i = 0; i < postsArray.length(); i++) {
                                 JSONObject obj = postsArray.getJSONObject(i);
