@@ -29,16 +29,16 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -93,7 +93,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -711,7 +710,7 @@ public class HomeActivity extends AppCompatActivity {
                                 postsObj = new JSONObject(postsObj.optString("m2m:cin"));
                                 postsObj = new JSONObject(postsObj.optString("con"));
                                 postsObj = new JSONObject(postsObj.optString("payloads_ul"));
-                                String data[] = (new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8")).split("-");
+                                String[] data = (new String(Base64.decode(postsObj.optString("dataFrame"), Base64.DEFAULT), "UTF-8")).split("-");
                                 double lat=Double.parseDouble(data[1]);
                                 double lng=Double.parseDouble(data[2]);
                                 if(lat!=0 && lng!=0){
@@ -957,7 +956,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
@@ -1024,7 +1023,7 @@ public class HomeActivity extends AppCompatActivity {
             return cursor.getString(column_index);
         }
     }
-    public int getIndex(String element,String arr[]){
+    public int getIndex(String element, String[] arr){
         for(int i=0;i<arr.length;i++){
             if(arr[i].contains(element)){
                 return i;
