@@ -565,7 +565,10 @@ public class HomeActivity extends AppCompatActivity {
                 Log.i("backend_call", "Connecting");
                 try{
                     postBody = new FormBody.Builder()
-                            .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak")).build();
+                            .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak"))
+                            .add("versionCode",new CryptLib().encryptPlainTextWithRandomIV(String.valueOf(BuildConfig.VERSION_CODE),"sanrakshak"))
+                            .add("versionName",new CryptLib().encryptPlainTextWithRandomIV(BuildConfig.VERSION_NAME,"sanrakshak"))
+                            .build();
 
                 }
                 catch (Exception e){Log.e("encrypt","Error while encryption");}

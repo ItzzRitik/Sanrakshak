@@ -334,14 +334,17 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
 
         try{
             postBody = new FormBody.Builder()
-                    .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak")).build();
+                    .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak"))
+                    .add("versionCode",new CryptLib().encryptPlainTextWithRandomIV(String.valueOf(BuildConfig.VERSION_CODE),"sanrakshak"))
+                    .add("versionName",new CryptLib().encryptPlainTextWithRandomIV(BuildConfig.VERSION_NAME,"sanrakshak"))
+                    .build();
 
         }
         catch (Exception e){Log.e("encrypt","Error while encryption");}
         splash(0);
     }
     public void splash(final int iteration){
-        Log.i("backend_call", "Connecting - "+iteration);
+        Log.i("backend_call", "Connecting - (Iteration - "+iteration+")");
         Request request = new Request.Builder().url("https://sanrakshak.herokuapp.com/connect").post(postBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -353,33 +356,38 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             @Override
             public void onResponse(@NonNull Call call, @NonNull final Response response) {
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    Log.i("backend_call","Server Response - "+iteration+" => "+response.message());
-                    if(response.code()==503)
-                    {
-                        serverOffline(iteration);
-                    }
-                    else
-                    {
-                        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-                        appNameSplash.setText(getString(R.string.app_name));
-                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-                        proSplash.setVisibility(View.GONE);
-                        new Handler().postDelayed(() -> {
-                            // Splash Animation
-                            new Handler().postDelayed(() -> setLightTheme(true,false),300);
-                            appNameSplash.setVisibility(View.GONE);
-                            splash_cover.setVisibility(View.GONE);logo_div.setVisibility(View.VISIBLE);
-                            logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_reveal));
-
-                            anim=AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_trans);
-                            anim.setDuration(550);ico_splash.startAnimation(anim);
+                    try {
+                        final int res = Integer.parseInt(Objects.requireNonNull(response.body()).string());
+                        Log.i("backend_call","Server Response (Iteration - "+iteration+") => "+ res);
+                        if(response.code()==503) serverOffline(iteration);
+                        else if(res > 0)
+                        {
+                            appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+                            appNameSplash.setText(getString(R.string.app_name));
+                            appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+                            proSplash.setVisibility(View.GONE);
                             new Handler().postDelayed(() -> {
-                                new Handler().postDelayed(() -> scaleY(login_div,48,400,new OvershootInterpolator()),200);
-                                scaleY(social_div,80,280,new AccelerateInterpolator());
-                                setLightTheme(false,true);
-                            },800);
-                        },2000);
+                                // Splash Animation
+                                new Handler().postDelayed(() -> setLightTheme(true,false),300);
+                                appNameSplash.setVisibility(View.GONE);
+                                splash_cover.setVisibility(View.GONE);logo_div.setVisibility(View.VISIBLE);
+                                logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_reveal));
+
+                                anim=AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_trans);
+                                anim.setDuration(550);ico_splash.startAnimation(anim);
+                                new Handler().postDelayed(() -> {
+                                    new Handler().postDelayed(() -> scaleY(login_div,48,400,new OvershootInterpolator()),200);
+                                    scaleY(social_div,80,280,new AccelerateInterpolator());
+                                    setLightTheme(false,true);
+                                    new Handler().postDelayed(() -> {
+                                        if (res==2)
+                                        Toast.makeText(LoginActivity.this, "Hi, you've been invited for a demo account", Toast.LENGTH_SHORT).show();
+                                    },400);
+                                },800);
+                            },2000);
+                        }
                     }
+                    catch (IOException e) {e.printStackTrace();}
                 });
             }
         });
@@ -640,7 +648,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     client.newCall(request).enqueue(new Callback() {
                         @Override
                         public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                            Log.i("sign", e.getMessage());
+                            Log.i("sign", Objects.requireNonNull(e.getMessage()));
                             call.cancel();
                         }
                         @Override
@@ -962,14 +970,14 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     }
     public Point getAppUsableScreenSize(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
+        Display display = Objects.requireNonNull(windowManager).getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         return size;
     }
     public Point getRealScreenSize(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
+        Display display = Objects.requireNonNull(windowManager).getDefaultDisplay();
         Point size = new Point();
         display.getRealSize(size);
         return size;
