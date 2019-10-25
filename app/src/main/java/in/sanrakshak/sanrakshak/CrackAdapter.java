@@ -40,7 +40,7 @@ import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator;
 public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder> {
     private List<Cracks> cracks;
     private HomeActivity home;
-    private int cardHeight=0,imgHeight=0;
+    private int cardHeight=0, imgHeight=0, expandMain=0;
     MyViewHolder current;
     private Interpolator interpolator;
     private int speed;
@@ -133,8 +133,9 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
 
         holder.cardItem.setOnClickListener(view -> {
             if(current!=null && holder!=current) current.navtrigger.performClick();
-            if(holder.expand==1){
+            if(holder.expand==1 && expandMain==0){
                 holder.expand=-1;
+                expandMain=1;
                 current=holder;
 
                 home.home.scrollToPosition(3);
@@ -157,7 +158,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     public void onAnimationStart(Animation animation) {}
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        holder.intensity.setProgress(Double.parseDouble(item.getIntensity()),100);holder.expand=0;
+                        holder.intensity.setProgress(Double.parseDouble(item.getIntensity()),100);holder.expand=0;expandMain=0;
                     }
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
