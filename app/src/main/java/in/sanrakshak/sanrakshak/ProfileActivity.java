@@ -31,6 +31,8 @@ import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -66,9 +68,12 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -495,19 +500,24 @@ public class ProfileActivity extends AppCompatActivity {
         cameraView.setOnFocusLockedListener(() -> {
         });
         cameraView.setOnPictureTakenListener((result, rotationDegrees) -> {
-            Log.e("Camera", "onPictureTaken: " );
+            Log.e("Camera", "onPictureTaken: " +result.getByteCount());
             Matrix matrix = new Matrix();
             matrix.postRotate(90);
             result= Bitmap.createBitmap(result, 0, 0, result.getWidth(), result.getHeight(), matrix, true);
             vibrate(20);
-            profile_path = MediaStore.Images.Media.insertImage(ProfileActivity.this.getContentResolver(), result, "Title", null);
-            UCrop.of(Uri.parse(profile_path),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
+            UCrop.of(getImageUri(this,result),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
                     .withMaxResultSize(maxWidth, maxHeight).start(ProfileActivity.this);
         });
         cameraView.setOnTurnCameraFailListener(e ->
                 Toast.makeText(ProfileActivity.this, "Switch Camera Failed. Does you device has a front camera?",
                         Toast.LENGTH_SHORT).show());
         cameraView.setOnCameraErrorListener(e -> Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+    private Uri getImageUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
     public void scaleX(final View view,int x,int t, Interpolator interpolator)
     {
@@ -548,6 +558,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultcode, Intent intent) {
         super.onActivityResult(requestCode, resultcode, intent);
         if (requestCode == 1 && resultcode == RESULT_OK) {
+            Log.e("Camera", "onPictureTaken: " + maxWidth+" - "+maxHeight+"\n"+profile_url);
             UCrop.of(Objects.requireNonNull(intent.getData()),Uri.parse(profile_url)).withOptions(options).withAspectRatio(1,1)
                     .withMaxResultSize(maxWidth, maxHeight).start(ProfileActivity.this);
         }
@@ -563,12 +574,12 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     getWindow().setStatusBarColor(Color.WHITE);
                     closeCam();
-                    new File(getRealPathFromURI(ProfileActivity.this,Uri.parse(profile_path))).delete();
+                    //new File(getRealPathFromURI(ProfileActivity.this,Uri.parse(profile_path))).delete();
                 }
                 catch (Exception ignored){}
             }
             else if (resultcode == UCrop.RESULT_ERROR) {
-                new File(getRealPathFromURI(ProfileActivity.this,Uri.parse(profile_path))).delete();
+                //new File(getRealPathFromURI(ProfileActivity.this,Uri.parse(profile_path))).delete();
             }
         }
     }

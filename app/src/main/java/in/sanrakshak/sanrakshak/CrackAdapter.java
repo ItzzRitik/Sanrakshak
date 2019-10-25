@@ -41,8 +41,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     private List<Cracks> cracks;
     private HomeActivity home;
     private int cardHeight=0,imgHeight=0;
-    private int expand=1;
-    private View current;
+    MyViewHolder current;
     private Interpolator interpolator;
     private int speed;
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -50,6 +49,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         ImageView preview,locate,navigate;
         RelativeLayout navtrigger,cardItem,cardthumb;
         ProgressBar glidepro;
+        int expand=1;
         CircularProgressIndicator intensity,time;
         CardView root_view;
         MyViewHolder(View view) {
@@ -132,10 +132,10 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.navigate.setOnClickListener(view -> startMap(holder,Uri.parse("google.navigation:q="+item.getLatitude()+","+item.getLongitude())));
 
         holder.cardItem.setOnClickListener(view -> {
-            //if(current!=null && view!=current) current.performClick();
-            if(expand==1){
-                expand=-1;
-                current=view;
+            if(current!=null && holder!=current) current.navtrigger.performClick();
+            if(holder.expand==1){
+                holder.expand=-1;
+                current=holder;
 
                 home.home.scrollToPosition(3);
 
@@ -157,7 +157,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     public void onAnimationStart(Animation animation) {}
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        holder.intensity.setProgress(Double.parseDouble(item.getIntensity()),100);expand=0;
+                        holder.intensity.setProgress(Double.parseDouble(item.getIntensity()),100);holder.expand=0;
                     }
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
@@ -165,8 +165,8 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
             }
         });
         holder.navtrigger.setOnClickListener(view -> {
-            if(expand==0){
-                expand=-1;
+            if(holder.expand==0){
+                holder.expand=-1;
                 holder.name.setVisibility(View.VISIBLE);
                 holder.city.setVisibility(View.VISIBLE);
                 holder.date.setVisibility(View.VISIBLE);
@@ -180,7 +180,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
                     @Override
                     public void onAnimationStart(Animation animation) {}
                     @Override
-                    public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);expand=1;}
+                    public void onAnimationEnd(Animation animation) { holder.navtrigger.setVisibility(View.GONE);holder.expand=1;}
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
                 });holder.navtrigger.startAnimation(anims);

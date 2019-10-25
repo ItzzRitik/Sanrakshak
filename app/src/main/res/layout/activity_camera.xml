@@ -16,7 +16,9 @@
         app:autoFocus="true"
         app:cameraAspectRatio="16:9"
         app:facing="front"
-        app:flash="off"/>
+        app:flash="off"
+        app:useHighResPicture="false"
+        app:enableZoom="true"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="140dp"

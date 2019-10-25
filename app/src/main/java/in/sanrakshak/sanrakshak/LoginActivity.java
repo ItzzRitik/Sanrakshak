@@ -694,29 +694,34 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     .setApplicationName("Sanrakshak")
                     .build();
             try {
-                Person profile = service.people().get("people/me").setRequestMaskIncludeField("person.genders,person.birthdays,person.coverPhotos").execute();
+                Person profile = service.people().get("people/me")
+                        .setRequestMaskIncludeField("person.genders,person.birthdays,person.coverPhotos")
+                        .execute();
                 if (!profile.isEmpty()) {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         Date date=null;
+                        String gender="";
                         try{
                             date = profile.getBirthdays().get(0).getDate();
+                            gender=profile.getGenders().get(0).getValue();
                         }
-                        catch (Exception ignored){}
+                        catch (Exception e){Log.e("socialsign1", e.toString());}
                         appNameSplash.setText(R.string.create_sanrakshak);
                         try {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
-                            String dateInString=(date.getDay())+"/"+date.getMonth()+"/"+date.getYear();
-                            final String dob=formatter.format(formatter.parse(dateInString));
+                            String dateInString=(Objects.requireNonNull(date).getDay())+"/"+date.getMonth()+"/"+date.getYear();
+                            final String dob=formatter.format(Objects.requireNonNull(formatter.parse(dateInString)));
                             postBody = new FormBody.Builder()
                                     .add("email",new CryptLib().encryptPlainTextWithRandomIV(account.getEmail()+"","sanrakshak"))
                                     .add("fname",new CryptLib().encryptPlainTextWithRandomIV(account.getGivenName()+"","sanrakshak"))
                                     .add("lname",new CryptLib().encryptPlainTextWithRandomIV(account.getFamilyName()+"","sanrakshak"))
-                                    .add("gender",new CryptLib().encryptPlainTextWithRandomIV(profile.getGenders().get(0).getValue()+"","sanrakshak"))
+                                    .add("gender",new CryptLib().encryptPlainTextWithRandomIV(gender+"","sanrakshak"))
                                     .add("dob",new CryptLib().encryptPlainTextWithRandomIV(dob+"","sanrakshak"))
                                     .add("profile",new CryptLib().encryptPlainTextWithRandomIV(Objects.requireNonNull(account.getPhotoUrl())+"","sanrakshak"))
                                     .add("cover",new CryptLib().encryptPlainTextWithRandomIV(profile.getCoverPhotos().get(0).getUrl()+"","sanrakshak")).build();
                             Log.i("backend_call", "Form Body - "+postBody.toString());
                             Request request = new Request.Builder().url("https://sanrakshak.herokuapp.com/social").post(postBody).build();
+                            String finalGender = gender;
                             client.newCall(request).enqueue(new Callback() {
                                 @Override
                                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -731,7 +736,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                             user.putString("email",account.getEmail());
                                             user.putString("fname",account.getGivenName());
                                             user.putString("lname",account.getFamilyName());
-                                            user.putString("gender",profile.getGenders().get(0).getValue());
+                                            user.putString("gender", finalGender);
                                             user.putString("dob", dob);
                                             user.putString("profile",Objects.requireNonNull(account.getPhotoUrl()).toString());
                                             user.putString("cover",profile.getCoverPhotos().get(0).getUrl());
@@ -749,11 +754,11 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     }
                                 }
                             });
-                        } catch (Exception e) { e.printStackTrace(); }
+                        } catch (Exception e) { Log.e("socialsign1", ""+e); }
                     });
                 }
             }
-            catch (IOException e) { Log.i("sign", ""+e);}
+            catch (IOException e) { Log.e("socialsign2", ""+e);}
         }).start();
     }
     public void newPageAnim(final int type)

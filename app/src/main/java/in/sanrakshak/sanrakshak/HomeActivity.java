@@ -137,7 +137,7 @@ public class HomeActivity extends AppCompatActivity {
     SharedPreferences user,crack;
     SharedPreferences.Editor user_edit,crack_edit;
     List<Cracks> cracks;
-
+    CrackAdapter crackAdapter;
     GoogleSignInOptions gso;
     GoogleSignInClient gclient;
     GoogleSignInAccount account;
@@ -246,6 +246,7 @@ public class HomeActivity extends AppCompatActivity {
         page_tag.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
         page_tag.setOnClickListener(v -> {
             if(!menuOpen && !profileOpen){
+                if(crackAdapter.current!=null) crackAdapter.current.navtrigger.performClick();
                 menuOpen=true;
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
@@ -732,7 +733,8 @@ public class HomeActivity extends AppCompatActivity {
                             crack_edit.apply();
                             new Handler(Looper.getMainLooper()).post(() -> {
                                 home.setAdapter(null);
-                                home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                                crackAdapter = new CrackAdapter(HomeActivity.this,cracks);
+                                home.setAdapter(crackAdapter);
                                 refresh.setRefreshing(false);
                                 if(splash)splash(false);
                                 else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
@@ -788,7 +790,8 @@ public class HomeActivity extends AppCompatActivity {
                             crack_edit.apply();
                             new Handler(Looper.getMainLooper()).post(() -> {
                                 home.setAdapter(null);
-                                home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+                                crackAdapter = new CrackAdapter(HomeActivity.this,cracks);
+                                home.setAdapter(crackAdapter);
                                 refresh.setRefreshing(false);
                                 if(splash)splash(false);
                                 else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
@@ -862,7 +865,8 @@ public class HomeActivity extends AppCompatActivity {
     public void loadCache(){
         home.setAdapter(null);
         cracks=new Gson().fromJson(crack.getString("list", null), new TypeToken<ArrayList<Cracks>>() {}.getType());
-        home.setAdapter(new CrackAdapter(HomeActivity.this,cracks));
+        crackAdapter = new CrackAdapter(HomeActivity.this,cracks);
+        home.setAdapter(crackAdapter);
         refresh.setRefreshing(false);
     }
     public String getPlaceName(double latitude, double longitude, int token){
