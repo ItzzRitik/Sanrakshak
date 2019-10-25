@@ -93,6 +93,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -662,6 +663,9 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
     public void profileSetUp(){
+
+        Log.i("errorProfile", user.getString("profile",null));
+
         Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(menu_profile);
         Glide.with(home).load(user.getString("profile",null)).apply(new RequestOptions().centerCrop()).into(profile);
         Glide.with(home).load(user.getString("cover",null)).apply(new RequestOptions().centerCrop()).into(menu_cover);
