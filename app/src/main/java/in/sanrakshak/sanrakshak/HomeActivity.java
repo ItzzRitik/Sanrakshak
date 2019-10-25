@@ -251,7 +251,7 @@ public class HomeActivity extends AppCompatActivity {
                 page_tag.setEnabled(false);
                 menu_profile_Card.setEnabled(false);
                 menu_profile_edit.setVisibility(View.GONE);
-                scaleY(menupane,350,400,new OvershootInterpolator());
+                scaleY(menupane,300,400,new OvershootInterpolator());
                 menu.animate().rotationBy(720).withEndAction(null).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
                 new Handler().postDelayed(() -> {
                     menu.setImageDrawable(getDrawable(R.drawable.close));
@@ -672,6 +672,7 @@ public class HomeActivity extends AppCompatActivity {
         f_name.setText(user.getString("fname",""));
         l_name.setText(user.getString("lname",""));
         dob.setText(user.getString("dob",""));
+        aadhaar.setText(user.getString("aadhaar",""));
         if(Objects.requireNonNull(user.getString("gender", "")).toLowerCase().equals("female")){ gender.performClick(); }
     }
     public void getCrackList(boolean splash){
