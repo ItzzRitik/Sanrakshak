@@ -36,10 +36,10 @@
             android:id="@+id/ico_splash"
             android:layout_centerInParent="true"
             android:src="@drawable/icon"/>
-        <TextView
+
+        <TextSwitcher
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/connect"
             android:textSize="12sp"
             android:id="@+id/appNameSplash"
             android:textStyle="bold"
@@ -48,7 +48,18 @@
             android:gravity="center"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"/>
+            android:layout_marginBottom="30dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/appNameSplash1"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/appNameSplash2"
+                android:gravity="center"/>
+        </TextSwitcher>
         <ProgressBar
             android:layout_width="24dp"
             android:layout_height="24dp"

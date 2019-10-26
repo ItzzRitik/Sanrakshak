@@ -43,9 +43,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -89,7 +92,8 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     String buttonText="NEXT";
     OkHttpClient client;
     ProgressBar nextLoad,proSplash;
-    TextView appNameSplash;
+    TextSwitcher appNameSplash;
+    TextView appNameSplash1,appNameSplash2;
     RequestBody postBody=null;
     private KeyboardHeightProvider keyProvider;
     SharedPreferences.Editor user;
@@ -162,7 +166,11 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         });
 
         appNameSplash=findViewById(R.id.appNameSplash);
-        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+        appNameSplash1=findViewById(R.id.appNameSplash1);
+        appNameSplash2=findViewById(R.id.appNameSplash2);
+        appNameSplash1.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+        appNameSplash2.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+        appNameSplash.setText(getString(R.string.connect));
         proSplash=findViewById(R.id.proSplash);
         setMargins(appNameSplash,0,0,0,(int)(dptopx(30) + getHeightStatusNav(1)));
         setMargins(proSplash,0,0,0,(int)(dptopx(60) + getHeightStatusNav(1)));
@@ -362,29 +370,21 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                         if(response.code()==503) serverOffline(iteration);
                         else if(res > 0)
                         {
-                            appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-                            appNameSplash.setText(getString(R.string.app_name));
-                            appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-                            proSplash.setVisibility(View.GONE);
-                            new Handler().postDelayed(() -> {
-                                // Splash Animation
-                                new Handler().postDelayed(() -> setLightTheme(true,false),300);
-                                appNameSplash.setVisibility(View.GONE);
-                                splash_cover.setVisibility(View.GONE);logo_div.setVisibility(View.VISIBLE);
-                                logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_reveal));
-
-                                anim=AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_trans);
-                                anim.setDuration(550);ico_splash.startAnimation(anim);
+                            if(res==2){
+                                appNameSplash1.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+                                appNameSplash2.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+                                proSplash.setVisibility(View.GONE);
+                                appNameSplash.setText("HI");
                                 new Handler().postDelayed(() -> {
-                                    new Handler().postDelayed(() -> scaleY(login_div,48,400,new OvershootInterpolator()),200);
-                                    scaleY(social_div,80,280,new AccelerateInterpolator());
-                                    setLightTheme(false,true);
+                                    appNameSplash.setText("YOU HAVE BEEN INVITED");
                                     new Handler().postDelayed(() -> {
-                                        if (res==2)
-                                        Toast.makeText(LoginActivity.this, "Hi, you've been invited for a demo account", Toast.LENGTH_SHORT).show();
-                                    },400);
-                                },800);
-                            },2000);
+                                        exitSplash(res);
+                                    },2000);
+                                },2000);
+                            }
+                            else{
+                                exitSplash(res);
+                            }
                         }
                     }
                     catch (IOException e) {e.printStackTrace();}
@@ -397,11 +397,66 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             if(iteration==0){
                 new Handler().postDelayed(() -> {
                     appNameSplash.setText(getString(R.string.offline));
-                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                    appNameSplash1.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                    appNameSplash2.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                 },1000);
             }
             new Handler().postDelayed(() -> splash(iteration+1),(iteration>20)?10000:iteration*500);
         });
+    }
+    public void exitSplash(int res){
+        appNameSplash1.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        appNameSplash2.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        appNameSplash1.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+        appNameSplash2.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+        appNameSplash.setText(getString(R.string.app_name));
+        proSplash.setVisibility(View.GONE);
+        new Handler().postDelayed(() -> {
+            // Splash Animation
+            new Handler().postDelayed(() -> setLightTheme(true,false),300);
+            appNameSplash.setVisibility(View.GONE);
+            splash_cover.setVisibility(View.GONE);logo_div.setVisibility(View.VISIBLE);
+            logo_div.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_reveal));
+
+            anim=AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_trans);
+            anim.setDuration(550);ico_splash.startAnimation(anim);
+            new Handler().postDelayed(() -> {
+                new Handler().postDelayed(() -> scaleY(login_div,48,400,new OvershootInterpolator()),200);
+                scaleY(social_div,80,280,new AccelerateInterpolator());
+                setLightTheme(false,true);
+                new Handler().postDelayed(() -> {
+                    if (res==2){
+                        TapTargetView.showFor(LoginActivity.this,
+                                TapTarget.forView(splash_cover, "This is a target", "We have the best targets, believe me")
+                                        // All options below are optional
+                                        .outerCircleColor(R.color.colorAccent)
+                                        .outerCircleAlpha(0.96f)
+                                        .targetCircleColor(R.color.colorPrimary)
+                                        .titleTextSize(22)
+                                        .titleTextColor(R.color.colorPrimary)
+                                        .descriptionTextSize(12)
+                                        .descriptionTextColor(R.color.colorAccent)
+                                        .textColor(R.color.colorPrimary)
+                                        .textTypeface(Typeface.SANS_SERIF)
+                                        .dimColor(R.color.gender_male)
+                                        .drawShadow(true)
+                                        .cancelable(false)
+                                        .tintTarget(true)
+                                        .transparentTarget(false)
+                                        .icon(getResources().getDrawable(R.drawable.googleplus))
+                                        .targetRadius(50),
+                                new TapTargetView.Listener() {
+                                    @Override
+                                    public void onTargetClick(TapTargetView view) {
+                                        super.onTargetClick(view);
+                                        Toast.makeText(LoginActivity.this, "Wow", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                    //Toast.makeText(LoginActivity.this, "Hi, you've been invited for a demo account", Toast.LENGTH_SHORT).show();
+                },1000);
+            },800);
+        },2000);
     }
     public void performSignIn()
     {
@@ -706,7 +761,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             gender=profile.getGenders().get(0).getValue();
                         }
                         catch (Exception e){Log.e("socialsign1", e.toString());}
-                        appNameSplash.setText(R.string.create_sanrakshak);
+                        appNameSplash.setText(getString(R.string.create_sanrakshak));
                         try {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
                             String dateInString=(Objects.requireNonNull(date).getDay())+"/"+date.getMonth()+"/"+date.getYear();
@@ -782,17 +837,17 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             @Override
             public void onAnimationEnd(Animation animation) {
                 String SocialPlatform=(type==0)?"GOOGLE":"FACEBOOK";
+                appNameSplash1.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+                appNameSplash2.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+                appNameSplash1.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                appNameSplash2.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                 if(type==0){
-                    appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
-                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                     appNameSplash.setText(String.format("%s %s", getString(R.string.fetch_profile), SocialPlatform));
                     appNameSplash.setVisibility(View.VISIBLE);
                     proSplash.setVisibility(View.VISIBLE);
                 }
                 else if(type==1){
-                    appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
-                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-                    appNameSplash.setText(R.string.email_wait);
+                    appNameSplash.setText(getString(R.string.email_wait));
                     appNameSplash.setVisibility(View.VISIBLE);
                     proSplash.setVisibility(View.VISIBLE);
                     verify(0);
