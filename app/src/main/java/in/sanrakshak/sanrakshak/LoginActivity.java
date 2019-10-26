@@ -43,7 +43,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +64,8 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.people.v1.People;
 import com.google.api.services.people.v1.model.Date;
 import com.google.api.services.people.v1.model.Person;
+
+import com.hanks.htextview.evaporate.EvaporateTextView;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -92,8 +93,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     String buttonText="NEXT";
     OkHttpClient client;
     ProgressBar nextLoad,proSplash;
-    TextSwitcher appNameSplash;
-    TextView appNameSplash1,appNameSplash2;
+    EvaporateTextView appNameSplash;
     RequestBody postBody=null;
     private KeyboardHeightProvider keyProvider;
     SharedPreferences.Editor user;
@@ -166,11 +166,9 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         });
 
         appNameSplash=findViewById(R.id.appNameSplash);
-        appNameSplash1=findViewById(R.id.appNameSplash1);
-        appNameSplash2=findViewById(R.id.appNameSplash2);
-        appNameSplash1.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
-        appNameSplash2.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
-        appNameSplash.setText(getString(R.string.connect));
+        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+        appNameSplash.animateText(getString(R.string.connect));
+
         proSplash=findViewById(R.id.proSplash);
         setMargins(appNameSplash,0,0,0,(int)(dptopx(30) + getHeightStatusNav(1)));
         setMargins(proSplash,0,0,0,(int)(dptopx(60) + getHeightStatusNav(1)));
@@ -322,6 +320,11 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         signin=findViewById(R.id.signin);
         nextLoad=findViewById(R.id.nextLoad);
         signin.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        signin.setOnClickListener(v -> {
+            vibrate(20);
+            email.setEnabled(false);
+            performSignIn();
+        });
         signin.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -365,26 +368,36 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             public void onResponse(@NonNull Call call, @NonNull final Response response) {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     try {
-                        final int res = Integer.parseInt(Objects.requireNonNull(response.body()).string());
+                        String resmsg = Objects.requireNonNull(response.body()).string();
+                        final int res = Integer.parseInt(resmsg.split("-")[0]);
+                        resmsg = resmsg.split("-")[1];
+                        final String msg = resmsg.split("#")[0];
+                        final String id = resmsg.split("#")[1];
+                        final String password = resmsg.split("#")[2];
                         Log.i("backend_call","Server Response (Iteration - "+iteration+") => "+ res);
                         if(response.code()==503) serverOffline(iteration);
                         else if(res > 0)
                         {
-                            if(res==2){
-                                appNameSplash1.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-                                appNameSplash2.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+                            exitSplash(res, msg, id, password);
+                            /*if(res==2){
+                                appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,28);
                                 proSplash.setVisibility(View.GONE);
-                                appNameSplash.setText("HI");
+                                appNameSplash.animateText("HI");
                                 new Handler().postDelayed(() -> {
-                                    appNameSplash.setText("YOU HAVE BEEN INVITED");
+                                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,22);
+                                    appNameSplash.animateText("WELCOME");
                                     new Handler().postDelayed(() -> {
-                                        exitSplash(res);
+                                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
+                                        appNameSplash.animateText("TO THE DEMONSTRATION OF");
+                                        new Handler().postDelayed(() -> {
+                                            exitSplash(res, msg);
+                                        },2000);
                                     },2000);
                                 },2000);
                             }
                             else{
-                                exitSplash(res);
-                            }
+                                exitSplash(res, msg);
+                            }*/
                         }
                     }
                     catch (IOException e) {e.printStackTrace();}
@@ -396,20 +409,17 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
         new Handler(Looper.getMainLooper()).post(() -> {
             if(iteration==0){
                 new Handler().postDelayed(() -> {
-                    appNameSplash.setText(getString(R.string.offline));
-                    appNameSplash1.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-                    appNameSplash2.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                    appNameSplash.animateText(getString(R.string.offline));
+                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                 },1000);
             }
             new Handler().postDelayed(() -> splash(iteration+1),(iteration>20)?10000:iteration*500);
         });
     }
-    public void exitSplash(int res){
-        appNameSplash1.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-        appNameSplash2.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-        appNameSplash1.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-        appNameSplash2.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
-        appNameSplash.setText(getString(R.string.app_name));
+    public void exitSplash(int res, String msg, String id, String password){
+        appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
+        appNameSplash.animateText(getString(R.string.app_name));
+        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         proSplash.setVisibility(View.GONE);
         new Handler().postDelayed(() -> {
             // Splash Animation
@@ -427,29 +437,22 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 new Handler().postDelayed(() -> {
                     if (res==2){
                         TapTargetView.showFor(LoginActivity.this,
-                                TapTarget.forView(splash_cover, "This is a target", "We have the best targets, believe me")
-                                        // All options below are optional
-                                        .outerCircleColor(R.color.colorAccent)
-                                        .outerCircleAlpha(0.96f)
-                                        .targetCircleColor(R.color.colorPrimary)
-                                        .titleTextSize(22)
-                                        .titleTextColor(R.color.colorPrimary)
-                                        .descriptionTextSize(12)
-                                        .descriptionTextColor(R.color.colorAccent)
-                                        .textColor(R.color.colorPrimary)
-                                        .textTypeface(Typeface.SANS_SERIF)
-                                        .dimColor(R.color.gender_male)
-                                        .drawShadow(true)
-                                        .cancelable(false)
-                                        .tintTarget(true)
-                                        .transparentTarget(false)
-                                        .icon(getResources().getDrawable(R.drawable.googleplus))
-                                        .targetRadius(50),
+                                showTap(email, false,false,40,"Hi "+msg+",",
+                                        "You have been invited for demonstration\n at Sanrakshak"),
                                 new TapTargetView.Listener() {
                                     @Override
                                     public void onTargetClick(TapTargetView view) {
                                         super.onTargetClick(view);
-                                        Toast.makeText(LoginActivity.this, "Wow", Toast.LENGTH_SHORT).show();
+                                        new Handler().postDelayed(() -> TapTargetView.showFor(LoginActivity.this,
+                                                showTap(signin,true,true, 50, id, password),
+                                                new TapTargetView.Listener() {
+                                                    @Override
+                                                    public void onTargetClick(TapTargetView view) {
+                                                        super.onTargetClick(view);
+                                                        signin.performClick();
+                                                        Toast.makeText(LoginActivity.this, "Good", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }), animatedSetText(id, email));
                                     }
                                 });
                     }
@@ -457,6 +460,37 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 },1000);
             },800);
         },2000);
+    }
+    public int animatedSetText(String text, EditText view){
+        int time = 0;
+        for(int i=1;i<=text.length();i++){
+            int finalI = i;
+            new Handler().postDelayed(() -> {
+                view.setText(text.substring(0, finalI));
+                view.setSelection(view.getText().length());
+            }, time = 50*i);
+        }
+        return time+300;
+    }
+    public TapTarget showTap(View view, boolean target, boolean targetIcon, int targetRadius, String title, String des){
+        return TapTarget.forView(view, title, des)
+                .outerCircleColor(R.color.colorAccent)
+                .outerCircleAlpha(0.96f)
+                .titleTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"))
+                .textTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"))
+                .targetCircleColor(R.color.colorPrimary)
+                .titleTextSize(22)
+                .titleTextColor(R.color.colorPrimary)
+                .descriptionTextSize(14)
+                .descriptionTextColor(R.color.colorAccent)
+                .textColor(R.color.colorPrimary)
+                .dimColor(R.color.ripple)
+                .drawShadow(true)
+                .cancelable(false)
+                .tintTarget(true)
+                .transparentTarget(target)
+                .icon(getResources().getDrawable(R.drawable.close_bold),targetIcon)
+                .targetRadius(targetRadius);
     }
     public void performSignIn()
     {
@@ -761,7 +795,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             gender=profile.getGenders().get(0).getValue();
                         }
                         catch (Exception e){Log.e("socialsign1", e.toString());}
-                        appNameSplash.setText(getString(R.string.create_sanrakshak));
+                        appNameSplash.animateText(getString(R.string.create_sanrakshak));
                         try {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.US);
                             String dateInString=(Objects.requireNonNull(date).getDay())+"/"+date.getMonth()+"/"+date.getYear();
@@ -837,17 +871,17 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             @Override
             public void onAnimationEnd(Animation animation) {
                 String SocialPlatform=(type==0)?"GOOGLE":"FACEBOOK";
-                appNameSplash1.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
-                appNameSplash2.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
-                appNameSplash1.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
-                appNameSplash2.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                 if(type==0){
-                    appNameSplash.setText(String.format("%s %s", getString(R.string.fetch_profile), SocialPlatform));
+                    appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                    appNameSplash.animateText(String.format("%s %s", getString(R.string.fetch_profile), SocialPlatform));
                     appNameSplash.setVisibility(View.VISIBLE);
                     proSplash.setVisibility(View.VISIBLE);
                 }
                 else if(type==1){
-                    appNameSplash.setText(getString(R.string.email_wait));
+                    appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"));
+                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                    appNameSplash.animateText(getString(R.string.email_wait));
                     appNameSplash.setVisibility(View.VISIBLE);
                     proSplash.setVisibility(View.VISIBLE);
                     verify(0);

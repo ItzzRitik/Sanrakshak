@@ -14,8 +14,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="aws" />
-                            <entry key="sourceFile" value="C:\Users\Ritik Srivastava\Desktop\aws-big-logo.svg" />
+                            <entry key="outputName" value="ic_close" />
+                            <entry key="sourceFile" value="C:\Users\ritik\Desktop\close.svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -47,6 +47,9 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    implementation "com.hanks:htextview-base:0.1.6"
+    implementation "com.hanks:htextview-evaporate:0.1.6"
+
     implementation 'com.google.api-client:google-api-client-android:1.22.0'
     implementation 'com.google.apis:google-api-services-people:v1-rev63-1.22.0'
 
