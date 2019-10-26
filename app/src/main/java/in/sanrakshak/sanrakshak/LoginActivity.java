@@ -89,8 +89,8 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     ImageView ico_splash,social_google_logo,social_facebook_logo;
     TextView signin,forget_create;
     EditText email,pass,con_pass;
-    int log=0,keyHeight=0;
-    String buttonText="NEXT";
+    int log=0, keyHeight=0, sesMODE = 1;
+    String buttonText="NEXT", sesID="", sesPASS="";
     OkHttpClient client;
     ProgressBar nextLoad,proSplash;
     EvaporateTextView appNameSplash;
@@ -369,16 +369,16 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 new Handler(Looper.getMainLooper()).post(() -> {
                     try {
                         String resmsg = Objects.requireNonNull(response.body()).string();
-                        final int res = Integer.parseInt(resmsg.split("-")[0]);
+                        sesMODE = Integer.parseInt(resmsg.split("-")[0]);
                         resmsg = resmsg.split("-")[1];
                         final String msg = resmsg.split("#")[0];
-                        final String id = resmsg.split("#")[1];
-                        final String password = resmsg.split("#")[2];
-                        Log.i("backend_call","Server Response (Iteration - "+iteration+") => "+ res);
+                        sesID = resmsg.split("#")[1];
+                        sesPASS = resmsg.split("#")[2];
+                        Log.i("backend_call","Server Response (Iteration - "+iteration+") => "+ sesMODE);
                         if(response.code()==503) serverOffline(iteration);
-                        else if(res > 0)
+                        else if(sesMODE > 0)
                         {
-                            exitSplash(res, msg, id, password);
+                            exitSplash(msg);
                             /*if(res==2){
                                 appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,28);
                                 proSplash.setVisibility(View.GONE);
@@ -416,7 +416,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             new Handler().postDelayed(() -> splash(iteration+1),(iteration>20)?10000:iteration*500);
         });
     }
-    public void exitSplash(int res, String msg, String id, String password){
+    public void exitSplash(String msg){
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
         appNameSplash.animateText(getString(R.string.app_name));
         appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
@@ -435,7 +435,9 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 scaleY(social_div,80,280,new AccelerateInterpolator());
                 setLightTheme(false,true);
                 new Handler().postDelayed(() -> {
-                    if (res==2){
+                    if (sesMODE==2){
+                        email.setEnabled(false);
+                        email_reset.setEnabled(false);
                         TapTargetView.showFor(LoginActivity.this,
                                 showTap(email, false,false,40,"Hi "+msg+",",
                                         "You have been invited for demonstration\n at Sanrakshak"),
@@ -444,15 +446,14 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     public void onTargetClick(TapTargetView view) {
                                         super.onTargetClick(view);
                                         new Handler().postDelayed(() -> TapTargetView.showFor(LoginActivity.this,
-                                                showTap(signin,true,true, 50, id, password),
+                                                showTap(signin,true,true, 50, sesID, sesPASS),
                                                 new TapTargetView.Listener() {
                                                     @Override
                                                     public void onTargetClick(TapTargetView view) {
                                                         super.onTargetClick(view);
                                                         signin.performClick();
-                                                        Toast.makeText(LoginActivity.this, "Good", Toast.LENGTH_SHORT).show();
                                                     }
-                                                }), animatedSetText(id, email));
+                                                }), animatedSetText(sesID, email, 50));
                                     }
                                 });
                     }
@@ -461,16 +462,16 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             },800);
         },2000);
     }
-    public int animatedSetText(String text, EditText view){
+    public int animatedSetText(String text, EditText view, int multiplier){
         int time = 0;
         for(int i=1;i<=text.length();i++){
             int finalI = i;
             new Handler().postDelayed(() -> {
                 view.setText(text.substring(0, finalI));
                 view.setSelection(view.getText().length());
-            }, time = 50*i);
+            }, time = multiplier*i);
         }
-        return time+300;
+        return time*5/6;
     }
     public TapTarget showTap(View view, boolean target, boolean targetIcon, int targetRadius, String title, String des){
         return TapTarget.forView(view, title, des)
@@ -535,6 +536,17 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             scaleY(forget_pass,27,300,new OvershootInterpolator());
                             scaleY(login_div,98,300,new AccelerateDecelerateInterpolator());
                             log=1;
+                            if (sesMODE==2){
+                                new Handler().postDelayed(() -> TapTargetView.showFor(LoginActivity.this,
+                                        showTap(signin,true,true, 50, sesID, sesPASS),
+                                        new TapTargetView.Listener() {
+                                            @Override
+                                            public void onTargetClick(TapTargetView view) {
+                                                super.onTargetClick(view);
+                                                signin.performClick();
+                                            }
+                                        }), animatedSetText(sesPASS, pass, 50));
+                            }
                         });
                     }
                     else
