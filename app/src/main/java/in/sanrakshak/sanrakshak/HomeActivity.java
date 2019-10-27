@@ -891,7 +891,7 @@ public class HomeActivity extends AppCompatActivity {
                                                                         @Override
                                                                         public void onTargetClick(TapTargetView view) {
                                                                             super.onTargetClick(view);
-                                                                            new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
+                                                                            TapTargetView.showFor(HomeActivity.this,
                                                                                     showTap(crackAdapter.current.time,true,true, 55, 0,
                                                                                             "Time Left",
                                                                                             "Number of days allotted to a particular crack. \nTo make sure cracks get fixed on time"),
@@ -899,18 +899,18 @@ public class HomeActivity extends AppCompatActivity {
                                                                                         @Override
                                                                                         public void onTargetClick(TapTargetView view) {
                                                                                             super.onTargetClick(view);
-                                                                                            new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
-                                                                                                    showTap(crackAdapter.current.locate,false,false, 55, R.drawable.map,
-                                                                                                            "Time Left",
-                                                                                                            "Number of days allotted to a particular crack. \nTo make sure cracks get fixed on time"),
+                                                                                            TapTargetView.showFor(HomeActivity.this,
+                                                                                                    showTap(crackAdapter.current.locate,false,false, 45, R.drawable.map,
+                                                                                                            "Locate on Google Map",
+                                                                                                            "Locate exact location of the detected crack \n on Google Maps"),
                                                                                                     new TapTargetView.Listener() {
                                                                                                         @Override
                                                                                                         public void onTargetClick(TapTargetView view) {
                                                                                                             super.onTargetClick(view);
-                                                                                                            new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
-                                                                                                                    showTap(crackAdapter.current.navigate,false,false, 55, R.drawable.navigation,
-                                                                                                                            "Time Left",
-                                                                                                                            "Number of days allotted to a particular crack. \nTo make sure cracks get fixed on time"),
+                                                                                                            TapTargetView.showFor(HomeActivity.this,
+                                                                                                                    showTap(crackAdapter.current.navigate,false,false, 45, R.drawable.navigation,
+                                                                                                                            "Navigate on Google Map",
+                                                                                                                            "Navigate to the exact location of the detected crack \nUsing Google Maps Navigation"),
                                                                                                                     new TapTargetView.Listener() {
                                                                                                                         @Override
                                                                                                                         public void onTargetClick(TapTargetView view) {
@@ -919,11 +919,11 @@ public class HomeActivity extends AppCompatActivity {
 
                                                                                                                             },200);
                                                                                                                         }
-                                                                                                                    }),200);
+                                                                                                                    });
                                                                                                         }
-                                                                                                    }),200);
+                                                                                                    });
                                                                                         }
-                                                                                    }),200);
+                                                                                    });
                                                                         }
                                                                     }),1000);
                                                         },200);
