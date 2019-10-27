@@ -429,7 +429,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     if (sesMODE==2){
                         TapTargetView.showFor(LoginActivity.this,
                                 showTap(email, false,false,40,"Hi "+msg+",",
-                                        "You have been invited for demonstration \nat SANRAKSHAK"),
+                                        "You have been invited for demonstration \nat Sanrakshak."),
                                 new TapTargetView.Listener() {
                                     @Override
                                     public void onTargetClick(TapTargetView view) {
@@ -469,7 +469,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
     }
     public TapTarget showTap(View view, boolean target, boolean targetIcon, int targetRadius, String title, String des){
         return TapTarget.forView(view, title, des)
-                .outerCircleColor(R.color.colorAccent)
+                .outerCircleColor(R.color.colorAccentLight)
                 .outerCircleAlpha(0.95f)
                 .titleTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"))
                 .textTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"))
