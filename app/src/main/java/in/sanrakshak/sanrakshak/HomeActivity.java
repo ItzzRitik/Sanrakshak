@@ -859,6 +859,14 @@ public class HomeActivity extends AppCompatActivity {
                 runnable.run();
 
                 AlphaAnimation anims = new AlphaAnimation(1,0);anims.setDuration(1000);anims.setFillAfter(true);
+                anims.setAnimationListener(new Animation.AnimationListener() {
+                    @Override public void onAnimationStart(Animation animation) {}
+                    @Override public void onAnimationEnd(Animation animation) {
+                        logo_div_fade.setClickable(false);
+                        logo_div_fade.setFocusable(false);
+                    }
+                    @Override public void onAnimationRepeat(Animation animation) { }
+                });
                 logo_div_fade.startAnimation(anims);
                 new Handler().postDelayed(() -> {
                     if(loadOnline)listRefresh();

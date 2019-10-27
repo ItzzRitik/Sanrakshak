@@ -436,7 +436,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                         super.onTargetClick(view);
                                         new Handler().postDelayed(() -> new Handler().postDelayed(() -> TapTargetView.showFor(LoginActivity.this,
                                                 showTap(signin,true,true, 50,
-                                                        "Demo Email ID",
+                                                        "Take this Email ID",
                                                         "Press the next button to proceed"),
                                                 new TapTargetView.Listener() {
                                                     @Override
@@ -448,7 +448,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     }
                                 });
                     }
-                    //Toast.makeText(LoginActivity.this, "Hi, you've been invited for a demo account", Toast.LENGTH_SHORT).show();
                 },1000);
             },800);
         },2000);
@@ -535,7 +534,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                 new Handler().postDelayed(() -> new Handler().postDelayed(() -> TapTargetView.showFor(LoginActivity.this,
                                         showTap(signin,true,true, 50,
                                                 "Here's the password",
-                                                "Just one more step to go!!"),
+                                                "Promise!! This is the last step."),
                                         new TapTargetView.Listener() {
                                             @Override
                                             public void onTargetClick(TapTargetView view) {

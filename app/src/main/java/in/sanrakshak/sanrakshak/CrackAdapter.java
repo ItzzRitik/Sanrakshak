@@ -104,9 +104,9 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
         holder.date.setText(item.getDate());holder.date_details.setText(item.getDate());
 
         try {
-            int date1=Integer.parseInt((item.getDate()).split("/")[0])+7;
+            int date1=Integer.parseInt((item.getDate()).split("/")[1])+15;
             int date2=Integer.parseInt(new SimpleDateFormat("dd",Locale.US).format(new Date()));
-            holder.time.setProgress(((date1-date2)),7);
+            holder.time.setProgress(((date1-date2)),15);
         }
         catch (Exception e) {
             Toast.makeText(home, "Error", Toast.LENGTH_SHORT).show();
