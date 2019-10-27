@@ -134,7 +134,7 @@ public class HomeActivity extends AppCompatActivity {
     ToolTipsManager toolTip;
     RecyclerView home;
     double diagonal;
-    Boolean menuOpen=false,profileOpen=false,profile_lp=false,camOn=false,galaryOn=false,isDP_added=false;
+    Boolean firstBoot=true,menuOpen=false,profileOpen=false,profile_lp=false,camOn=false,galaryOn=false,isDP_added=false;
     OkHttpClient client;
     SwipeRefreshLayout refresh;
     RequestBody postBody=null;
@@ -510,7 +510,7 @@ public class HomeActivity extends AppCompatActivity {
         done.setOnClickListener(v -> {
             gclient.signOut();
             user_edit.clear();user_edit.apply();
-            crack_edit.clear();crack_edit.apply();
+            //crack_edit.clear();crack_edit.apply();
             new Thread(() -> Glide.get(HomeActivity.this).clearDiskCache()).start();
             Intent home=new Intent(HomeActivity.this, LoginActivity.class);
             HomeActivity.this.startActivity(home);
@@ -522,7 +522,7 @@ public class HomeActivity extends AppCompatActivity {
         refresh.setNestedScrollingEnabled(true);
         refresh.setSlingshotDistance(dptopx(150));
         refresh.setOnRefreshListener(() -> {
-            if(isOnline()){getCrackList(false);}
+            if(isOnline()){crackAdapter.current.navtrigger.performClick(); getCrackList(false);}
             else {Toast.makeText(HomeActivity.this, R.string.unreachable, Toast.LENGTH_SHORT).show();refresh.setRefreshing(false);}
         });
 
@@ -565,6 +565,7 @@ public class HomeActivity extends AppCompatActivity {
         if(isOnline())
         {
             if(crack.getString("list", null)!=null){
+                firstBoot = false;
                 splash(true);
             }
             else{
@@ -599,6 +600,7 @@ public class HomeActivity extends AppCompatActivity {
                                     cacheData(true);
                                 }
                                 else{
+                                    firstBoot = false;
                                     splash(true);
                                 }
                             }
@@ -608,6 +610,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
         else{
+            firstBoot = false;
             splash(false);
         }
     }
@@ -863,8 +866,13 @@ public class HomeActivity extends AppCompatActivity {
                 anims.setAnimationListener(new Animation.AnimationListener() {
                     @Override public void onAnimationStart(Animation animation) {}
                     @Override public void onAnimationEnd(Animation animation) {
+                        if(!firstBoot){
+                            logo_div_fade.setClickable(false);
+                            logo_div_fade.setFocusable(false);
+                        }
+                        else
                         new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
-                                showTap(crackAdapter.current.date,false,false, 45, R.drawable.tick,
+                                showTap(crackAdapter.current.date,false,false, 45, R.drawable.tick_bold,
                                         "Glad to see you here!",
                                         "Here is the list of all the cracks \ndetected by Sanrakshak."),
                                 new TapTargetView.Listener() {
@@ -872,7 +880,7 @@ public class HomeActivity extends AppCompatActivity {
                                     public void onTargetClick(TapTargetView view) {
                                         super.onTargetClick(view);
                                         TapTargetView.showFor(HomeActivity.this,
-                                                showTap(crackAdapter.current.preview,true,true, 60, 0,
+                                                showTap(crackAdapter.current.preview,true,true, 60, R.drawable.tick_bold,
                                                         "Map Preview",
                                                         "This is Google Maps preview of the location. \nTap for more details."),
                                                 new TapTargetView.Listener() {
@@ -882,7 +890,7 @@ public class HomeActivity extends AppCompatActivity {
                                                         new Handler().postDelayed(() -> {
                                                             crackAdapter.current.cardItem.performClick();
                                                             new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
-                                                                    showTap(crackAdapter.current.intensity,true,true, 55, 0,
+                                                                    showTap(crackAdapter.current.intensity,true,true, 55, R.drawable.tick_bold,
                                                                             "Crack Intensity",
                                                                             "Intensity of crack on the scale of 100 \nMore the intensity, worse the crack"),
                                                                     new TapTargetView.Listener() {
@@ -890,7 +898,7 @@ public class HomeActivity extends AppCompatActivity {
                                                                         public void onTargetClick(TapTargetView view) {
                                                                             super.onTargetClick(view);
                                                                             TapTargetView.showFor(HomeActivity.this,
-                                                                                    showTap(crackAdapter.current.time,true,true, 55, 0,
+                                                                                    showTap(crackAdapter.current.time,true,true, 55, R.drawable.tick_bold,
                                                                                             "Time Left",
                                                                                             "Here is the no. of days allotted to a crack. \nTo make sure it get fixed on time"),
                                                                                     new TapTargetView.Listener() {
@@ -916,22 +924,22 @@ public class HomeActivity extends AppCompatActivity {
                                                                                                                             crackAdapter.current.navtrigger.performClick();
                                                                                                                             TapTargetView.showFor(HomeActivity.this,
                                                                                                                                     showTap(menu,false,false, 40, R.drawable.menu,
-                                                                                                                                            "Menu Page",
-                                                                                                                                            "Checkout you profile in this page \nMore features will be added later."),
+                                                                                                                                            "Menu",
+                                                                                                                                            "Checkout you profile here. \nMore features will be added later."),
                                                                                                                                     new TapTargetView.Listener() {
                                                                                                                                         @Override
                                                                                                                                         public void onTargetClick(TapTargetView view) {
                                                                                                                                             super.onTargetClick(view);
                                                                                                                                             TapTargetView.showFor(HomeActivity.this,
                                                                                                                                                     showTap(done,false,false, 40, R.drawable.logout,
-                                                                                                                                                            "Logout Button",
+                                                                                                                                                            "Logout",
                                                                                                                                                             "Want to logout or switch account? \nTap here and there you go."),
                                                                                                                                                     new TapTargetView.Listener() {
                                                                                                                                                         @Override
                                                                                                                                                         public void onTargetClick(TapTargetView view) {
                                                                                                                                                             super.onTargetClick(view);
                                                                                                                                                             TapTargetView.showFor(HomeActivity.this,
-                                                                                                                                                                    showTap(crackAdapter.current.date,false,false, 45, R.drawable.tick,
+                                                                                                                                                                    showTap(crackAdapter.current.date,false,false, 45, R.drawable.heart,
                                                                                                                                                                             "Tour ends here",
                                                                                                                                                                             "Our Sanrakshak tour ends here \nHave a good day!"),
                                                                                                                                                                     new TapTargetView.Listener() {
@@ -987,7 +995,7 @@ public class HomeActivity extends AppCompatActivity {
                 .cancelable(false)
                 .tintTarget(true)
                 .transparentTarget(target)
-                .icon(getResources().getDrawable((icon==0) ? R.drawable.tick : icon),targetIcon)
+                .icon(Objects.requireNonNull(getDrawable(icon)),targetIcon)
                 .targetRadius(targetRadius);
     }
     public void loadCache(){

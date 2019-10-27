@@ -484,7 +484,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 .cancelable(false)
                 .tintTarget(true)
                 .transparentTarget(target)
-                .icon(getResources().getDrawable(R.drawable.tick),targetIcon)
+                .icon(getResources().getDrawable(R.drawable.tick_bold),targetIcon)
                 .targetRadius(targetRadius);
     }
     public void performSignIn()
