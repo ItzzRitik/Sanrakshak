@@ -185,9 +185,8 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
-                if(isEmailValid(email.getText().toString()))
-                {setButtonEnabled(true);}
-                else{setButtonEnabled(false);}
+                if(isEmailValid(email.getText().toString()) && sesMODE!=2){setButtonEnabled(true);}
+                else if(sesMODE!=2){setButtonEnabled(false);}
             }
         });
         email.setOnKeyListener((v, keyCode, event) -> {
@@ -219,13 +218,13 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 if(pass.getText().length()>=6)
                 {
                     pass.setCompoundDrawablesWithIntrinsicBounds(R.drawable.password_ok,0,0,0);
-                    if(log==1){setButtonEnabled(true);}
+                    if(log==1 && sesMODE!=2){setButtonEnabled(true);}
                     else if(log==2){con_pass.setEnabled(true);}
                 }
                 else
                 {
                     pass.setCompoundDrawablesWithIntrinsicBounds(R.drawable.password_nok,0,0,0);
-                    if(log==1){setButtonEnabled(false);}
+                    if(log==1 && sesMODE!=2){setButtonEnabled(false);}
                     else if(log==2){con_pass.setText("");con_pass.setEnabled(false);}
                 }
             }
@@ -370,34 +369,26 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     try {
                         String resmsg = Objects.requireNonNull(response.body()).string();
                         sesMODE = Integer.parseInt(resmsg.split("-")[0]);
-                        resmsg = resmsg.split("-")[1];
-                        final String msg = resmsg.split("#")[0];
-                        sesID = resmsg.split("#")[1];
-                        sesPASS = resmsg.split("#")[2];
                         Log.i("backend_call","Server Response (Iteration - "+iteration+") => "+ sesMODE);
                         if(response.code()==503) serverOffline(iteration);
                         else if(sesMODE > 0)
                         {
-                            exitSplash(msg);
-                            /*if(res==2){
-                                appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,28);
-                                proSplash.setVisibility(View.GONE);
-                                appNameSplash.animateText("HI");
-                                new Handler().postDelayed(() -> {
-                                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,22);
-                                    appNameSplash.animateText("WELCOME");
-                                    new Handler().postDelayed(() -> {
-                                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
-                                        appNameSplash.animateText("TO THE DEMONSTRATION OF");
-                                        new Handler().postDelayed(() -> {
-                                            exitSplash(res, msg);
-                                        },2000);
-                                    },2000);
-                                },2000);
+                            if(sesMODE==2){
+                                email.setEnabled(false);
+                                pass.setEnabled(false);
+                                con_pass.setEnabled(false);
+                                social_google.setEnabled(false);
+                                email_reset.setEnabled(false);
+
+                                resmsg = resmsg.split("-")[1];
+                                String msg = resmsg.split("#")[0];
+                                sesID = resmsg.split("#")[1];
+                                sesPASS = resmsg.split("#")[2];
+                                exitSplash(msg);
                             }
                             else{
-                                exitSplash(res, msg);
-                            }*/
+                                exitSplash("");
+                            }
                         }
                     }
                     catch (IOException e) {e.printStackTrace();}
@@ -436,8 +427,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 setLightTheme(false,true);
                 new Handler().postDelayed(() -> {
                     if (sesMODE==2){
-                        email.setEnabled(false);
-                        email_reset.setEnabled(false);
                         TapTargetView.showFor(LoginActivity.this,
                                 showTap(email, false,false,40,"Hi "+msg+",",
                                         "You have been invited for demonstration\n at Sanrakshak"),
@@ -445,15 +434,17 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                     @Override
                                     public void onTargetClick(TapTargetView view) {
                                         super.onTargetClick(view);
-                                        new Handler().postDelayed(() -> TapTargetView.showFor(LoginActivity.this,
-                                                showTap(signin,true,true, 50, sesID, sesPASS),
+                                        new Handler().postDelayed(() -> new Handler().postDelayed(() -> TapTargetView.showFor(LoginActivity.this,
+                                                showTap(signin,true,true, 50,
+                                                        "Demo Email ID",
+                                                        "Press the next button to proceed"),
                                                 new TapTargetView.Listener() {
                                                     @Override
                                                     public void onTargetClick(TapTargetView view) {
                                                         super.onTargetClick(view);
                                                         signin.performClick();
                                                     }
-                                                }), animatedSetText(sesID, email, 50));
+                                                }), animatedSetText(sesID, email, 50, true)), 500);
                                     }
                                 });
                     }
@@ -462,8 +453,9 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             },800);
         },2000);
     }
-    public int animatedSetText(String text, EditText view, int multiplier){
+    public int animatedSetText(String text, EditText view, int multiplier, boolean isNext){
         int time = 0;
+        if(isNext){setButtonEnabled(false);}
         for(int i=1;i<=text.length();i++){
             int finalI = i;
             new Handler().postDelayed(() -> {
@@ -471,12 +463,15 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 view.setSelection(view.getText().length());
             }, time = multiplier*i);
         }
-        return time*5/6;
+        new Handler().postDelayed(() -> {
+            if(isNext){setButtonEnabled(true);}
+        },time+300);
+        return time+150;
     }
     public TapTarget showTap(View view, boolean target, boolean targetIcon, int targetRadius, String title, String des){
         return TapTarget.forView(view, title, des)
                 .outerCircleColor(R.color.colorAccent)
-                .outerCircleAlpha(0.96f)
+                .outerCircleAlpha(0.95f)
                 .titleTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"))
                 .textTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"))
                 .targetCircleColor(R.color.colorPrimary)
@@ -528,7 +523,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             con_pass.setVisibility(View.GONE);
                             email_reset.setVisibility(View.VISIBLE);
                             pass.requestFocus();
-                            pass.setEnabled(true);
+                            if(sesMODE!=2) pass.setEnabled(true);
                             pass.setImeOptions(EditorInfo.IME_ACTION_DONE);
                             setButtonEnabled(false);
                             forget_create.setTextSize(13);
@@ -537,15 +532,17 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                             scaleY(login_div,98,300,new AccelerateDecelerateInterpolator());
                             log=1;
                             if (sesMODE==2){
-                                new Handler().postDelayed(() -> TapTargetView.showFor(LoginActivity.this,
-                                        showTap(signin,true,true, 50, sesID, sesPASS),
+                                new Handler().postDelayed(() -> new Handler().postDelayed(() -> TapTargetView.showFor(LoginActivity.this,
+                                        showTap(signin,true,true, 50,
+                                                "Here's the password",
+                                                "Just one more step to go!!"),
                                         new TapTargetView.Listener() {
                                             @Override
                                             public void onTargetClick(TapTargetView view) {
                                                 super.onTargetClick(view);
                                                 signin.performClick();
                                             }
-                                        }), animatedSetText(sesPASS, pass, 50));
+                                        }), animatedSetText(sesPASS, pass, 50, true)), 500);
                             }
                         });
                     }
