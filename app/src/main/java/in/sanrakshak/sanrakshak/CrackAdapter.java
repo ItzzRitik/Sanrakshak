@@ -99,6 +99,7 @@ public class CrackAdapter extends RecyclerView.Adapter<CrackAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         final Cracks item = cracks.get(position);
+        if(position<=1) current = holder;
         holder.name.setText(item.getName());holder.name_details.setText(item.getName());
         holder.city.setText(item.getCity());holder.city_details.setText(item.getCity());
         holder.date.setText(item.getDate());holder.date_details.setText(item.getDate());

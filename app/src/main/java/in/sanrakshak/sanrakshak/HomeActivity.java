@@ -66,6 +66,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.cameraview.CameraView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -295,6 +297,7 @@ public class HomeActivity extends AppCompatActivity {
                     menu.setImageDrawable(getDrawable(R.drawable.close));
                     menu.setPadding(dptopx(15),dptopx(15),dptopx(15),dptopx(15));
                     done.setImageDrawable(getDrawable(R.drawable.logout));
+                    done.setEnabled(true);
                     page_tag.setText(R.string.menu);
                 },200);
                 new Handler().postDelayed(() ->{
@@ -320,6 +323,7 @@ public class HomeActivity extends AppCompatActivity {
                     menu.setImageDrawable(getDrawable(R.drawable.back));
                     menu.setPadding(dptopx(13),dptopx(13),dptopx(13),dptopx(13));
                     done.setImageDrawable(getDrawable(R.drawable.tick));
+                    done.setEnabled(false);
                     page_tag.setText(R.string.profile);
                     AlphaAnimation anims = new AlphaAnimation(0,1);anims.setDuration(300);
                     menu_profile_edit.setVisibility(View.VISIBLE);menu_profile_edit.startAnimation(anims);
@@ -742,8 +746,7 @@ public class HomeActivity extends AppCompatActivity {
                                 crackAdapter = new CrackAdapter(HomeActivity.this,cracks);
                                 home.setAdapter(crackAdapter);
                                 refresh.setRefreshing(false);
-                                if(splash)splash(false);
-                                else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
+                                if(splash) splash(false);
                             });
                         }
                         catch (JSONException e) { }
@@ -800,7 +803,6 @@ public class HomeActivity extends AppCompatActivity {
                                 home.setAdapter(crackAdapter);
                                 refresh.setRefreshing(false);
                                 if(splash)splash(false);
-                                else Toast.makeText(HomeActivity.this, "LIST UPDATED", Toast.LENGTH_SHORT).show();
                             });
                         }
                         catch (JSONException e) {
@@ -853,9 +855,7 @@ public class HomeActivity extends AppCompatActivity {
                     actionbar.setVisibility(View.VISIBLE);actionbar.startAnimation(anims);
                     page_tag.setEnabled(false);
                     menu.animate().rotationBy(1080).withEndAction(null).setDuration(1100).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-                    new Handler().postDelayed(() -> {
-                        page_tag.setEnabled(true);
-                    },1100);
+                    new Handler().postDelayed(() -> page_tag.setEnabled(true),1100);
                 };
                 runnable.run();
 
@@ -863,8 +863,74 @@ public class HomeActivity extends AppCompatActivity {
                 anims.setAnimationListener(new Animation.AnimationListener() {
                     @Override public void onAnimationStart(Animation animation) {}
                     @Override public void onAnimationEnd(Animation animation) {
-                        logo_div_fade.setClickable(false);
-                        logo_div_fade.setFocusable(false);
+//                        logo_div_fade.setClickable(false);
+//                        logo_div_fade.setFocusable(false);
+                        new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
+                                showTap(crackAdapter.current.date,false,false, 45, 0,
+                                        "Glad to see you here!",
+                                        "Here is the list of all the cracks \ndetected by SANRAKSHAK"),
+                                new TapTargetView.Listener() {
+                                    @Override
+                                    public void onTargetClick(TapTargetView view) {
+                                        super.onTargetClick(view);
+                                        TapTargetView.showFor(HomeActivity.this,
+                                                showTap(crackAdapter.current.preview,true,true, 60, 0,
+                                                        "Map Preview",
+                                                        "This is Google Maps preview of the location. \nTap for more details."),
+                                                new TapTargetView.Listener() {
+                                                    @Override
+                                                    public void onTargetClick(TapTargetView view) {
+                                                        super.onTargetClick(view);
+                                                        new Handler().postDelayed(() -> {
+                                                            crackAdapter.current.cardItem.performClick();
+                                                            new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
+                                                                    showTap(crackAdapter.current.intensity,true,true, 55, 0,
+                                                                            "Crack Intensity",
+                                                                            "Intensity of crack on the scale of 100 \nMore the intensity, worse the crack"),
+                                                                    new TapTargetView.Listener() {
+                                                                        @Override
+                                                                        public void onTargetClick(TapTargetView view) {
+                                                                            super.onTargetClick(view);
+                                                                            new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
+                                                                                    showTap(crackAdapter.current.time,true,true, 55, 0,
+                                                                                            "Time Left",
+                                                                                            "Number of days allotted to a particular crack. \nTo make sure cracks get fixed on time"),
+                                                                                    new TapTargetView.Listener() {
+                                                                                        @Override
+                                                                                        public void onTargetClick(TapTargetView view) {
+                                                                                            super.onTargetClick(view);
+                                                                                            new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
+                                                                                                    showTap(crackAdapter.current.locate,false,false, 55, R.drawable.map,
+                                                                                                            "Time Left",
+                                                                                                            "Number of days allotted to a particular crack. \nTo make sure cracks get fixed on time"),
+                                                                                                    new TapTargetView.Listener() {
+                                                                                                        @Override
+                                                                                                        public void onTargetClick(TapTargetView view) {
+                                                                                                            super.onTargetClick(view);
+                                                                                                            new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
+                                                                                                                    showTap(crackAdapter.current.navigate,false,false, 55, R.drawable.navigation,
+                                                                                                                            "Time Left",
+                                                                                                                            "Number of days allotted to a particular crack. \nTo make sure cracks get fixed on time"),
+                                                                                                                    new TapTargetView.Listener() {
+                                                                                                                        @Override
+                                                                                                                        public void onTargetClick(TapTargetView view) {
+                                                                                                                            super.onTargetClick(view);
+                                                                                                                            new Handler().postDelayed(() -> {
+
+                                                                                                                            },200);
+                                                                                                                        }
+                                                                                                                    }),200);
+                                                                                                        }
+                                                                                                    }),200);
+                                                                                        }
+                                                                                    }),200);
+                                                                        }
+                                                                    }),1000);
+                                                        },200);
+                                                    }
+                                                });
+                                    }
+                                }), 200);
                     }
                     @Override public void onAnimationRepeat(Animation animation) { }
                 });
@@ -875,6 +941,26 @@ public class HomeActivity extends AppCompatActivity {
                 setLightTheme(true,true);
             },400);
         },1000);
+    }
+    public TapTarget showTap(View view, boolean target, boolean targetIcon, int targetRadius, int icon, String title, String des){
+        return TapTarget.forView(view, title, des)
+                .outerCircleColor(R.color.home_tap)
+                .outerCircleAlpha(0.95f)
+                .titleTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"))
+                .textTypeface(Typeface.createFromAsset(getAssets(), "fonts/exo2.ttf"))
+                .targetCircleColor(R.color.colorPrimary)
+                .titleTextSize(22)
+                .titleTextColor(R.color.colorPrimary)
+                .descriptionTextSize(14)
+                .descriptionTextColor(R.color.colorPrimary)
+                .textColor(R.color.colorPrimary)
+                .dimColor(R.color.black)
+                .drawShadow(true)
+                .cancelable(false)
+                .tintTarget(true)
+                .transparentTarget(target)
+                .icon(getResources().getDrawable(((icon==0)?R.drawable.tick:icon)),targetIcon)
+                .targetRadius(targetRadius);
     }
     public void loadCache(){
         home.setAdapter(null);

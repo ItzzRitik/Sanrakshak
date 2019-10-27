@@ -429,7 +429,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                     if (sesMODE==2){
                         TapTargetView.showFor(LoginActivity.this,
                                 showTap(email, false,false,40,"Hi "+msg+",",
-                                        "You have been invited for demonstration\n at Sanrakshak"),
+                                        "You have been invited for demonstration \nat SANRAKSHAK"),
                                 new TapTargetView.Listener() {
                                     @Override
                                     public void onTargetClick(TapTargetView view) {
@@ -484,7 +484,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 .cancelable(false)
                 .tintTarget(true)
                 .transparentTarget(target)
-                .icon(getResources().getDrawable(R.drawable.close_bold),targetIcon)
+                .icon(getResources().getDrawable(R.drawable.tick),targetIcon)
                 .targetRadius(targetRadius);
     }
     public void performSignIn()

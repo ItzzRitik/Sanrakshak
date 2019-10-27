@@ -5,6 +5,7 @@
     <color name="colorAccent">#2196F3</color>
     <color name="colorAccentLight">#42a5f5</color>
     <color name="colorAccentDark">#0091ea</color>
+    <color name="home_tap">#4FAAF3</color>
     <color name="black">#000000</color>
     <color name="green">#71DE56</color>
     <color name="ripple">#64ffffff</color>
