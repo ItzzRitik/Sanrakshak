@@ -479,7 +479,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 .descriptionTextSize(14)
                 .descriptionTextColor(R.color.colorAccent)
                 .textColor(R.color.colorPrimary)
-                .dimColor(R.color.ripple)
+                .dimColor(R.color.black)
                 .drawShadow(true)
                 .cancelable(false)
                 .tintTarget(true)

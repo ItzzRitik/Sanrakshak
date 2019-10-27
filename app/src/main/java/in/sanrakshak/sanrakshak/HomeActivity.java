@@ -73,6 +73,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hanks.htextview.evaporate.EvaporateTextView;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.rm.rmswitch.RMSwitch;
 import com.tomergoldst.tooltips.ToolTip;
@@ -93,7 +94,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Random;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -116,8 +116,9 @@ public class HomeActivity extends AppCompatActivity {
     CardView menupane,sheet,menu_profile_Card;
     ProgressBar proSplash,loading_profile;
     ImageView ico_splash,menu,done,menu_cover,dp_cover,dob_chooser,click,camera_flip,flash;
-    TextView page_tag,appNameSplash,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
+    TextView page_tag,sheet_title,sheet_msg,sheet_action,menu_fname,menu_lname,menu_email;
     TextView gender_tag,f_name,l_name,dob,aadhaar;
+    EvaporateTextView appNameSplash;
     CircularImageView menu_profile,profile;
     CameraView cameraView;
     UCrop.Options options;
@@ -563,7 +564,7 @@ public class HomeActivity extends AppCompatActivity {
                 splash(true);
             }
             else{
-                appNameSplash.setText(R.string.resources);
+                appNameSplash.animateText(getString(R.string.resources));
                 Log.i("backend_call", "Connecting");
                 try{
                     postBody = new FormBody.Builder()
@@ -816,8 +817,8 @@ public class HomeActivity extends AppCompatActivity {
     public void splash(final boolean loadOnline){
         loadCache();
         appNameSplash.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/vdub.ttf"));
-        appNameSplash.setText(getString(R.string.app_name));
         appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+        appNameSplash.animateText(getString(R.string.app_name));
         proSplash.setVisibility(View.GONE);
 
         new Handler().postDelayed(() -> {
