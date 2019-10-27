@@ -135,12 +135,12 @@ public class HomeActivity extends AppCompatActivity {
     ToolTipsManager toolTip;
     RecyclerView home;
     double diagonal;
-    Boolean firstBoot=true,menuOpen=false,profileOpen=false,profile_lp=false,camOn=false,galaryOn=false,isDP_added=false;
+    Boolean menuOpen=false,profileOpen=false,profile_lp=false,camOn=false,galaryOn=false,isDP_added=false;
     OkHttpClient client;
     SwipeRefreshLayout refresh;
     RequestBody postBody=null;
-    SharedPreferences user,crack;
-    SharedPreferences.Editor user_edit,crack_edit;
+    SharedPreferences user, crack, app;
+    SharedPreferences.Editor user_edit, crack_edit, app_edit;
     List<Cracks> cracks;
     CrackAdapter crackAdapter;
     GoogleSignInOptions gso;
@@ -560,86 +560,118 @@ public class HomeActivity extends AppCompatActivity {
         user_edit = user.edit();
         crack = getSharedPreferences("crack", MODE_PRIVATE);
         crack_edit = crack.edit();
+        app = getSharedPreferences("app", MODE_PRIVATE);
+        app_edit = app.edit();
         connect();
     }
     public void connect(){
         if(isOnline())
         {
-            if(crack.getString("list", null)!=null){
-                firstBoot = false;
+            boolean cacheAvail = crack.getString("list", null) != null,
+                    validApp = app.getBoolean("valid", true);
+            if(cacheAvail && validApp){
                 splash(true);
             }
-            else{
-                appNameSplash.animateText(getString(R.string.resources));
-                Log.i("backend_call", "Connecting");
-                try{
-                    postBody = new FormBody.Builder()
-                            .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak"))
-                            .add("versionCode",new CryptLib().encryptPlainTextWithRandomIV(String.valueOf(BuildConfig.VERSION_CODE),"sanrakshak"))
-                            .add("versionName",new CryptLib().encryptPlainTextWithRandomIV(BuildConfig.VERSION_NAME,"sanrakshak"))
-                            .build();
-
+            else appNameSplash.animateText(getString(R.string.resources));
+            Log.i("backend_call", "Connecting");
+            try{
+                postBody = new FormBody.Builder()
+                        .add("device",new CryptLib().encryptPlainTextWithRandomIV(android.os.Build.MODEL,"sanrakshak"))
+                        .add("versionCode",new CryptLib().encryptPlainTextWithRandomIV(String.valueOf(BuildConfig.VERSION_CODE),"sanrakshak"))
+                        .add("versionName",new CryptLib().encryptPlainTextWithRandomIV(BuildConfig.VERSION_NAME,"sanrakshak"))
+                        .build();
+            }
+            catch (Exception e){Log.e("encrypt","Error while encryption");}
+            Request request = new Request.Builder().url("https://sanrakshak.herokuapp.com/connect").post(postBody).build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("backend_call", "Connection Failed - "+e);
+                    call.cancel();
+                    new Handler(Looper.getMainLooper()).post(() ->splash(false));
                 }
-                catch (Exception e){Log.e("encrypt","Error while encryption");}
-                Request request = new Request.Builder().url("https://sanrakshak.herokuapp.com/connect").post(postBody).build();
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        Log.i("backend_call", "Connection Failed - "+e);
-                        call.cancel();
-                        new Handler(Looper.getMainLooper()).post(() ->splash(false));
-                    }
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull final Response response) {
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            try {
-                                String[] resmsg = (Objects.requireNonNull(response.body()).string()).split("<->");
-                                sesMODE = Integer.parseInt(resmsg[0]);
-                                Log.i("backend_call","Server Response => "+response.message());
-                                if(response.code()==503) splash(false);
-                                else if(sesMODE==0){
-                                    //Application Rejected
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull final Response response) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        try {
+                            String[] resmsg = (Objects.requireNonNull(response.body()).string()).split("<->");
+                            sesMODE = Integer.parseInt(resmsg[0]);
+                            Log.i("backend_call","Server Response => "+response.message());
+                            if(response.code()==503) splash(false);
+                            else if(sesMODE==0){
+                                //Application Rejected
+                                app_edit.putBoolean("valid", false);
+                                app_edit.apply();
+                                if(cacheAvail && validApp){
+                                    TapTargetView.showFor(HomeActivity.this,
+                                            showTap(crackAdapter.current.date,false,false, 45, R.drawable.close_bold,
+                                                    "We have a bad news",
+                                                    "This build of sanrakshak is no longer valid \nGet a valid build or contact support \nGoodBye!!"),
+                                            new TapTargetView.Listener() {
+                                                @Override
+                                                public void onTargetClick(TapTargetView view) {
+                                                    super.onTargetClick(view);
+                                                    new Handler().postDelayed(() -> finishAndRemoveTask(), 1000);
+                                                }
+                                            });
+                                }
+                                else
+                                new Handler().postDelayed(() -> {
+                                    proSplash.setVisibility(View.GONE);
+                                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
+                                    appNameSplash.animateText("WE HAVE A BAD NEWS");
                                     new Handler().postDelayed(() -> {
-                                        proSplash.setVisibility(View.GONE);
-                                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
-                                        appNameSplash.animateText("WE HAVE A BAD NEWS");
+                                        appNameSplash.animateText("THIS BUILD OF SANRAKSHAK");
                                         new Handler().postDelayed(() -> {
-                                            appNameSplash.animateText("THIS BUILD OF SANRAKSHAK");
+                                            appNameSplash.animateText("IS NO LONGER VALID");
                                             new Handler().postDelayed(() -> {
-                                                appNameSplash.animateText("IS NO LONGER VALID");
+                                                appNameSplash.animateText("GET A VALID BUILD");
                                                 new Handler().postDelayed(() -> {
-                                                    appNameSplash.animateText("GET A VALID BUILD");
+                                                    appNameSplash.animateText("OR CONTACT SUPPORT");
                                                     new Handler().postDelayed(() -> {
-                                                        appNameSplash.animateText("OR CONTACT SUPPORT");
-                                                        new Handler().postDelayed(() -> {
-                                                            appNameSplash.animateText("GOODBYE");
-                                                            new Handler().postDelayed(() -> finishAndRemoveTask(), 3000);
-                                                        }, 2000);
+                                                        appNameSplash.animateText("GOODBYE");
+                                                        new Handler().postDelayed(() -> finishAndRemoveTask(), 3000);
                                                     }, 2000);
                                                 }, 2000);
                                             }, 2000);
                                         }, 2000);
                                     }, 2000);
-                                }
-                                else{
-                                    if(crack.getString("list", null)==null){
-                                        cacheData(true);
-                                    }
-                                    else{
-                                        firstBoot = false;
-                                        splash(true);
-                                    }
-                                }
-                            } catch (IOException e) { e.printStackTrace(); }
-                        });
-                    }
-                });
-            }
+                                }, 2000);
+                            }
+                            else if(!(cacheAvail && validApp)){
+                                app_edit.putBoolean("valid", true);
+                                app_edit.apply();
+                                cacheData(true);
+                            }
+                        } catch (IOException e) { e.printStackTrace(); }
+                    });
+                }
+            });
         }
-        else{
-            firstBoot = false;
-            splash(false);
+        else if(!app.getBoolean("valid", true)){
+            new Handler().postDelayed(() -> {
+                proSplash.setVisibility(View.GONE);
+                appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
+                appNameSplash.animateText("WE HAVE A BAD NEWS");
+                new Handler().postDelayed(() -> {
+                    appNameSplash.animateText("THIS BUILD OF SANRAKSHAK");
+                    new Handler().postDelayed(() -> {
+                        appNameSplash.animateText("IS NO LONGER VALID");
+                        new Handler().postDelayed(() -> {
+                            appNameSplash.animateText("GET A VALID BUILD");
+                            new Handler().postDelayed(() -> {
+                                appNameSplash.animateText("OR CONTACT SUPPORT");
+                                new Handler().postDelayed(() -> {
+                                    appNameSplash.animateText("GOODBYE");
+                                    new Handler().postDelayed(() -> finishAndRemoveTask(), 3000);
+                                }, 2000);
+                            }, 2000);
+                        }, 2000);
+                    }, 2000);
+                }, 2000);
+            }, 2000);
         }
+        else splash(false);
     }
     public void cacheData(boolean splash){
         try{
@@ -893,7 +925,7 @@ public class HomeActivity extends AppCompatActivity {
                 anims.setAnimationListener(new Animation.AnimationListener() {
                     @Override public void onAnimationStart(Animation animation) {}
                     @Override public void onAnimationEnd(Animation animation) {
-                        if(!firstBoot){
+                        if(app.getBoolean("firstBoot", false)){
                             logo_div_fade.setClickable(false);
                             logo_div_fade.setFocusable(false);
                         }
@@ -973,6 +1005,8 @@ public class HomeActivity extends AppCompatActivity {
                                                                                                                                                                         @Override
                                                                                                                                                                         public void onTargetClick(TapTargetView view) {
                                                                                                                                                                             super.onTargetClick(view);
+                                                                                                                                                                            app_edit.putBoolean("firstBoot", true);
+                                                                                                                                                                            app_edit.apply();
                                                                                                                                                                             logo_div_fade.setClickable(false);
                                                                                                                                                                             logo_div_fade.setFocusable(false);
                                                                                                                                                                         }
