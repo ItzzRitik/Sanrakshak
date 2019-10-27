@@ -367,29 +367,48 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             public void onResponse(@NonNull Call call, @NonNull final Response response) {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     try {
-                        String resmsg = Objects.requireNonNull(response.body()).string();
-                        sesMODE = Integer.parseInt(resmsg.split("-")[0]);
+                        String[] resmsg = (Objects.requireNonNull(response.body()).string()).split("<->");
+                        sesMODE = Integer.parseInt(resmsg[0]);
                         Log.i("backend_call","Server Response (Iteration - "+iteration+") => "+ sesMODE);
                         if(response.code()==503) serverOffline(iteration);
-                        else if(sesMODE > 0)
-                        {
-                            if(sesMODE==2){
-                                email.setEnabled(false);
-                                pass.setEnabled(false);
-                                con_pass.setEnabled(false);
-                                social_google.setEnabled(false);
-                                email_reset.setEnabled(false);
+                        else if(sesMODE==2){
+                            //Demo Mode
+                            email.setEnabled(false);
+                            pass.setEnabled(false);
+                            con_pass.setEnabled(false);
+                            social_google.setEnabled(false);
+                            email_reset.setEnabled(false);
 
-                                resmsg = resmsg.split("-")[1];
-                                String msg = resmsg.split("#")[0];
-                                sesID = resmsg.split("#")[1];
-                                sesPASS = resmsg.split("#")[2];
-                                exitSplash(msg);
-                            }
-                            else{
-                                exitSplash("");
-                            }
+                            String msg = resmsg[1];
+                            sesID = resmsg[2];
+                            sesPASS = resmsg[3];
+                            exitSplash(msg);
                         }
+                        else if(sesMODE==0){
+                            //Application Rejected
+                            new Handler().postDelayed(() -> {
+                                proSplash.setVisibility(View.GONE);
+                                appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
+                                appNameSplash.animateText("WE HAVE A BAD NEWS");
+                                new Handler().postDelayed(() -> {
+                                    appNameSplash.animateText("THIS BUILD OF SANRAKSHAK");
+                                    new Handler().postDelayed(() -> {
+                                        appNameSplash.animateText("IS NO LONGER VALID");
+                                        new Handler().postDelayed(() -> {
+                                            appNameSplash.animateText("GET A VALID BUILD");
+                                            new Handler().postDelayed(() -> {
+                                                appNameSplash.animateText("OR CONTACT SUPPORT");
+                                                new Handler().postDelayed(() -> {
+                                                    appNameSplash.animateText("GOODBYE");
+                                                    new Handler().postDelayed(() -> finishAndRemoveTask(), 3000);
+                                                }, 2000);
+                                            }, 2000);
+                                        }, 2000);
+                                    }, 2000);
+                                }, 2000);
+                            }, 2000);
+                        }
+                        else exitSplash("");
                     }
                     catch (IOException e) {e.printStackTrace();}
                 });
@@ -484,7 +503,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                 .cancelable(false)
                 .tintTarget(true)
                 .transparentTarget(target)
-                .icon(getResources().getDrawable(R.drawable.tick_bold),targetIcon)
+                .icon(getResources().getDrawable(R.drawable.tick),targetIcon)
                 .targetRadius(targetRadius);
     }
     public void performSignIn()

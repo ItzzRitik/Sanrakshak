@@ -128,6 +128,7 @@ public class HomeActivity extends AppCompatActivity {
     Animator animator;
     CardView data_div;
     String profile_url="",profile_path="";
+    int sesMODE = 1;
     Bitmap profile_dp=null;
     ObjectAnimator startAnim;
     Point screenSize;
@@ -591,19 +592,45 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull final Response response) {
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            Log.i("backend_call","Server Response => "+response.message());
-                            if(response.code()==503) {
-                                new Handler(Looper.getMainLooper()).post(() -> splash(false));
-                            }
-                            else{
-                                if(crack.getString("list", null)==null){
-                                    cacheData(true);
+                            try {
+                                String[] resmsg = (Objects.requireNonNull(response.body()).string()).split("<->");
+                                sesMODE = Integer.parseInt(resmsg[0]);
+                                Log.i("backend_call","Server Response => "+response.message());
+                                if(response.code()==503) splash(false);
+                                else if(sesMODE==0){
+                                    //Application Rejected
+                                    new Handler().postDelayed(() -> {
+                                        proSplash.setVisibility(View.GONE);
+                                        appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
+                                        appNameSplash.animateText("WE HAVE A BAD NEWS");
+                                        new Handler().postDelayed(() -> {
+                                            appNameSplash.animateText("THIS BUILD OF SANRAKSHAK");
+                                            new Handler().postDelayed(() -> {
+                                                appNameSplash.animateText("IS NO LONGER VALID");
+                                                new Handler().postDelayed(() -> {
+                                                    appNameSplash.animateText("GET A VALID BUILD");
+                                                    new Handler().postDelayed(() -> {
+                                                        appNameSplash.animateText("OR CONTACT SUPPORT");
+                                                        new Handler().postDelayed(() -> {
+                                                            appNameSplash.animateText("GOODBYE");
+                                                            new Handler().postDelayed(() -> finishAndRemoveTask(), 3000);
+                                                        }, 2000);
+                                                    }, 2000);
+                                                }, 2000);
+                                            }, 2000);
+                                        }, 2000);
+                                    }, 2000);
                                 }
                                 else{
-                                    firstBoot = false;
-                                    splash(true);
+                                    if(crack.getString("list", null)==null){
+                                        cacheData(true);
+                                    }
+                                    else{
+                                        firstBoot = false;
+                                        splash(true);
+                                    }
                                 }
-                            }
+                            } catch (IOException e) { e.printStackTrace(); }
                         });
                     }
                 });
@@ -872,7 +899,7 @@ public class HomeActivity extends AppCompatActivity {
                         }
                         else
                         new Handler().postDelayed(() -> TapTargetView.showFor(HomeActivity.this,
-                                showTap(crackAdapter.current.date,false,false, 45, R.drawable.tick_bold,
+                                showTap(crackAdapter.current.date,false,false, 45, R.drawable.tick_mono,
                                         "Glad to see you here!",
                                         "Here is the list of all the cracks \ndetected by Sanrakshak."),
                                 new TapTargetView.Listener() {
