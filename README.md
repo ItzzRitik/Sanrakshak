@@ -4,8 +4,8 @@ We at Sanrakshak have pledged to provide utmost safe and secure railway journey 
 
 Sanrakshak can be divided into four different fields
 - [Robot]()
-- [Mobile Application](https://github.com/ItzzRitik/Sanrakshak)
-- [Web Application](https://github.com/ItzzRitik/SanrakshakHome)
+- [Mobile Application](https://github.com/ItzzRitik/Sanrakshak-Application)
+- [Web Application](https://github.com/ItzzRitik/Sanrakshak-Home)
 - [Web Server](https://github.com/ItzzRitik/Sanrakshak-Backend)
 
 # Sanrakshak Mobile Application
