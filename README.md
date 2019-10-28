@@ -23,7 +23,8 @@ Solving a problem may be the most important part of a mission, But having the po
   - Date of discovery of the crack.
   - Intensity of the crack.
   - Number of days allocated to fix the crack.
-  - Locate and Navigate to location of the crack using Google Maps.
++ Locate the location of crack on Google Maps.
++ Navigate to the location using the shortest path on Google Maps.
 
 
 
