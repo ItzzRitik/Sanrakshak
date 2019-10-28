@@ -461,7 +461,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                                     @Override
                                                     public void onTargetClick(TapTargetView view) {
                                                         super.onTargetClick(view);
-                                                        view.performClick();
+                                                        signin.performClick();
                                                     }
                                                 }), animatedSetText(sesID, email, 50, true)), 500);
                                     }
@@ -558,7 +558,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                                             @Override
                                             public void onTargetClick(TapTargetView view) {
                                                 super.onTargetClick(view);
-                                                view.performClick();
+                                                signin.performClick();
                                             }
                                         }), animatedSetText(sesPASS, pass, 50, true)), 500);
                             }

@@ -511,12 +511,13 @@ public class HomeActivity extends AppCompatActivity {
         done.setOnClickListener(v -> {
             gclient.signOut();
             user_edit.clear();user_edit.apply();
-            //crack_edit.clear();crack_edit.apply();
+            crack_edit.clear();crack_edit.apply();
+            if(sesMODE == 2) {app_edit.clear();app_edit.apply();}
             new Thread(() -> Glide.get(HomeActivity.this).clearDiskCache()).start();
             Intent home=new Intent(HomeActivity.this, LoginActivity.class);
             HomeActivity.this.startActivity(home);
             finish();
-            HomeActivity.this.overridePendingTransition(0, 0);
+            HomeActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
         refresh = findViewById(R.id.refresh);
         refresh.setProgressViewOffset(true,dptopx(50),dptopx(100));
