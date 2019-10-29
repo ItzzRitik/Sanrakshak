@@ -29,5 +29,8 @@ Solving a problem may be the most important part of a mission, But having the po
 ## Screenshots
 <img src="screenshots/s1.png" width="25%"><img src="screenshots/s2.png" width="25%"><img src="screenshots/s3.png" width="25%"><img src="screenshots/s4.png" width="25%"><img src="screenshots/s5.png" width="25%"><img src="screenshots/s6.png" width="25%"><img src="screenshots/s7.png" width="25%"><img src="screenshots/s8.png" width="25%">
 
+## Download  
+**Sanrakshak Mobile Application** is packed with lot of features and provides hands on to details of the detected crack. Get your hands on it now. 
 
+[<img src="screenshots/download_button.png" width="200">](Builds/Sanrakshak.apk?raw=true)
 
