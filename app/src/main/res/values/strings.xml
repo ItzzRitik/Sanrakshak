@@ -57,7 +57,7 @@
     <string name="flash">flash</string>
     <string name="camera_flip">camera_flip</string>
     <string name="i_m_sad">I\'m Sad</string>
-    <string name="offline">SERVER OFFLINE, RECONNECTING</string>
+    <string name="offline">SERVER UNREACHABLE, RETRYING</string>
     <string name="connect">CONNECTING TO SERVER</string>
     <string name="email_wait">Waiting for Email Verification</string>
     <string name="map_preview">Map Preview</string>

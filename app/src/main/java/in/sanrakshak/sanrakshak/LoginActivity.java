@@ -361,6 +361,7 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.i("backend_call", "Connection Failed - "+e);
                 call.cancel();
+                appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                 serverOffline(iteration);
             }
             @Override
@@ -370,7 +371,10 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
                         String[] resmsg = (Objects.requireNonNull(response.body()).string()).split("<->");
                         sesMODE = Integer.parseInt(resmsg[0]);
                         Log.i("backend_call","Server Response (Iteration - "+iteration+") => "+ sesMODE);
-                        if(response.code()==503) serverOffline(iteration);
+                        if(response.code()==503){
+                            appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                            serverOffline(iteration);
+                        }
                         else if(sesMODE==2){
                             //Demo Mode
                             email.setEnabled(false);
@@ -420,7 +424,6 @@ public class LoginActivity extends AppCompatActivity  implements KeyboardHeightO
             if(iteration==0){
                 new Handler().postDelayed(() -> {
                     appNameSplash.animateText(getString(R.string.offline));
-                    appNameSplash.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                 },1000);
             }
             new Handler().postDelayed(() -> splash(iteration+1),(iteration>20)?10000:iteration*500);
